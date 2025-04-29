@@ -3,7 +3,6 @@ import Slideshow from "./Slideshow";
 import ServiceSection from "../../Components/ServiceSection";
 import CollectionBanner from "./CollectionBanner";
 import PopularCategories from "../../Components/PopularCategories";
-import ScrollTop from "../../Components/layout/Footer/ScrollTop";
 import ProductSlider from "./ProductSlider";
 import TestimonialSection from "./TestimonialSection";
 import BlogPostSection from "./BlogPostSection";
@@ -19,7 +18,6 @@ export default function HomePage() {
       <ProductSlider />
       <TestimonialSection />
       <BlogPostSection />
-      <ScrollTop />
     </>
   );
 }

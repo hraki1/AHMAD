@@ -4,7 +4,12 @@ import PropTypes from "prop-types";
 /**
  * @param services
  */
-export default function ServiceSection({ services, className, pageType }) {
+export default function ServiceSection({
+  services,
+  className,
+  pageType,
+  titleClass,
+}) {
   return (
     <section
       className={`section service-section ${
@@ -19,8 +24,19 @@ export default function ServiceSection({ services, className, pageType }) {
                 <i className={`icon  ${s.icon}`} aria-hidden="true"></i>
               </div>
               <div className="service-content">
-                <div className="title mb-2">{s.title}</div>
-                <span className="text-muted">{s.subtitle}</span>
+                <div className={`title mb-2 ${titleClass}`}>{s.title}</div>
+                {s.link ? (
+                  <a
+                    href={s.link}
+                    className="text-muted"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {s.subtitle}
+                  </a>
+                ) : (
+                  <span className="text-muted">{s.subtitle}</span>
+                )}
               </div>
             </div>
           ))}
@@ -36,6 +52,7 @@ ServiceSection.propTypes = {
       icon: PropTypes.string.isRequired, // : "fa-solid fa-phone"
       title: PropTypes.string.isRequired,
       subtitle: PropTypes.string.isRequired,
+      link: PropTypes.string, // ✅ Not Requierd
     })
   ).isRequired,
 };
