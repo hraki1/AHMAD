@@ -16,6 +16,7 @@ import Account from "./Pages/Account/Index.jsx";
 import Portfolio from "./Pages/Portfolio/Index.jsx";
 import Product from "./Pages/Product/Index.jsx";
 import ShopGrid from "./Pages/ShopGrid/Index.jsx";
+import Wishlist from "./Pages/Wishlist/Index.jsx";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="/Portfolio" element={<Portfolio />} />
           <Route path="/Product" element={<Product />} />
           <Route path="/ShopGrid" element={<ShopGrid />} />
+          <Route path="/Wishlist" element={<Wishlist />} />
         </Routes>
         <ScrollTop />
         <Footer />
