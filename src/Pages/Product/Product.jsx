@@ -56,28 +56,28 @@ export default function Product() {
 
         <div className="tab-content">
           {activeTab === "description" && (
-            <div className="tab-pane">
+            <div className="tab-pane d-block">
               {" "}
               <Description />
             </div>
           )}
           {activeTab === "additionalInformation" && (
-            <div className="tab-pane">
+            <div className="tab-pane d-block">
               <AdditionalInformation />
             </div>
           )}
           {activeTab === "sizeChart" && (
-            <div className="tab-pane">
+            <div className="tab-pane d-block">
               <SizeChart />
             </div>
           )}
           {activeTab === "shippingReturn" && (
-            <div className="tab-pane">
+            <div className="tab-pane d-block">
               <ShippingReturn />
             </div>
           )}
           {activeTab === "reviews" && (
-            <div className="tab-pane">
+            <div className="tab-pane d-block">
               <ReviewSection />
             </div>
           )}

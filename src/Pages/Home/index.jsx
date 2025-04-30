@@ -3,7 +3,7 @@ import Slideshow from "./Slideshow";
 import ServiceSection from "../../Components/ServiceSection";
 import CollectionBanner from "./CollectionBanner";
 import PopularCategories from "../../Components/PopularCategories";
-import ProductSlider from "./ProductSlider";
+import ProductSlider from "../../Components/ProductSlider";
 import TestimonialSection from "./TestimonialSection";
 import BlogPostSection from "./BlogPostSection";
 import { categoriesData, services } from "./data";

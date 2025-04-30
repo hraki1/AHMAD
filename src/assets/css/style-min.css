@@ -2131,7 +2131,8 @@ textarea:-ms-input-placeholder {
 .sideProSlider .slick-prev:before,
 .slick-arrow-dots .slick-arrow:before,
 .spr-header .product-review .icon {
-  font-size: 16px;
+  font-size: 22px;
+  font-weight: bold;
 }
 .slick-arrow-dots:hover .slick-arrow {
   opacity: 1;
@@ -6340,7 +6341,7 @@ textarea:-ms-input-placeholder {
 }
 .toolbar-wrapper select {
   height: 36px;
-  min-width: 65px;
+  min-width: 53px;
 }
 .blog-article .featured-image {
   position: relative;
@@ -10210,6 +10211,44 @@ textarea:-ms-input-placeholder {
   animation-name: fadeInUp;
 }
 
-.tab-pane {
+/* .tab-pane {
   display: block !important;
+} */
+
+/* .slick-slide {
+  background-color: #f3f1f1;
+  padding: 30px;
+} */
+
+.cls-bord {
+  border: 1px solid #dfdfdf;
+  padding: 3px;
+  padding-left: 10px;
+}
+
+/* تأثير الانزلاق */
+.sidebar-widget .widget-content {
+  overflow: hidden;
+}
+
+.sidebar-widget .widget-content.slide-enter {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.sidebar-widget .widget-content.slide-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 400ms ease-out, opacity 400ms ease-out;
+}
+
+.sidebar-widget .widget-content.slide-exit {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.sidebar-widget .widget-content.slide-exit-active {
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 400ms ease-in, opacity 400ms ease-in;
 }

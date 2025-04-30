@@ -2,7 +2,7 @@ import React from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import ProductDetail from "./ProductDetail";
 import Product from "./Product";
-import Description from "./Description";
+import ProductSlider from "../../Components/ProductSlider";
 
 export default function Index() {
   return (
@@ -10,6 +10,11 @@ export default function Index() {
       <PageHeader title="PRODUCT" />
       <ProductDetail />
       <Product />
+      <ProductSlider
+        showTabs={false}
+        subtitle="Weekly Deals"
+        title="Check out our newest discounts!"
+      />
     </div>
   );
 }
