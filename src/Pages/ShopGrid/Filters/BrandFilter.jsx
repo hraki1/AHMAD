@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { brands } from "../data";
 
-export default function BrandFilter() {
+export default function BrandFilter({ className }) {
   const [selectedBrands, setSelectedBrands] = useState(
     brands.reduce((acc, brand) => ({ ...acc, [brand]: false }), {})
   );
@@ -16,7 +16,7 @@ export default function BrandFilter() {
   const [showContent, setShowContent] = useState(true);
 
   return (
-    <div className="sidebar-widget filter-widget brand-filter">
+    <div className={`sidebar-widget filter-widget brand-filter  ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
         <div class="title-slidebar">Brands</div>
         <i

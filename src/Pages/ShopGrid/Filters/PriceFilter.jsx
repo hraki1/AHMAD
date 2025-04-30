@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function PriceFilter() {
+export default function PriceFilter({ className }) {
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [amount, setAmount] = useState("$0 - $100");
 
@@ -17,7 +17,7 @@ export default function PriceFilter() {
   const [showContent, setShowContent] = useState(true);
 
   return (
-    <div className="sidebar-widget filterBox filter-widget">
+    <div className={`sidebar-widget filterBox filter-widget ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
         <div class="title-slidebar">Price</div>
         <i

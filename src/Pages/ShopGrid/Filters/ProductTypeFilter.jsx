@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { productTypes } from "../data";
 
-export default function ProductTypeFilter() {
+export default function ProductTypeFilter({ className }) {
   const [selectedTypes, setSelectedTypes] = useState({
     fashion: false,
     electronic: false,
@@ -18,7 +18,7 @@ export default function ProductTypeFilter() {
   const [showContent, setShowContent] = useState(true);
 
   return (
-    <div className="sidebar-widget filter-widget product-type">
+    <div className={`sidebar-widget filter-widget product-type ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
         <div class="title-slidebar">Type</div>
         <i

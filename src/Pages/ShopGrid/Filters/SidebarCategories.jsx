@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function SidebarCategories() {
+export default function SidebarCategories({ className }) {
   const [openCategories, setOpenCategories] = useState({});
   const [openSubCategories, setOpenSubCategories] = useState({});
 
@@ -23,7 +23,9 @@ export default function SidebarCategories() {
   const [showContent, setShowContent] = useState(true);
 
   return (
-    <div className="sidebar-widget clearfix categories filterBox filter-widget">
+    <div
+      className={`sidebar-widget clearfix categories filterBox filter-widget ${className}`}
+    >
       <div class="widget-title d-flex justify-content-between align-items-center">
         <div class="title-slidebar">Categories</div>
         <i

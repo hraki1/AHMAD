@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 
-export default function SizeFilter() {
+export default function SizeFilter({ className }) {
   const [selectedSize, setSelectedSize] = useState("XL");
   const [showContent, setShowContent] = useState(true);
   const contentRef = useRef(null);
@@ -12,7 +12,7 @@ export default function SizeFilter() {
   };
 
   return (
-    <div className="sidebar-widget filterBox filter-widget">
+    <div className={`sidebar-widget filterBox filter-widget ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
         <div className="title-slidebar">Size</div>
         <i

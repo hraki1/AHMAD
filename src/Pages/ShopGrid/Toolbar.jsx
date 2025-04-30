@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { showOptions, sortOptions, viewModes } from "./data";
 import ProductGrid from "./ProductGrid";
+import PriceFilter from "./Filters/PriceFilter";
+import SidebarCategories from "./Filters/SidebarCategories";
+import ColorFilter from "./Filters/ColorFilter";
+import SizeFilter from "./Filters/SizeFilter";
+import ProductTypeFilter from "./Filters/ProductTypeFilter";
+import BrandFilter from "./Filters/BrandFilter";
+import AvailabilityFilter from "./Filters/AvailabilityFilter";
 
 // 🧩 Component: ViewModes
 function ViewModes({ activeView, onChange }) {
@@ -58,14 +65,20 @@ function SelectBox({ id, label, options, defaultValue }) {
 // 🔧 Main Toolbar
 export default function Toolbar({ onFilterClick, onViewChange }) {
   const [activeView, setActiveView] = useState(5);
+  const [showFilter, setShowFilter] = useState(false); // حالة لفتح/إغلاق قائمة الفلتر
 
   const handleViewChange = (col) => {
     setActiveView(col);
     onViewChange?.(col);
   };
 
+  const handleFilterClick = () => {
+    setShowFilter(!showFilter); // تبديل حالة الفلتر
+    onFilterClick?.(); // إذا كان هناك وظيفة خارجية
+  };
+
   return (
-    <div class="col-12 col-sm-12 col-md-12 col-lg-9 main-col">
+    <div className="col-12 col-sm-12 col-md-12 col-lg-9 main-col">
       <div className="toolbar toolbar-wrapper shop-toolbar mt-5">
         <div className="row align-items-center">
           {/* Left */}
@@ -73,7 +86,7 @@ export default function Toolbar({ onFilterClick, onViewChange }) {
             <button
               type="button"
               className="btn btn-filter icon anm anm-sliders-hr d-inline-flex d-lg-none me-2"
-              onClick={onFilterClick}
+              onClick={handleFilterClick}
             >
               Filter <i className="fa-solid fa-bars ms-1" />
             </button>
@@ -107,6 +120,20 @@ export default function Toolbar({ onFilterClick, onViewChange }) {
           </div>
         </div>
       </div>
+
+      {/* عرض الفلتر في حالة الضغط على زر الفلتر */}
+      {showFilter && (
+        <div className={`filter-menu ${showFilter ? "visible" : "hidden"}`}>
+          <SidebarCategories className="mb-5" />
+          <PriceFilter className="mb-5" />
+          <ColorFilter className="mb-5" />
+          <SizeFilter className="mb-5" />
+          <ProductTypeFilter className="mb-5" />
+          <BrandFilter className="mb-5" />
+          <AvailabilityFilter className="mb-5" />
+        </div>
+      )}
+
       <ProductGrid />
     </div>
   );

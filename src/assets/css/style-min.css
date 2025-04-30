@@ -10252,3 +10252,33 @@ textarea:-ms-input-placeholder {
   opacity: 0;
   transition: transform 400ms ease-in, opacity 400ms ease-in;
 }
+
+.title-slidebar {
+  margin-bottom: 1rem;
+}
+
+/* تخصيص عرض الفلتر فقط للشاشات الصغيرة */
+@media (max-width: 991.98px) {
+  .filter-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 280px;
+    background-color: #fff;
+    z-index: 1050;
+    overflow-y: auto;
+    padding: 1rem;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  /* إذا أردت أن تكون مخفية مبدئيًا وتظهر عند الضغط */
+  .filter-menu.hidden {
+    transform: translateX(-100%);
+  }
+
+  .filter-menu.visible {
+    transform: translateX(0);
+  }
+}

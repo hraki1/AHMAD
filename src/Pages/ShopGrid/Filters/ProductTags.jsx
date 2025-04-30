@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { tags } from "../data";
 
-export default function ProductTags() {
+export default function ProductTags({ className }) {
   const [activeTag, setActiveTag] = useState("Women");
 
   const handleTagClick = useCallback((tag) => {
@@ -10,7 +10,9 @@ export default function ProductTags() {
   const [showContent, setShowContent] = useState(true);
 
   return (
-    <div className="sidebar-widget filterBox filter-widget product-tag">
+    <div
+      className={`sidebar-widget filterBox filter-widget product-tag ${className}`}
+    >
       <div className="widget-title d-flex align-items-center justify-content-between">
         <div class="title-slidebar">Product Tags</div>
         <i

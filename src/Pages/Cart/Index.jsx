@@ -6,6 +6,9 @@ import CartSummary from "./CartSummary";
 import imageCart1 from "../../assets/images/products/product1-120x170.jpg";
 import imageCart2 from "../../assets/images/products/product2-120x170.jpg";
 import ProductItem from "../../Components/ProductItem";
+import MiniCart from "./MiniCart";
+import img from "../../assets/images/products/cart-product-img1.jpg";
+import imgtow from "../../assets/images/products/cart-product-img2.jpg";
 
 export default function Index() {
   const [discount, setDiscount] = useState(0);
@@ -68,6 +71,33 @@ export default function Index() {
         </div>
       </div>
       <ProductItem />
+      {/*  */}
+      <MiniCart
+        items={[
+          {
+            name: "Women Sandals",
+            variant: "Black",
+            size: "XL",
+            price: 54.0,
+            quantity: 1,
+            img: img,
+            link: "product-layout1.html",
+          },
+          {
+            name: "Sleeve Round T-Shirt",
+            variant: "Yellow",
+            size: "M",
+            price: 99.0,
+            oldPrice: 114.0,
+            quantity: 1,
+            img: imgtow,
+            link: "product-layout1.html",
+          },
+        ]}
+        onQuantityChange={(index, newQty) => console.log(index, newQty)}
+        onRemove={(index) => console.log("Remove", index)}
+        onClose={() => console.log("Cart closed")}
+      />
     </div>
   );
 }

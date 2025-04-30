@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { colors } from "../data";
 
-export default function ColorFilter() {
+export default function ColorFilter({ className }) {
   const [selectedColor, setSelectedColor] = useState(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function ColorFilter() {
   const [showContent, setShowContent] = useState(true);
 
   return (
-    <div className="sidebar-widget filterBox filter-widget">
+    <div className={`sidebar-widget filterBox filter-widget ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
         <div class="title-slidebar">Color</div>
         <i

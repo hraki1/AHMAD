@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { availabilityOptions } from "../data";
 
-export default function AvailabilityFilter() {
+export default function AvailabilityFilter({ className }) {
   const [availability, setAvailability] = useState({
     instock: false,
     outofstock: false,
@@ -17,7 +17,7 @@ export default function AvailabilityFilter() {
   const [showContent, setShowContent] = useState(true);
 
   return (
-    <div className="sidebar-widget filter-widget availability">
+    <div className={`sidebar-widget filter-widget availability ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
         <div class="title-slidebar">Availability</div>
         <i
