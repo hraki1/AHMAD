@@ -941,8 +941,8 @@ export const slides = [
     caption: "Perfectly designed to ensure ultimate comfort and style",
     position: "middle-left",
     buttons: [
-      { label: "Shop Women", href: "shop-grid-view.html", primary: true },
-      { label: "Shop Men", href: "shop-grid-view.html", primary: false },
+      { label: "Shop Women", href: "/ShopGrid", primary: true },
+      { label: "Shop Men", href: "/ShopGrid", primary: false },
     ],
   },
   {
@@ -952,9 +952,7 @@ export const slides = [
     title: "Spread Positive\nEnergy With Hema",
     caption: "The must-have closet essential women wardrobe for the year",
     position: "middle-right",
-    buttons: [
-      { label: "Explore Now!", href: "shop-grid-view.html", primary: true },
-    ],
+    buttons: [{ label: "Explore Now!", href: "/ShopGrid", primary: true }],
   },
   {
     desktop: banner3Desktop,
@@ -963,9 +961,7 @@ export const slides = [
     title: "Design Your Next\nFavourite Wear",
     caption: "The outfit that blend elegance and style for your casual wear",
     position: "middle-right",
-    buttons: [
-      { label: "Shop now", href: "shop-grid-view.html", primary: true },
-    ],
+    buttons: [{ label: "Shop now", href: "/ShopGrid", primary: true }],
   },
 ];
 

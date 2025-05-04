@@ -42,10 +42,7 @@ export default function PopularCategories({
         >
           {data.map((c, i) => (
             <div key={i} className="category-item zoomscal-hov">
-              <a
-                href="shop-left-sidebar.html"
-                className="category-link clr-none"
-              >
+              <a href="/ShopGrid" className="category-link clr-none">
                 <div className="zoom-scal zoom-scal-nopb rounded-3">
                   <img
                     className="blur-up lazyload"

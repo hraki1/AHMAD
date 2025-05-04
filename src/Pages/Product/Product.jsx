@@ -9,7 +9,6 @@ import ReviewSection from "./ReviewSection";
 export default function Product() {
   const [activeTab, setActiveTab] = useState("description");
 
-  // تغيير التبويب النشط عند النقر
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };

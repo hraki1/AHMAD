@@ -1,17 +1,24 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import imageCart1 from "../../assets/images/products/product1-120x170.jpg";
 import imageCart2 from "../../assets/images/products/product2-120x170.jpg";
 
-export default function Cart({ cartItems, setCartItems, discount }) {
+export default function Cart({ discount }) {
   // Initialize cart items with sample data
+  const [cartItems, setCartItems] = useState([]);
+  useEffect(() => {
+    const storedItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    setCartItems(storedItems);
+  }, []);
 
   // Calculate total price
   const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    return cartItems.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
   };
+
+  const totalPrice = calculateTotal();
 
   const calculateDiscountedTotal = () => {
     const total = calculateTotal();
@@ -36,6 +43,11 @@ export default function Cart({ cartItems, setCartItems, discount }) {
           : item
       )
     );
+  };
+  const removeItem = (id) => {
+    const updated = cartItems.filter((item) => item.id !== id);
+    setCartItems(updated);
+    localStorage.setItem("cartItems", JSON.stringify(updated));
   };
 
   return (
@@ -63,9 +75,10 @@ export default function Cart({ cartItems, setCartItems, discount }) {
                   <a
                     href="#"
                     className="cart-remove remove-icon position-static"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    title="Remove to Cart"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      removeItem(item.id);
+                    }}
                   >
                     <i className="fa-solid fa-xmark"></i>
                   </a>

@@ -10282,3 +10282,21 @@ textarea:-ms-input-placeholder {
     transform: translateX(0);
   }
 }
+.form-label-title {
+  font-size: 14px;
+  font-family: "Heebo";
+  margin-bottom: 0px;
+  color: #101010d4;
+  padding-left: 2px;
+}
+
+.bor-form {
+  padding: 50px 30px 30px 30px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 20px;
+}
+.highlighted-search {
+  background-color: yellow;
+  font-weight: bold;
+  color: black;
+}

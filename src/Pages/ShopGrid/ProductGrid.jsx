@@ -78,6 +78,31 @@ const ProductGrid = () => {
     );
   };
 
+  const addToCart = (product) => {
+    const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+    const itemExists = existingCart.find((item) => item.id === product.id);
+    if (itemExists) {
+      alert("هذا المنتج موجود بالفعل في السلة");
+      return;
+    }
+
+    const numericPrice = parseFloat(product.newPrice.replace("$", ""));
+
+    const updatedCart = [
+      ...existingCart,
+      {
+        ...product,
+        price: numericPrice, // أضف السعر كرقم
+        image: product.imageUrl, // أضف المفتاح image هنا ليتعرف عليه الكارت
+        quantity: 1,
+      },
+    ];
+
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    alert("✅ تم إضافة المنتج إلى السلة");
+  };
+
   return (
     <div className="grid-products grid-view-items">
       <div className="row col-row product-options row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2">
@@ -103,22 +128,15 @@ const ProductGrid = () => {
                 </div>
                 <div className="saleTime" data-countdown="2025/01/01"></div>
                 <div className="button-set style1">
-                  <a
-                    href="#quickshop-modal"
-                    className="btn-icon addtocart quick-shop-modal"
-                    data-bs-toggle="modal"
-                    data-bs-target="#quickshop_modal"
+                  <button
+                    className="btn-icon addtocart"
+                    onClick={() => addToCart(product)}
+                    title="Add to Cart"
                   >
-                    <span
-                      className="icon-wrap d-flex-justify-center h-100 w-100"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="left"
-                      title="Quick Shop"
-                    >
-                      <i className="fa-solid fa-cart-plus"></i>
-                      <span className="text">Quick Shop</span>
-                    </span>
-                  </a>
+                    <i className="fa-solid fa-cart-plus"></i>
+                    <span className="text">Add to Cart</span>
+                  </button>
+
                   <a
                     href="#quickview-modal"
                     className="btn-icon quickview quick-view-modal"

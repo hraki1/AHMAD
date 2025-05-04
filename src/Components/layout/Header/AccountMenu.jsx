@@ -4,11 +4,10 @@ const AccountLinks = () => (
   <div className="customer-links">
     <ul className="m-0">
       {[
-        { href: "login.html", icon: "fa-right-to-bracket", label: "Sign In" },
-        { href: "register.html", icon: "fa-user", label: "Register" },
-        { href: "register.html", icon: "fa-address-card", label: "My Account" },
-        { href: "register.html", icon: "fa-heart", label: "Wishlist" },
-        { href: "register.html", icon: "fa-code-compare", label: "Compare" },
+        { href: "LogIn", icon: "fa-right-to-bracket", label: "LogIn" },
+        { href: "/SignUp", icon: "fa-user", label: "SignUp" },
+        { href: "/MYAccount", icon: "fa-address-card", label: "My Account" },
+        { href: "/Wishlist", icon: "fa-heart", label: "Wishlist" },
         {
           href: "register.html",
           icon: "fa-right-from-bracket",

@@ -57,32 +57,36 @@ export default function ProductSlider({
           )}
 
           <div className="tab-content" id="productTabsContent">
-            <div
-              className={`tab-pane show active`}
-              id={activeTab}
-              role="tabpanel"
-              aria-labelledby={`${activeTab}-tab`}
-            >
-              <div className="grid-products grid-view-items">
-                <div className="row col-row product-options row-cols-xl-4 row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2">
-                  {productsData[activeTab] &&
-                  productsData[activeTab].length > 0 ? (
-                    productsData[activeTab].map((product) => (
-                      <ProductCard key={product.id} {...product} />
-                    ))
-                  ) : (
-                    <p className="text-center my-4">No products available.</p>
-                  )}
-                </div>
-                <div className="view-collection text-center mt-4 mt-md-5">
-                  <Button
-                    label="View Collection"
-                    href="shop-left-sidebar.html"
-                    primary={false}
-                  />
+            {["bestsellers", "newarrivals", "toprated"].map((tabKey) => (
+              <div
+                key={tabKey}
+                className={`tab-pane fade ${
+                  activeTab === tabKey ? "show active" : ""
+                }`}
+                id={tabKey}
+                role="tabpanel"
+                aria-labelledby={`${tabKey}-tab`}
+              >
+                <div className="grid-products grid-view-items">
+                  <div className="row col-row product-options row-cols-xl-4 row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2">
+                    {productsData[tabKey] && productsData[tabKey].length > 0 ? (
+                      productsData[tabKey].map((product) => (
+                        <ProductCard key={product.id} {...product} />
+                      ))
+                    ) : (
+                      <p className="text-center my-4">No products available.</p>
+                    )}
+                  </div>
+                  <div className="view-collection text-center mt-4 mt-md-5">
+                    <Button
+                      label="View Collection"
+                      href="shop-left-sidebar.html"
+                      primary={false}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

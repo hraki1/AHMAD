@@ -5,6 +5,7 @@ import React from "react";
 import womenImg from "../../assets/images/collection/demo1-ct-img1.jpg";
 import menImg from "../../assets/images/collection/demo1-ct-img2.jpg";
 import kidsImg from "../../assets/images/collection/demo1-ct-img3.jpg";
+import { Link } from "react-router-dom";
 
 export default function CollectionBanner() {
   return (
@@ -14,7 +15,7 @@ export default function CollectionBanner() {
           <div className="row sp-row">
             <div className="col-12 col-sm-6 col-md-6 col-lg-6 collection-banner-item">
               <div className="collection-item sp-col">
-                <a href="shop-left-sidebar.html" className="zoom-scal">
+                <a href="/ShopGrid" className="zoom-scal">
                   <div className="img">
                     <img
                       className="blur-up lazyload"
@@ -31,7 +32,7 @@ export default function CollectionBanner() {
                       <div className="mb-2 sub-banner">Trending Now</div>
                       <div className="title-banner">Women Wear</div>
                       <span className="btn btn-outline-secondary btn-md">
-                        Shop Now
+                        <Link to="/ShopGrid">Shop Now</Link>
                       </span>
                     </div>
                   </div>
@@ -42,7 +43,7 @@ export default function CollectionBanner() {
             <div className="col-12 col-sm-6 col-md-6 col-lg-6 collection-banner-item">
               {/* Men Wear */}
               <div className="collection-item sp-col mb-4 mb-sm-4 mb-md-4 mb-lg-4">
-                <a href="shop-left-sidebar.html" className="zoom-scal">
+                <a href="/ShopGrid" className="zoom-scal">
                   <div className="img">
                     <img
                       className="blur-up lazyload"
@@ -61,7 +62,7 @@ export default function CollectionBanner() {
                         Tailor-made with passion
                       </div>
                       <span className="btn btn-outline-secondary btn-md">
-                        Shop Now
+                        <Link to="/ShopGrid">Shop Now</Link>
                       </span>
                     </div>
                   </div>
@@ -70,7 +71,7 @@ export default function CollectionBanner() {
 
               {/* Kids Wear */}
               <div className="collection-item sp-col">
-                <a href="shop-left-sidebar.html" className="zoom-scal">
+                <a href="/ShopGrid" className="zoom-scal">
                   <div className="img">
                     <img
                       className="blur-up lazyload"
@@ -89,7 +90,7 @@ export default function CollectionBanner() {
                       </div>
                       <div className="title-banner">Kids Wear</div>
                       <span className="btn btn-outline-secondary btn-md">
-                        Shop Now
+                        <Link to="/ShopGrid">Shop Now</Link>
                       </span>
                     </div>
                   </div>

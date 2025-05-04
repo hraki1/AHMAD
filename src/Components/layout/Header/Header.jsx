@@ -1,13 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
-/* ==== Imports – Images ==== */
+import MiniCart from "../../../Pages/Cart/MiniCart";
 import logoSarah from "../../../assets/images/2.png";
 import bannerMenu from "../../../assets/images/megamenu/banner-menu.jpg";
-import product1Img from "../../../assets/images/products/product1-120x170.jpg";
-import product2Img from "../../../assets/images/products/product2-120x170.jpg";
-import product3Img from "../../../assets/images/products/product3-120x170.jpg";
 import AccountMenu from "./AccountMenu";
+import imageCart1 from "../../../assets/images/products/product1-120x170.jpg";
+import imageCart2 from "../../../assets/images/products/product2-120x170.jpg";
 
 const NavItem = ({ title, links }) => (
   <li className="dropdown head-drop-down">
@@ -104,134 +102,147 @@ const ShopMenu = () => (
   </li>
 );
 
-export default function Header() {
+const HeaderCart = ({
+  cartItems,
+  handleQuantityChange,
+  handleRemove,
+  handleClose,
+}) => (
+  <div className="header-cart iconset" title="Cart">
+    <Link
+      to="#"
+      className="header-cart btn-minicart clr-none"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#minicart-drawer"
+    >
+      <i
+        className="fa-solid fa-cart-shopping fa-xl"
+        style={{ color: "#000000" }}
+      />
+      <span className="cart-count">{cartItems.length}</span>
+    </Link>
+    <MiniCart
+      items={cartItems}
+      onQuantityChange={handleQuantityChange}
+      onRemove={handleRemove}
+      onClose={handleClose}
+    />
+  </div>
+);
+
+const Header = () => {
+  const [cartItems, setCartItems] = useState([
+    {
+      name: "Women Sandals",
+      variant: "Black",
+      size: "XL",
+      price: 54.0,
+      quantity: 1,
+      img: imageCart1,
+      link: "product-layout1.html",
+    },
+    {
+      name: "Sleeve Round T-Shirt",
+      variant: "Yellow",
+      size: "M",
+      price: 99.0,
+      oldPrice: 114.0,
+      quantity: 1,
+      img: imageCart2,
+      link: "product-layout1.html",
+    },
+  ]);
+
+  const handleQuantityChange = (index, newQty) => {
+    const updatedItems = [...cartItems];
+    updatedItems[index].quantity = newQty;
+    setCartItems(updatedItems);
+  };
+
+  const handleRemove = (index) => {
+    const updatedItems = cartItems.filter((_, i) => i !== index);
+    setCartItems(updatedItems);
+  };
+
   return (
-    <>
-      <header className="header d-flex align-items-center header-1 header-fixed">
-        <div className="container">
-          <div className="row">
-            {/* Logo */}
-            <div className="logo col-5 col-sm-3 col-md-3 col-lg-2 align-self-center">
-              <a className="logoImg" href="index.html">
-                <img src={logoSarah} alt="logo Sarah" />
-              </a>
-            </div>
-            {/* Menu */}
-            <div className="col-1 col-sm-1 col-md-1 col-lg-8 align-self-center d-menu-col cl-dis">
-              <nav className="navigation" id="AccessibleNav">
-                <ul id="siteNav" className="site-nav medium center">
-                  <NavItem
-                    title="Home"
-                    links={[
-                      { to: "index.html", label: "Home" },
-                      { href: "index2-footwear.html", label: "Footwear" },
-                      { href: "index4-electronic.html", label: "Electronic" },
-                    ]}
-                  />
-                  <ShopMenu />
-                  <NavItem
-                    title="Pages"
-                    links={[
-                      { to: "/about-us", label: "About Us" },
-                      { to: "/contact-us", label: "Contact Us" },
-                      { to: "/my-account", label: "My Account" },
-                      { to: "/portfolio-page", label: "Portfolio Page" },
-                      { to: "/faqs-page", label: "FAQs Page" },
-                      { to: "/cms-page", label: "CMS Page" },
-                      { to: "/coming-soon", label: "Coming Soon" },
-                    ]}
-                  />
-
-                  <NavItem
-                    title="Blog"
-                    links={[
-                      { href: "blog-grid.html", label: "Grid View" },
-                      { href: "blog-list.html", label: "List View" },
-                      { href: "blog-grid-sidebar.html", label: "Left Sidebar" },
-                      {
-                        href: "blog-list-sidebar.html",
-                        label: "Right Sidebar",
-                      },
-                      { href: "blog-masonry.html", label: "Masonry Grid" },
-                      { href: "blog-details.html", label: "Blog Details" },
-                    ]}
-                  />
-                </ul>
-              </nav>
-            </div>
-            {/* Right Icon */}
-            <div className="col-7 col-sm-9 col-md-9 col-lg-2 align-self-center icons-col text-right">
-              {/* Search */}
-              <div className="search-parent iconset">
-                <div className="site-search" title="Search">
-                  <a
-                    href="#;"
-                    className="search-icon"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#search-drawer"
-                  >
-                    <i
-                      className="fa fa-magnifying-glass fa-xl"
-                      style={{ color: "#000000" }}
-                      aria-hidden="true"
-                    />
-                  </a>
-                </div>
-                {/* Search Drawer */}
-                <div
-                  className="search-drawer offcanvas offcanvas-top"
-                  tabIndex={-1}
-                  id="search-drawer"
-                >
-                  {/* محتوى السحب للبحث */}
-                </div>
-              </div>
-
-              {/* Account Menu */}
-              <AccountMenu />
-
-              {/* Wishlist */}
-              <div className="wishlist-link iconset" title="Wishlist">
-                <a href="wishlist-style1.html">
+    <header className="header d-flex align-items-center header-1 header-fixed">
+      <div className="container">
+        <div className="row">
+          <div className="logo col-5 col-sm-3 col-md-3 col-lg-2 align-self-center">
+            <Link className="logoImg" to="/">
+              <img src={logoSarah} alt="logo Sarah" />
+            </Link>
+          </div>
+          <div className="col-1 col-sm-1 col-md-1 col-lg-8 align-self-center d-menu-col cl-dis">
+            <nav className="navigation" id="AccessibleNav">
+              <ul id="siteNav" className="site-nav medium center">
+                <NavItem title="Home" links={[{ to: "/", label: "Home" }]} />
+                <ShopMenu />
+                <NavItem
+                  title="Pages"
+                  links={[
+                    { to: "/AboutUs", label: "About Us" },
+                    { to: "/ContactUs", label: "Contact Us" },
+                    { to: "/MYAccount", label: "My Account" },
+                    { to: "/Portfolio", label: "Portfolio Page" },
+                    { to: "/FAQ", label: "FAQs Page" },
+                    { to: "/CMS", label: "CMS Page" },
+                  ]}
+                />
+                <NavItem
+                  title="Blog"
+                  links={[
+                    { to: "ShopGrid", label: "ShopGrid" },
+                    { to: "Product", label: "Product" },
+                    { to: "Collection", label: "Collection" },
+                    { to: "Wishlist", label: "Wishlist" },
+                  ]}
+                />
+              </ul>
+            </nav>
+          </div>
+          <div className="col-7 col-sm-9 col-md-9 col-lg-2 align-self-center icons-col text-right">
+            <div className="search-parent iconset">
+              <div className="site-search" title="Search">
+                <Link to="" className="search-icon">
                   <i
-                    className="fas fa-heart fa-xl"
+                    className="fa fa-magnifying-glass fa-xl"
                     style={{ color: "#000000" }}
+                    aria-hidden="true"
                   />
-                  <span className="wishlist-count">0</span>
-                </a>
+                </Link>
               </div>
-
-              {/* Minicart */}
-              <div className="header-cart iconset" title="Cart">
-                <a
-                  href="#;"
-                  className="header-cart btn-minicart clr-none"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#minicart-drawer"
-                >
-                  <i
-                    className="fa-solid fa-cart-shopping fa-xl"
-                    style={{ color: "#000000" }}
-                  />
-                  <span className="cart-count">2</span>
-                </a>
-              </div>
-
-              {/* Mobile Toggle */}
-              <button
-                type="button"
-                className="iconset pe-0 menu-icon js-mobile-nav-toggle mobile-nav--open d-lg-none"
-                title="Menu"
-              >
+            </div>
+            <AccountMenu />
+            <div className="wishlist-link iconset" title="Wishlist">
+              <Link to="/Wishlist">
                 <i
-                  className="fa-solid fa-bars fa-xl"
+                  className="fas fa-heart fa-xl"
                   style={{ color: "#000000" }}
                 />
-              </button>
+                <span className="wishlist-count">0</span>
+              </Link>
             </div>
+            <HeaderCart
+              cartItems={cartItems}
+              handleQuantityChange={handleQuantityChange}
+              handleRemove={handleRemove}
+            />
+            <button
+              type="button"
+              className="iconset pe-0 menu-icon js-mobile-nav-toggle mobile-nav--open d-lg-none"
+              title="Menu"
+            >
+              <i
+                className="fa-solid fa-bars fa-xl"
+                style={{ color: "#000000" }}
+              />
+            </button>
           </div>
         </div>
-      </header>
-    </>
+      </div>
+    </header>
   );
-}
+};
+
+export default Header;

@@ -17,6 +17,8 @@ import Portfolio from "./Pages/Portfolio/Index.jsx";
 import Product from "./Pages/Product/Index.jsx";
 import ShopGrid from "./Pages/ShopGrid/Index.jsx";
 import Wishlist from "./Pages/Wishlist/Index.jsx";
+import Login from "./Pages/LogIn/Index.jsx";
+import Sign from "./Pages/SignUp/Index.jsx";
 
 function App() {
   return (
@@ -27,19 +29,20 @@ function App() {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="index.html" element={<HomePage />} />
-          <Route path="/about-us" element={<AboutUsPage />} />
+          <Route path="/AboutUs" element={<AboutUsPage />} />
           <Route path="/Cart" element={<CartPage />} />
           <Route path="/CheckOut" element={<CheckOut />} />
-          <Route path="/Cms" element={<Cms />} />
+          <Route path="/CMS" element={<Cms />} />
           <Route path="/Collection" element={<Collection />} />
-          <Route path="/Contact" element={<Contact />} />
+          <Route path="/ContactUs" element={<Contact />} />
           <Route path="/FAQ" element={<FAQ />} />
-          <Route path="/Account" element={<Account />} />
+          <Route path="/MYAccount" element={<Account />} />
           <Route path="/Portfolio" element={<Portfolio />} />
           <Route path="/Product" element={<Product />} />
           <Route path="/ShopGrid" element={<ShopGrid />} />
           <Route path="/Wishlist" element={<Wishlist />} />
+          <Route path="/SignUp" element={<Sign />} />
+          <Route path="/LogIn" element={<Login />} />
         </Routes>
         <ScrollTop />
         <Footer />

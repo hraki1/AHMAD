@@ -57,7 +57,7 @@ export default function LeftSlidebar() {
             </div>
           )}
         </div>
-        {/* <!--End Filter By--> */}
+        {/* <!--End Filter By Normal Screen--> */}
         <SidebarCategories />
         <PriceFilter />
         <ColorFilter />
