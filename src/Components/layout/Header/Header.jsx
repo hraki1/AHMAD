@@ -6,6 +6,7 @@ import bannerMenu from "../../../assets/images/megamenu/banner-menu.jpg";
 import AccountMenu from "./AccountMenu";
 import imageCart1 from "../../../assets/images/products/product1-120x170.jpg";
 import imageCart2 from "../../../assets/images/products/product2-120x170.jpg";
+import MobileMenu from "../Mobile/MobileMenu";
 
 const NavItem = ({ title, links }) => (
   <li className="dropdown head-drop-down">
@@ -131,6 +132,12 @@ const HeaderCart = ({
 );
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
   const [cartItems, setCartItems] = useState([
     {
       name: "Women Sandals",
@@ -232,6 +239,7 @@ const Header = () => {
               type="button"
               className="iconset pe-0 menu-icon js-mobile-nav-toggle mobile-nav--open d-lg-none"
               title="Menu"
+              onClick={toggleMenu} //
             >
               <i
                 className="fa-solid fa-bars fa-xl"
@@ -241,6 +249,7 @@ const Header = () => {
           </div>
         </div>
       </div>
+      <MobileMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
     </header>
   );
 };

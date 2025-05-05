@@ -1,13 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 
-const MobileMenu = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
+const MobileMenu = ({ isMenuOpen, toggleMenu }) => {
   return (
     <div
-      className={`mobile-nav-wrapper ${isMenuOpen ? "open" : ""}`}
+      className={`mobile-nav-wrapper ${isMenuOpen ? "active" : ""}`}
       role="navigation"
     >
       <div className="closemobileMenu" onClick={toggleMenu}>
