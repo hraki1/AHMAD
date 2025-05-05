@@ -8,6 +8,7 @@ import imgGray from "../../assets/images/products/product1-2.jpg";
 import imgOrange from "../../assets/images/products/product1-3.jpg";
 
 const ProductGrid = () => {
+  // Data
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -67,7 +68,7 @@ const ProductGrid = () => {
     },
   ]);
 
-  // دالة لتغيير الصورة عند اختيار اللون
+  //  To Change Color
   const handleColorChange = (productId, imgSrc) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
@@ -78,6 +79,7 @@ const ProductGrid = () => {
     );
   };
 
+  // Function To Add In Cart
   const addToCart = (product) => {
     const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
 
@@ -93,8 +95,8 @@ const ProductGrid = () => {
       ...existingCart,
       {
         ...product,
-        price: numericPrice, // أضف السعر كرقم
-        image: product.imageUrl, // أضف المفتاح image هنا ليتعرف عليه الكارت
+        price: numericPrice, //
+        image: product.imageUrl, // to know image
         quantity: 1,
       },
     ];

@@ -68,7 +68,7 @@ const CartForms = ({ setDiscount, setCouponApplied }) => {
           </div>
 
           {/* Shipping Calculator Section */}
-          <div className="col-12 mb-12 cart-col">
+          <div className="col-12 mb-12 cart-col d-none">
             <div id="shipping-calculator" className="mt-4">
               <h5>Get shipping estimates</h5>
               <form

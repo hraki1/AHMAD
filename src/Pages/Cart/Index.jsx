@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import Cart from "./Cart";
 import CartForms from "./CartForms";
@@ -31,11 +31,36 @@ export default function Index() {
     },
   ]);
 
+  // Load discount from localStorage if available
+  useEffect(() => {
+    const storedDiscount =
+      parseFloat(localStorage.getItem("cartDiscount")) || 0;
+    if (storedDiscount > 0) {
+      setDiscount(storedDiscount);
+    }
+  }, []); // Runs only once when the component is mounted
+
+  // Save discount to localStorage whenever it changes
+  useEffect(() => {
+    if (discount > 0) {
+      // Only save when discount is greater than 0
+      console.log("Saving discount to localStorage:", discount); // Log the value being saved
+      localStorage.setItem("cartDiscount", discount.toString());
+    }
+  }, [discount]); // Runs every time discount changes
+
   const calculateTotal = () => {
-    return cartItems.reduce(
+    const subtotal = cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     );
+    // Apply discount
+    const totalWithDiscount = subtotal - (subtotal * discount) / 100;
+    return totalWithDiscount;
+  };
+  const removeDiscount = () => {
+    setDiscount(0); // Reset discount to 0
+    localStorage.setItem("cartDiscount", "0"); // Save to localStorage
   };
 
   return (
@@ -57,6 +82,7 @@ export default function Index() {
               discount={(calculateTotal() * discount) / 100}
               tax={10}
               shipping={0}
+              setDiscount={setDiscount} //
             />
           </div>
         </div>
@@ -71,7 +97,6 @@ export default function Index() {
         </div>
       </div>
       <ProductItem />
-      {/*  */}
       <MiniCart
         items={[
           {
@@ -101,4 +126,3 @@ export default function Index() {
     </div>
   );
 }
-//

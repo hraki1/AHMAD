@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import Button from "../../Components/common/Button"; // Adjust the import path as necessary
 
-export default function Checkout() {
+export default function Checkout({ country, setCountry }) {
   const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
-    address1: "",
-    address2: "",
-    postcode: "",
-    country: "0",
-    state: "0",
-    city: "0",
-    billingAddressSame: false,
+    firstName: "",
+    lastName: "",
+    addressOne: "",
+    addressTwo: "",
+    postCode: "",
+    country: country,
+    city: "",
+    savingAddress: false,
+    deliveryMethod: "",
     cardName: "",
+    cardType: "",
     cardNumber: "",
     cvv: "",
     expDate: "",
@@ -20,17 +21,32 @@ export default function Checkout() {
     couponCode: "",
   });
 
+  // Generic handleChange for all inputs
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    const { name, type, value, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  // Handle Save button click: update country in parent component
+  const handleSaveCountry = (e) => {
     e.preventDefault();
+    setCountry(formData.country);
     console.log(formData);
+    const tax = calculateTax();
+    console.log(`Calculated Tax: ${tax}`);
+  };
+
+  // Optional example tax calculation based on country
+  const taxRate = 0.16;
+  const calculateTax = () => {
+    if (formData.country === "JO") {
+      const taxAmount = 100 * taxRate;
+      return taxAmount;
+    }
+    return 0;
   };
 
   return (
@@ -39,7 +55,7 @@ export default function Checkout() {
         className="checkout-form"
         method="post"
         action="#"
-        onSubmit={handleSubmit}
+        onSubmit={handleSaveCountry} // Save country on form submit
       >
         <div className="row">
           <div className="col-lg-6 col-md-6 col-sm-12">
@@ -54,8 +70,8 @@ export default function Checkout() {
                         First Name <span className="required">*</span>
                       </label>
                       <input
-                        name="firstname"
-                        value={formData.firstname}
+                        name="firstName"
+                        value={formData.firstName}
                         id="firstname"
                         type="text"
                         required
@@ -68,8 +84,8 @@ export default function Checkout() {
                         Last Name <span className="required">*</span>
                       </label>
                       <input
-                        name="lastname"
-                        value={formData.lastname}
+                        name="lastName"
+                        value={formData.lastName}
                         id="lastname"
                         type="text"
                         required
@@ -78,14 +94,15 @@ export default function Checkout() {
                       />
                     </div>
                   </div>
+
                   <div className="row">
                     <div className="form-group col-12">
                       <label htmlFor="address-1" className="form-label">
                         Address <span className="required">*</span>
                       </label>
                       <input
-                        name="address1"
-                        value={formData.address1}
+                        name="addressOne"
+                        value={formData.addressOne}
                         id="address-1"
                         type="text"
                         required
@@ -96,8 +113,8 @@ export default function Checkout() {
                     </div>
                     <div className="form-group col-12">
                       <input
-                        name="address2"
-                        value={formData.address2}
+                        name="addressTwo"
+                        value={formData.addressTwo}
                         id="address-2"
                         type="text"
                         placeholder="Apartment, suite, unit etc. (optional)"
@@ -106,14 +123,15 @@ export default function Checkout() {
                       />
                     </div>
                   </div>
+
                   <div className="row">
                     <div className="form-group col-12 col-sm-6">
                       <label htmlFor="postcode" className="form-label">
                         Postcode / ZIP <span className="required">*</span>
                       </label>
                       <input
-                        name="postcode"
-                        value={formData.postcode}
+                        name="postCode"
+                        value={formData.postCode}
                         id="postcode"
                         type="text"
                         className="form-control"
@@ -125,19 +143,22 @@ export default function Checkout() {
                         Country <span className="required">*</span>
                       </label>
                       <select
+                        className="form-control"
                         id="address_country1"
                         name="country"
                         value={formData.country}
-                        className="form-control"
                         onChange={handleChange}
                       >
-                        <option value="0">Select a country</option>
+                        <option value="JO">Jordan</option>
+                        <option value="Saudi">Saudi</option>
+                        <option value="USA">America</option>
                         {/* Add other countries here */}
                       </select>
                     </div>
                   </div>
+
                   <div className="row">
-                    <div className="form-group col-12 col-sm-6">
+                    <div className="form-group col-12 col-sm-6 d-none">
                       <label htmlFor="address_State" className="form-label">
                         State <span className="required">*</span>
                       </label>
@@ -148,9 +169,9 @@ export default function Checkout() {
                         className="form-control"
                         onChange={handleChange}
                       >
-                        <option value="0">Select a state</option>
-                        <option value="AL">Alabama</option>
-                        {/* Add other states here */}
+                        <option value="JERASH">Jerash</option>
+                        <option value="Amman">Amman</option>
+                        <option value="Riydeh">Riydeh</option>
                       </select>
                     </div>
                     <div className="form-group col-12 col-sm-6">
@@ -164,20 +185,21 @@ export default function Checkout() {
                         className="form-control"
                         onChange={handleChange}
                       >
-                        <option value="0">Select a city</option>
-                        <option value="AR">Arkansas</option>
-                        {/* Add other cities here */}
+                        <option value="JERASH">Jerash</option>
+                        <option value="Amman">Amman</option>
+                        <option value="Riydeh">Riydeh</option>
                       </select>
                     </div>
                   </div>
+
                   <div className="row">
                     <div className="form-group col-md-12">
                       <div className="checkout-tearm customCheckbox">
                         <input
                           id="checkout_tearm"
-                          name="billingAddressSame"
+                          name="savingAddress"
                           type="checkbox"
-                          checked={formData.billingAddressSame}
+                          checked={formData.savingAddress}
                           onChange={handleChange}
                         />
                         <label htmlFor="checkout_tearm">
@@ -188,123 +210,10 @@ export default function Checkout() {
                   </div>
                 </fieldset>
               </div>
+
+              <Button className="mt-2" label="Save" type="submit" primary />
             </div>
             {/* End Shipping Address */}
-
-            {/* Billing Address */}
-            <div className="block mb-3 billing-address mb-4">
-              <div className="block-content">
-                <div className="main-title-check mb-3">Billing Address</div>
-                <fieldset>
-                  <div className="row">
-                    <div className="form-group col-md-12">
-                      <div className="checkout-tearm customCheckbox">
-                        <input
-                          id="add_tearm"
-                          name="billingAddressSame"
-                          type="checkbox"
-                          checked={formData.billingAddressSame}
-                          onChange={handleChange}
-                        />
-                        <label htmlFor="add_tearm">
-                          The same as shipping address
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="form-group col-12">
-                      <label htmlFor="address-11" className="form-label">
-                        Address <span className="required">*</span>
-                      </label>
-                      <input
-                        name="address11"
-                        id="address-11"
-                        type="text"
-                        required
-                        placeholder="Street address"
-                        className="form-control"
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="form-group col-12">
-                      <input
-                        name="address12"
-                        id="address-12"
-                        type="text"
-                        placeholder="Apartment, suite, unit etc. (optional)"
-                        className="form-control"
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="form-group col-12 col-sm-6">
-                      <label htmlFor="postcode2" className="form-label">
-                        Postcode / ZIP <span className="required">*</span>
-                      </label>
-                      <input
-                        name="postcode2"
-                        id="postcode2"
-                        type="text"
-                        className="form-control"
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="form-group col-12 col-sm-6">
-                      <label htmlFor="address_country2" className="form-label">
-                        Country <span className="required">*</span>
-                      </label>
-                      <select
-                        id="address_country2"
-                        name="country1"
-                        value={formData.country}
-                        className="form-control"
-                        onChange={handleChange}
-                      >
-                        <option value="0">Select a country</option>
-                        {/* Add other countries here */}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="form-group col-12 col-sm-6 mb-sm-0">
-                      <label htmlFor="address_State1" className="form-label">
-                        State <span className="required">*</span>
-                      </label>
-                      <select
-                        id="address_State1"
-                        name="state1"
-                        value={formData.state}
-                        className="form-control"
-                        onChange={handleChange}
-                      >
-                        <option value="0">Select a state</option>
-                        <option value="AL">Alabama</option>
-                        {/* Add other states here */}
-                      </select>
-                    </div>
-                    <div className="form-group col-12 col-sm-6 mb-0">
-                      <label htmlFor="address_province2" className="form-label">
-                        Town / City <span className="required">*</span>
-                      </label>
-                      <select
-                        id="address_province2"
-                        name="city1"
-                        value={formData.city}
-                        className="form-control"
-                        onChange={handleChange}
-                      >
-                        <option value="0">Select a city</option>
-                        <option value="AR">Arkansas</option>
-                        {/* Add other cities here */}
-                      </select>
-                    </div>
-                  </div>
-                </fieldset>
-              </div>
-            </div>
-            {/* End Billing Address */}
           </div>
 
           <div className="col-lg-6 col-md-6 col-sm-12">
@@ -366,108 +275,8 @@ export default function Checkout() {
                 <h3 className="main-title-check mb-3">Payment Methods</h3>
                 <div className="payment-accordion">
                   <div className="accordion" id="accordionExample">
-                    {/* Direct Bank Transfer */}
-                    <div className="accordion-item card mb-2">
-                      <div className="card-header" id="headingOne">
-                        <button
-                          className="card-link d-flex align-items-center justify-content-between"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseOne"
-                          aria-expanded="false"
-                          aria-controls="collapseOne"
-                        >
-                          Direct Bank Transfer
-                          <i className="fa-solid fa-bars"></i>
-                        </button>
-                      </div>
-                      <div
-                        id="collapseOne"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingOne"
-                        data-bs-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          <div className="desc-content">
-                            Make your payment directly into our bank account.
-                            Please use your Order ID as the payment reference.
-                            Your order won't be shipped until the funds have
-                            cleared in our account.
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Cheque Payment */}
-                    <div className="accordion-item card mb-2">
-                      <div className="card-header" id="headingTwo">
-                        <button
-                          className="card-link d-flex align-items-center justify-content-between"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseTwo"
-                          aria-expanded="false"
-                          aria-controls="collapseTwo"
-                        >
-                          Cheque Payment
-                          <i className="fa-solid fa-bars"></i>
-                        </button>
-                      </div>
-                      <div
-                        id="collapseTwo"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingTwo"
-                        data-bs-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          <div className="desc-content">
-                            Please send your cheque to Store Name, Store Street,
-                            Store Town, Store State / County, Store Postcode.
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* PayPal */}
-                    <div className="accordion-item card mb-2">
-                      <div className="card-header" id="headingThree">
-                        <button
-                          className="card-link d-flex align-items-center justify-content-between"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseThree"
-                          aria-expanded="false"
-                          aria-controls="collapseThree"
-                        >
-                          PayPal
-                          <i className="fa-solid fa-bars"></i>
-                        </button>
-                      </div>
-                      <div
-                        id="collapseThree"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingThree"
-                        data-bs-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          <div className="desc-content">
-                            Pay via PayPal you can pay with your credit card if
-                            you don't have a PayPal account.
-                          </div>
-                          <div className="input-group mb-0 d-flex">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="paypal@example.com"
-                              required
-                            />
-                            <button className="btn btn-primary" type="submit">
-                              Pay 99.00 USD
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                     {/* Payment Information */}
-                    <div className="accordion-item card mb-0">
+                    <div className="accordion-item card mb-4">
                       <div className="card-header" id="headingFour">
                         <button
                           className="card-link d-flex align-items-center justify-content-between"
@@ -512,13 +321,20 @@ export default function Checkout() {
                                 <select
                                   name="cardType"
                                   className="form-control"
+                                  value={formData.cardType}
                                   onChange={handleChange}
                                 >
                                   <option value="">Please Select</option>
-                                  <option value="1">American Express</option>
-                                  <option value="2">Visa Card</option>
-                                  <option value="3">Master Card</option>
-                                  <option value="4">Discover Card</option>
+                                  <option value="american_express">
+                                    American Express
+                                  </option>
+                                  <option value="visa">Visa Card</option>
+                                  <option value="mastercard">
+                                    Master Card
+                                  </option>
+                                  <option value="discover">
+                                    Discover Card
+                                  </option>
                                 </select>
                               </div>
                             </div>

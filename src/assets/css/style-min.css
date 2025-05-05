@@ -10316,3 +10316,17 @@ textarea:-ms-input-placeholder {
 .mobile-nav-wrapper.open {
   display: block;
 }
+
+.btn-remove-dis {
+  border: none;
+  background: none;
+  padding-left: 0;
+  margin-left: 0;
+  color: #007d7d;
+  transition: 0.3s ease-in;
+}
+.btn-remove-dis:hover {
+  font-size: 14px;
+  color: #000082;
+  font-weight: 600;
+}

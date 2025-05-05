@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import imageCart1 from "../../assets/images/products/product1-120x170.jpg";
-import imageCart2 from "../../assets/images/products/product2-120x170.jpg";
+import { Link } from "react-router-dom";
 
-export default function Cart({ discount }) {
+export default function Cart({ cartItems, setCartItems }) {
+  const subtotal = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
   // Initialize cart items with sample data
-  const [cartItems, setCartItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const storedItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     setCartItems(storedItems);
-  }, []);
+    setIsLoading(false); // انتهى التحميل
+  }, [setCartItems]);
+  if (isLoading) {
+    return <p>Loading cart...</p>; // أو يمكن تركها فارغة أو وضع Spinner
+  }
 
   // Calculate total price
   const calculateTotal = () => {
@@ -20,34 +27,29 @@ export default function Cart({ discount }) {
 
   const totalPrice = calculateTotal();
 
-  const calculateDiscountedTotal = () => {
-    const total = calculateTotal();
-    return total - (total * discount) / 100;
-  };
-
   // Increase quantity of an item
   const increaseQuantity = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
+    const updatedItems = cartItems.map((item) =>
+      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
     );
+    setCartItems(updatedItems);
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems)); // حفظ التحديث
   };
 
   // Decrease quantity of an item
   const decreaseQuantity = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
+    const updatedItems = cartItems.map((item) =>
+      item.id === id && item.quantity > 1
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
     );
+    setCartItems(updatedItems);
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems)); // حفظ التحديث
   };
   const removeItem = (id) => {
-    const updated = cartItems.filter((item) => item.id !== id);
-    setCartItems(updated);
-    localStorage.setItem("cartItems", JSON.stringify(updated));
+    const updatedItems = cartItems.filter((item) => item.id !== id);
+    setCartItems(updatedItems);
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems)); // حفظ التحديث
   };
 
   return (
@@ -165,19 +167,20 @@ export default function Cart({ discount }) {
           <tfoot>
             <tr>
               <td colSpan="3" className="text-start">
-                <a
-                  href="#"
+                <Link
+                  to="/ShopGrid"
                   className="btn btn-outline-secondary btn-sm cart-continue"
                 >
+                  {" "}
                   <i className="icon anm anm-angle-left-r me-2 d-none"></i>{" "}
                   Continue shopping
-                </a>
+                </Link>
               </td>
               <td colSpan="3" className="text-end">
                 <button
                   type="submit"
                   name="clear"
-                  className="btn btn-outline-secondary btn-sm small-hide"
+                  className="btn btn-secondary btn-sm small-hide d-none"
                 >
                   <i className="icon anm anm-times-r me-2 d-none"></i> Clear
                   Shopping Cart
@@ -185,7 +188,7 @@ export default function Cart({ discount }) {
                 <button
                   type="submit"
                   name="update"
-                  className="btn btn-secondary btn-sm cart-continue ms-2"
+                  className="btn btn-secondary btn-sm cart-continue ms-2 d-none"
                 >
                   <i className="icon anm anm-sync-ar me-2 d-none"></i> Update
                   Cart
@@ -195,33 +198,6 @@ export default function Cart({ discount }) {
           </tfoot>
         </table>
       </form>
-
-      {/* Display total */}
-      <div className="cart-total mt-4">
-        <h4>Cart Summary</h4>
-        <div>
-          <p>
-            Subtotal: <strong>${calculateTotal().toFixed(2)}</strong>
-          </p>
-
-          {discount > 0 ? (
-            <>
-              <p>
-                Discount ({discount}%):{" "}
-                <strong>
-                  -${((calculateTotal() * discount) / 100).toFixed(2)}
-                </strong>
-              </p>
-              <p className="text-success">
-                Total After Discount:{" "}
-                <strong>${calculateDiscountedTotal().toFixed(2)}</strong>
-              </p>
-            </>
-          ) : (
-            ""
-          )}
-        </div>
-      </div>
     </>
   );
 }
