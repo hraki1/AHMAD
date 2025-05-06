@@ -11,56 +11,56 @@ import img5 from "../../assets/images/collection/sub-collection9.jpg";
 import img6 from "../../assets/images/collection/sub-collection2.jpg";
 import img7 from "../../assets/images/collection/sub-collection4.jpg";
 
-import product1 from "../../assets/images/products/product1.jpg";
-import product1_1 from "../../assets/images/products/product1-1.jpg";
-import product1_2 from "../../assets/images/products/product1-2.jpg";
-import product1_3 from "../../assets/images/products/product1-3.jpg";
+// import product1 from "../../assets/images/products/product1.jpg";
+// import product1_1 from "../../assets/images/products/product1-1.jpg";
+// import product1_2 from "../../assets/images/products/product1-2.jpg";
+// import product1_3 from "../../assets/images/products/product1-3.jpg";
 
-import product2 from "../../assets/images/products/product2.jpg";
-import product2_1 from "../../assets/images/products/product2-1.jpg";
-import product2_2 from "../../assets/images/products/product2-2.jpg";
-import product2_3 from "../../assets/images/products/product2-3.jpg";
-import product2_4 from "../../assets/images/products/product2-4.jpg";
-import product2_5 from "../../assets/images/products/product2-5.jpg";
+// import product2 from "../../assets/images/products/product2.jpg";
+// import product2_1 from "../../assets/images/products/product2-1.jpg";
+// import product2_2 from "../../assets/images/products/product2-2.jpg";
+// import product2_3 from "../../assets/images/products/product2-3.jpg";
+// import product2_4 from "../../assets/images/products/product2-4.jpg";
+// import product2_5 from "../../assets/images/products/product2-5.jpg";
 
-import product3 from "../../assets/images/products/product3.jpg";
-import product3_1 from "../../assets/images/products/product3-1.jpg";
+// import product3 from "../../assets/images/products/product3.jpg";
+// import product3_1 from "../../assets/images/products/product3-1.jpg";
 
-import product4 from "../../assets/images/products/product4.jpg";
-import product4_1 from "../../assets/images/products/product4-1.jpg";
+// import product4 from "../../assets/images/products/product4.jpg";
+// import product4_1 from "../../assets/images/products/product4-1.jpg";
 
-import product5 from "../../assets/images/products/product5.jpg";
-import product5_1 from "../../assets/images/products/product5-1.jpg";
+// import product5 from "../../assets/images/products/product5.jpg";
+// import product5_1 from "../../assets/images/products/product5-1.jpg";
 
-import product6 from "../../assets/images/products/product6.jpg";
-import product6_1 from "../../assets/images/products/product6-1.jpg";
+// import product6 from "../../assets/images/products/product6.jpg";
+// import product6_1 from "../../assets/images/products/product6-1.jpg";
 
-import product7 from "../../assets/images/products/product7.jpg";
-import product7_1 from "../../assets/images/products/product7-1.jpg";
+// import product7 from "../../assets/images/products/product7.jpg";
+// import product7_1 from "../../assets/images/products/product7-1.jpg";
 
-import product8 from "../../assets/images/products/product8.jpg";
-import product8_1 from "../../assets/images/products/product8-1.jpg";
+// import product8 from "../../assets/images/products/product8.jpg";
+// import product8_1 from "../../assets/images/products/product8-1.jpg";
 
-import product9 from "../../assets/images/products/product9.jpg";
-import product9_1 from "../../assets/images/products/product9-1.jpg";
+// import product9 from "../../assets/images/products/product9.jpg";
+// import product9_1 from "../../assets/images/products/product9-1.jpg";
 
-import product10 from "../../assets/images/products/product10.jpg";
-import product10_1 from "../../assets/images/products/product10-1.jpg";
+// import product10 from "../../assets/images/products/product10.jpg";
+// import product10_1 from "../../assets/images/products/product10-1.jpg";
 
-import product11 from "../../assets/images/products/product11.jpg";
-import product11_1 from "../../assets/images/products/product11-1.jpg";
+// import product11 from "../../assets/images/products/product11.jpg";
+// import product11_1 from "../../assets/images/products/product11-1.jpg";
 
-import product12 from "../../assets/images/products/product12.jpg";
-import product12_1 from "../../assets/images/products/product12-1.jpg";
+// import product12 from "../../assets/images/products/product12.jpg";
+// import product12_1 from "../../assets/images/products/product12-1.jpg";
 
-import product13 from "../../assets/images/products/product13.jpg";
-import product13_1 from "../../assets/images/products/product13-1.jpg";
+// import product13 from "../../assets/images/products/product13.jpg";
+// import product13_1 from "../../assets/images/products/product13-1.jpg";
 
-import product14 from "../../assets/images/products/product14.jpg";
-import product14_1 from "../../assets/images/products/product14-1.jpg";
+// import product14 from "../../assets/images/products/product14.jpg";
+// import product14_1 from "../../assets/images/products/product14-1.jpg";
 
-import product15 from "../../assets/images/products/product15.jpg";
-import product15_1 from "../../assets/images/products/product15-1.jpg";
+// import product15 from "../../assets/images/products/product15.jpg";
+// import product15_1 from "../../assets/images/products/product15-1.jpg";
 
 // slide show
 // Images
@@ -113,796 +113,796 @@ export const categoriesData = [
 ];
 
 // بيانات المنتجات على شكل مصفوفة لكل تاب
-export const productsData = {
-  bestsellers: [
-    {
-      id: 1,
-      primaryImg: product1,
-      hoverImg: product11_1,
-      name: "Oxford Cuban Shirt",
-      priceOld: 114,
-      price: 99,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      labels: [{ text: "Sale", className: "on-sale" }],
-      countdown: "2025/01/01",
-      variants: [
-        { src: product1, title: "Navy" },
-        { src: product1_1, title: "Green" },
-        { src: product1_2, title: "Gray" },
-        { src: product1_3, title: "Orange" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#quickshop-modal",
-          className: "addtocart quick-shop-modal",
-          modal: "#quickshop_modal",
-          title: "Quick Shop",
-          text: "Quick Shop",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 2,
-      primaryImg: product2,
-      hoverImg: product2_2,
-      name: "Cuff Beanie Cap",
-      price: 128,
-      reviewsCount: 3,
-      rating: 5,
-      href: "product-layout1.html",
-      variants: [
-        { src: product2, title: "Navy" },
-        { src: product2_1, title: "Green" },
-        { src: product2_2, title: "Gray" },
-        { src: product2_3, title: "Orange" },
-        { src: product2_4, title: "Yellow" },
-        { src: product2_5, title: "Blue" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#quickshop-modal",
-          className: "addtocart quick-shop-modal",
-          modal: "#quickshop_modal",
-          title: "Select Options",
-          text: "Select Options",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 3,
-      primaryImg: product3,
-      hoverImg: product3_1,
-      name: "Flannel Collar Shirt",
-      price: 99,
-      reviewsCount: 3,
-      rating: 3,
-      href: "product-layout1.html",
-      labels: [{ text: "New", className: "pr-label3" }],
-      variants: [
-        { className: "red", title: "red" },
-        { className: "orange", title: "orange" },
-        { className: "yellow", title: "yellow" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 4,
-      primaryImg: product4,
-      hoverImg: product4_1,
-      name: "Cotton Hooded Hoodie",
-      priceOld: 198,
-      price: 99,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      labels: [{ text: "50% Off", className: "on-sale" }],
-      availability: 75, // 75%
-      sold: 34,
-      available: 16,
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 5,
-      primaryImg: product5,
-      hoverImg: product5_1,
-      name: "Hooded Neck Hoodies",
-      price: 39,
-      reviewsCount: 3,
-      rating: 4.5,
-      href: "product-layout1.html",
-      labels: [{ text: "Hot", className: "pr-label2" }],
-      variants: [
-        { className: "black", title: "black" },
-        { className: "maroon", title: "maroon" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 6,
-      primaryImg: product6,
-      hoverImg: product6_1,
-      name: "Foldable Duffel Bag",
-      price: 299,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      labels: [{ text: "Sold out", className: "on-sale" }],
-      variants: [
-        { className: "gray", title: "gray" },
-        { className: "red", title: "red" },
-        { className: "orange", title: "orange" },
-        { className: "yellow", title: "yellow" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 7,
-      primaryImg: product7,
-      hoverImg: product7_1,
-      name: "High-Waisted Pant",
-      price: 139,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      labels: [{ text: "Best seller", className: "pr-label1" }],
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 8,
-      primaryImg: product8,
-      hoverImg: product8_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 0,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-  ],
-  newarrivals: [
-    // يمكنك وضع بيانات المنتجات الجديدة هنا بنفس البنية
-    {
-      id: 21,
-      primaryImg: product8,
-      hoverImg: product8_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 22,
-      primaryImg: product9,
-      hoverImg: product9_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 23,
-      primaryImg: product10,
-      hoverImg: product10_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 24,
-      primaryImg: product11,
-      hoverImg: product11_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 25,
-      primaryImg: product12,
-      hoverImg: product12_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 26,
-      primaryImg: product13,
-      hoverImg: product13_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 27,
-      primaryImg: product14,
-      hoverImg: product14_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 28,
-      primaryImg: product15,
-      hoverImg: product15_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    // ... المزيد من المنتجات الجديدة
-  ],
-  toprated: [
-    {
-      id: 1,
-      primaryImg: product1,
-      hoverImg: product11_1,
-      name: "Oxford Cuban Shirt",
-      priceOld: 114,
-      price: 99,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      labels: [{ text: "Sale", className: "on-sale" }],
-      countdown: "2025/01/01",
-      variants: [
-        { src: product1, title: "Navy" },
-        { src: product1_1, title: "Green" },
-        { src: product1_2, title: "Gray" },
-        { src: product1_3, title: "Orange" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#quickshop-modal",
-          className: "addtocart quick-shop-modal",
-          modal: "#quickshop_modal",
-          title: "Quick Shop",
-          text: "Quick Shop",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 2,
-      primaryImg: product2,
-      hoverImg: product2_2,
-      name: "Cuff Beanie Cap",
-      price: 128,
-      reviewsCount: 3,
-      rating: 5,
-      href: "product-layout1.html",
-      variants: [
-        { src: product2, title: "Navy" },
-        { src: product2_1, title: "Green" },
-        { src: product2_2, title: "Gray" },
-        { src: product2_3, title: "Orange" },
-        { src: product2_4, title: "Yellow" },
-        { src: product2_5, title: "Blue" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#quickshop-modal",
-          className: "addtocart quick-shop-modal",
-          modal: "#quickshop_modal",
-          title: "Select Options",
-          text: "Select Options",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 3,
-      primaryImg: product3,
-      hoverImg: product3_1,
-      name: "Flannel Collar Shirt",
-      price: 99,
-      reviewsCount: 3,
-      rating: 3,
-      href: "product-layout1.html",
-      labels: [{ text: "New", className: "pr-label3" }],
-      variants: [
-        { className: "red", title: "red" },
-        { className: "orange", title: "orange" },
-        { className: "yellow", title: "yellow" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 4,
-      primaryImg: product4,
-      hoverImg: product4_1,
-      name: "Cotton Hooded Hoodie",
-      priceOld: 198,
-      price: 99,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      labels: [{ text: "50% Off", className: "on-sale" }],
-      availability: 75, // 75%
-      sold: 34,
-      available: 16,
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 5,
-      primaryImg: product5,
-      hoverImg: product5_1,
-      name: "Hooded Neck Hoodies",
-      price: 39,
-      reviewsCount: 3,
-      rating: 4.5,
-      href: "product-layout1.html",
-      labels: [{ text: "Hot", className: "pr-label2" }],
-      variants: [
-        { className: "black", title: "black" },
-        { className: "maroon", title: "maroon" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 6,
-      primaryImg: product6,
-      hoverImg: product6_1,
-      name: "Foldable Duffel Bag",
-      price: 299,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      labels: [{ text: "Sold out", className: "on-sale" }],
-      variants: [
-        { className: "gray", title: "gray" },
-        { className: "red", title: "red" },
-        { className: "orange", title: "orange" },
-        { className: "yellow", title: "yellow" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 7,
-      primaryImg: product7,
-      hoverImg: product7_1,
-      name: "High-Waisted Pant",
-      price: 139,
-      reviewsCount: 3,
-      rating: 4,
-      href: "product-layout1.html",
-      labels: [{ text: "Best seller", className: "pr-label1" }],
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-    {
-      id: 8,
-      primaryImg: product8,
-      hoverImg: product8_1,
-      name: "Narror Neck Tie",
-      price: 134,
-      reviewsCount: 0,
-      rating: 4,
-      href: "product-layout1.html",
-      variants: [
-        { className: "black", title: "black" },
-        { className: "navy", title: "navy" },
-        { className: "darkgreen", title: "darkgreen" },
-      ],
-      buttonLinks: {
-        cart: {
-          href: "#addtocart-modal",
-          className: "addtocart add-to-cart-modal",
-          modal: "#addtocart_modal",
-          title: "Add to Cart",
-        },
-        quickView: {
-          href: "#quickview-modal",
-          className: "quickview quick-view-modal",
-          modal: "#quickview_modal",
-          title: "Quick View",
-        },
-        wishlist: { href: "wishlist-style2.html" },
-        compare: { href: "compare-style2.html" },
-      },
-    },
-  ],
-};
+// export const productsData = {
+//   bestsellers: [
+//     {
+//       id: 1,
+//       primaryImg: product1,
+//       hoverImg: product11_1,
+//       name: "Oxford Cuban Shirt",
+//       priceOld: 114,
+//       price: 99,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       labels: [{ text: "Sale", className: "on-sale" }],
+//       countdown: "2025/01/01",
+//       variants: [
+//         { src: product1, title: "Navy" },
+//         { src: product1_1, title: "Green" },
+//         { src: product1_2, title: "Gray" },
+//         { src: product1_3, title: "Orange" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#quickshop-modal",
+//           className: "addtocart quick-shop-modal",
+//           modal: "#quickshop_modal",
+//           title: "Quick Shop",
+//           text: "Quick Shop",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 2,
+//       primaryImg: product2,
+//       hoverImg: product2_2,
+//       name: "Cuff Beanie Cap",
+//       price: 128,
+//       reviewsCount: 3,
+//       rating: 5,
+//       href: "product-layout1.html",
+//       variants: [
+//         { src: product2, title: "Navy" },
+//         { src: product2_1, title: "Green" },
+//         { src: product2_2, title: "Gray" },
+//         { src: product2_3, title: "Orange" },
+//         { src: product2_4, title: "Yellow" },
+//         { src: product2_5, title: "Blue" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#quickshop-modal",
+//           className: "addtocart quick-shop-modal",
+//           modal: "#quickshop_modal",
+//           title: "Select Options",
+//           text: "Select Options",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 3,
+//       primaryImg: product3,
+//       hoverImg: product3_1,
+//       name: "Flannel Collar Shirt",
+//       price: 99,
+//       reviewsCount: 3,
+//       rating: 3,
+//       href: "product-layout1.html",
+//       labels: [{ text: "New", className: "pr-label3" }],
+//       variants: [
+//         { className: "red", title: "red" },
+//         { className: "orange", title: "orange" },
+//         { className: "yellow", title: "yellow" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 4,
+//       primaryImg: product4,
+//       hoverImg: product4_1,
+//       name: "Cotton Hooded Hoodie",
+//       priceOld: 198,
+//       price: 99,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       labels: [{ text: "50% Off", className: "on-sale" }],
+//       availability: 75, // 75%
+//       sold: 34,
+//       available: 16,
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 5,
+//       primaryImg: product5,
+//       hoverImg: product5_1,
+//       name: "Hooded Neck Hoodies",
+//       price: 39,
+//       reviewsCount: 3,
+//       rating: 4.5,
+//       href: "product-layout1.html",
+//       labels: [{ text: "Hot", className: "pr-label2" }],
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "maroon", title: "maroon" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 6,
+//       primaryImg: product6,
+//       hoverImg: product6_1,
+//       name: "Foldable Duffel Bag",
+//       price: 299,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       labels: [{ text: "Sold out", className: "on-sale" }],
+//       variants: [
+//         { className: "gray", title: "gray" },
+//         { className: "red", title: "red" },
+//         { className: "orange", title: "orange" },
+//         { className: "yellow", title: "yellow" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 7,
+//       primaryImg: product7,
+//       hoverImg: product7_1,
+//       name: "High-Waisted Pant",
+//       price: 139,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       labels: [{ text: "Best seller", className: "pr-label1" }],
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 8,
+//       primaryImg: product8,
+//       hoverImg: product8_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 0,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//   ],
+//   newarrivals: [
+//     //
+//     {
+//       id: 21,
+//       primaryImg: product8,
+//       hoverImg: product8_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 22,
+//       primaryImg: product9,
+//       hoverImg: product9_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 23,
+//       primaryImg: product10,
+//       hoverImg: product10_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 24,
+//       primaryImg: product11,
+//       hoverImg: product11_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 25,
+//       primaryImg: product12,
+//       hoverImg: product12_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 26,
+//       primaryImg: product13,
+//       hoverImg: product13_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 27,
+//       primaryImg: product14,
+//       hoverImg: product14_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 28,
+//       primaryImg: product15,
+//       hoverImg: product15_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     // ...
+//   ],
+//   toprated: [
+//     {
+//       id: 1,
+//       primaryImg: product1,
+//       hoverImg: product11_1,
+//       name: "Oxford Cuban Shirt",
+//       priceOld: 114,
+//       price: 99,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       labels: [{ text: "Sale", className: "on-sale" }],
+//       countdown: "2025/01/01",
+//       variants: [
+//         { src: product1, title: "Navy" },
+//         { src: product1_1, title: "Green" },
+//         { src: product1_2, title: "Gray" },
+//         { src: product1_3, title: "Orange" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#quickshop-modal",
+//           className: "addtocart quick-shop-modal",
+//           modal: "#quickshop_modal",
+//           title: "Quick Shop",
+//           text: "Quick Shop",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 2,
+//       primaryImg: product2,
+//       hoverImg: product2_2,
+//       name: "Cuff Beanie Cap",
+//       price: 128,
+//       reviewsCount: 3,
+//       rating: 5,
+//       href: "product-layout1.html",
+//       variants: [
+//         { src: product2, title: "Navy" },
+//         { src: product2_1, title: "Green" },
+//         { src: product2_2, title: "Gray" },
+//         { src: product2_3, title: "Orange" },
+//         { src: product2_4, title: "Yellow" },
+//         { src: product2_5, title: "Blue" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#quickshop-modal",
+//           className: "addtocart quick-shop-modal",
+//           modal: "#quickshop_modal",
+//           title: "Select Options",
+//           text: "Select Options",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 3,
+//       primaryImg: product3,
+//       hoverImg: product3_1,
+//       name: "Flannel Collar Shirt",
+//       price: 99,
+//       reviewsCount: 3,
+//       rating: 3,
+//       href: "product-layout1.html",
+//       labels: [{ text: "New", className: "pr-label3" }],
+//       variants: [
+//         { className: "red", title: "red" },
+//         { className: "orange", title: "orange" },
+//         { className: "yellow", title: "yellow" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 4,
+//       primaryImg: product4,
+//       hoverImg: product4_1,
+//       name: "Cotton Hooded Hoodie",
+//       priceOld: 198,
+//       price: 99,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       labels: [{ text: "50% Off", className: "on-sale" }],
+//       availability: 75, // 75%
+//       sold: 34,
+//       available: 16,
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 5,
+//       primaryImg: product5,
+//       hoverImg: product5_1,
+//       name: "Hooded Neck Hoodies",
+//       price: 39,
+//       reviewsCount: 3,
+//       rating: 4.5,
+//       href: "product-layout1.html",
+//       labels: [{ text: "Hot", className: "pr-label2" }],
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "maroon", title: "maroon" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 6,
+//       primaryImg: product6,
+//       hoverImg: product6_1,
+//       name: "Foldable Duffel Bag",
+//       price: 299,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       labels: [{ text: "Sold out", className: "on-sale" }],
+//       variants: [
+//         { className: "gray", title: "gray" },
+//         { className: "red", title: "red" },
+//         { className: "orange", title: "orange" },
+//         { className: "yellow", title: "yellow" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 7,
+//       primaryImg: product7,
+//       hoverImg: product7_1,
+//       name: "High-Waisted Pant",
+//       price: 139,
+//       reviewsCount: 3,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       labels: [{ text: "Best seller", className: "pr-label1" }],
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//     {
+//       id: 8,
+//       primaryImg: product8,
+//       hoverImg: product8_1,
+//       name: "Narror Neck Tie",
+//       price: 134,
+//       reviewsCount: 0,
+//       rating: 4,
+//       href: "product-layout1.html",
+//       variants: [
+//         { className: "black", title: "black" },
+//         { className: "navy", title: "navy" },
+//         { className: "darkgreen", title: "darkgreen" },
+//       ],
+//       buttonLinks: {
+//         cart: {
+//           href: "#addtocart-modal",
+//           className: "addtocart add-to-cart-modal",
+//           modal: "#addtocart_modal",
+//           title: "Add to Cart",
+//         },
+//         quickView: {
+//           href: "#quickview-modal",
+//           className: "quickview quick-view-modal",
+//           modal: "#quickview_modal",
+//           title: "Quick View",
+//         },
+//         wishlist: { href: "wishlist-style2.html" },
+//         compare: { href: "compare-style2.html" },
+//       },
+//     },
+//   ],
+// };
 
 export const blogPosts = [
   {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Button = ({ label, href, primary, className = "", type }) => {
+const Button = ({ label, href, primary, className = "", type, to }) => {
   const classes = `btn ${
     primary ? "btn-primary" : "btn-secondary"
   } ${className}`;
@@ -15,7 +15,16 @@ const Button = ({ label, href, primary, className = "", type }) => {
     );
   }
 
-  // If no `href`, render a button (used for forms)
+  if (to) {
+    // If `to` is provided, use Link for navigation
+    return (
+      <Link to={to} className={classes}>
+        {label}
+      </Link>
+    );
+  }
+
+  // If no `href` or `to`, render a button (used for forms)
   return (
     <button type={type || "button"} className={classes}>
       {label}
