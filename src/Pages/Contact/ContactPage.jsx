@@ -3,7 +3,7 @@ import { faqData } from "./data";
 
 export default function ContactPage() {
   return (
-    <div id="page-content">
+    <div id="page-content mt-5">
       <div className="container contact-style2">
         <div className="contact-form-details section pt-0">
           <div className="row">

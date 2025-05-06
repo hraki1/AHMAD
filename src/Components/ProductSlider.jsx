@@ -71,7 +71,10 @@ export default function ProductSlider({
                   <div className="row col-row product-options row-cols-xl-4 row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2">
                     {productsData[tabKey] && productsData[tabKey].length > 0 ? (
                       productsData[tabKey].map((product) => (
-                        <ProductCard key={product.id} {...product} />
+                        <ProductCard
+                          key={`${tabKey}-${product.id}`}
+                          {...product}
+                        />
                       ))
                     ) : (
                       <p className="text-center my-4">No products available.</p>

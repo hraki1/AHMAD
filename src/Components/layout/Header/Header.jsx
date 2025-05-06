@@ -27,50 +27,50 @@ const NavItem = ({ title, links }) => (
 
 const ShopMenu = () => (
   <li className="megamenu head-drop-down">
-    <a href="#">
+    <Link href="#">
       Shop <i className="fa-solid fa-angle-down ms-1" />
-    </a>
+    </Link>
     <div className="megamenu style1">
       <ul className="row grid--uniform mmWrapper">
         <li className="lvl-1 col-md-3 col-lg-3 w-22">
-          <a href="#;" className="site-nav lvl-1 menu-title">
+          <Link to="/Collection" className="site-nav lvl-1 menu-title">
             Collection Page
-          </a>
+          </Link>
           <ul className="subLinks">
             <li className="lvl-2">
-              <a href="collection-style1.html" className="site-nav lvl-2">
+              <Link to="/Collection" className="site-nav lvl-2">
                 Collection style
-              </a>
+              </Link>
             </li>
           </ul>
         </li>
         <li className="lvl-1 col-md-3 col-lg-3 w-22">
-          <a href="#;" className="site-nav lvl-1 menu-title">
+          <Link to="/ShopGrid" className="site-nav lvl-1 menu-title">
             Shop Page
-          </a>
+          </Link>
           <ul className="subLinks">
             <li className="lvl-2">
-              <a href="shop-grid-view.html" className="site-nav lvl-2">
+              <Link to="/ShopGrid" className="site-nav lvl-2">
                 Shop Grid View
-              </a>
+              </Link>
             </li>
           </ul>
         </li>
         <li className="lvl-1 col-md-3 col-lg-3 w-22">
-          <a href="#;" className="site-nav lvl-1 menu-title">
+          <Link to="/Wishlist" className="site-nav lvl-1 menu-title">
             Shop Other Page
-          </a>
+          </Link>
           <ul className="subLinks">
             <li className="lvl-2">
-              <a href="wishlist-style1.html" className="site-nav lvl-2">
-                Wishlist Style1
-              </a>
+              <Link to="/Wishlist" className="site-nav lvl-2">
+                Wishlist Style
+              </Link>
             </li>
           </ul>
         </li>
         <li className="lvl-1 col-md-3 col-lg-3 w-34 banner-col">
           <div className="banner-wrap">
-            <a href="shop-left-sidebar.html">
+            <Link to="/ShopGrid">
               <img
                 className="blur-up lazyload"
                 src={bannerMenu}
@@ -78,7 +78,7 @@ const ShopMenu = () => (
                 width={600}
                 height={440}
               />
-            </a>
+            </Link>
             <div className="banner-content">
               <h4>Hot deals</h4>
               <h3>
@@ -86,9 +86,9 @@ const ShopMenu = () => (
               </h3>
               <div className="banner-save">Save to 50%</div>
               <div className="banner-btn">
-                <a href="shop-left-sidebar.html" className="btn">
+                <Link to="/ShopGrid" className="btn">
                   Shop now
-                </a>
+                </Link>
               </div>
             </div>
             <div className="banner-discount">

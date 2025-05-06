@@ -2,7 +2,7 @@ import React from "react";
 
 const ContactMap = () => {
   return (
-    <div id="page-content">
+    <div id="page-content  mt-5">
       <div className="container contact-style2">
         <div className="contact-maps section p-0">
           <div className="row">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import SocialMediaRegister from "../../Components/SocialMediaLogin";
 
@@ -9,65 +9,108 @@ const Index = () => {
     email: "",
     pass: "",
     confiPass: "",
+    phone: "",
     agreePolicy: false,
   });
 
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   // Password strength checker function
   const isStrongPassword = (password) => {
     const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     return strongRegex.test(password);
   };
+  // Validate phone number
+  const validatePhoneNumber = (phone) => {
+    // Check if the phone number has exactly 10 digits and contains no non-digit characters
+    const phoneRegex = /^\d{10}$/; // Only 10 digits
+    return phoneRegex.test(phone);
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let newErrors = {};
+  // Validate form input
+  const validateInput = () => {
+    const newErrors = {};
 
-    // Username
-    if (!formInput.name.trim()) {
-      newErrors.name = "Username is required.";
-    }
-
-    // Email
-    if (!formInput.email.trim()) {
-      newErrors.email = "Email is required.";
-    }
-
-    // Password
-    if (!formInput.pass) {
-      newErrors.pass = "Password is required.";
-    } else if (!isStrongPassword(formInput.pass)) {
+    if (!formInput.name.trim()) newErrors.name = "Username is required.";
+    if (!formInput.email.trim()) newErrors.email = "Email is required.";
+    if (!formInput.pass) newErrors.pass = "Password is required.";
+    else if (!isStrongPassword(formInput.pass))
       newErrors.pass =
-        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.";
-    }
-
-    // Confirm password
-    if (!formInput.confiPass) {
+        "Password must be at least 8 characters, including uppercase, lowercase, number, and special character.";
+    if (!formInput.confiPass)
       newErrors.confiPass = "Please confirm your password.";
-    } else if (formInput.pass !== formInput.confiPass) {
+    else if (formInput.pass !== formInput.confiPass)
       newErrors.confiPass = "Passwords do not match.";
-    }
-
-    // Terms agreement
-    if (!formInput.agreePolicy) {
+    if (!formInput.agreePolicy)
       newErrors.agreePolicy = "You must agree to the terms & policy.";
+
+    // Phone number validation
+    if (!formInput.phone.trim()) {
+      newErrors.phone = "Phone number is required.";
+    } else if (!validatePhoneNumber(formInput.phone)) {
+      newErrors.phone =
+        "Phone number must be 10 digits and contain no characters.";
     }
 
+    return newErrors;
+  };
+
+  // Handle input change
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormInput((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newErrors = validateInput();
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      // All validations passed
-      console.log("Submitting data:", formInput);
-      // Send data to backend here
-    }
-  };
+      // send data to backend
+      try {
+        const response = await fetch(
+          "http://192.168.100.13:3250/api/auth/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              full_name: formInput.name,
+              email: formInput.email,
+              password: formInput.pass,
+              phone_number: formInput.phone,
+            }),
+          }
+        );
 
-  const handleCheckBox = (e) => {
-    setFormInput({
-      ...formInput,
-      agreePolicy: e.target.checked,
-    });
+        const result = await response.json();
+
+        if (response.ok) {
+          // signIn Success
+          console.log("Registration successful:", result);
+          navigate("/verify", { state: { email: formInput.email } });
+        } else {
+          // the type of error
+          if (result.message.includes("Email")) {
+            setErrors({ email: "This email is already registered." });
+          } else if (result.message.includes("Phone already exists")) {
+            setErrors({ phone: "This phone number is already registered." });
+          } else {
+            setErrors({ backend: result.message || "An error occurred" });
+          }
+        }
+      } catch (error) {
+        console.error("Error during registration:", error);
+        setErrors({ backend: "Network error. Please try again." });
+      }
+    }
   };
 
   return (
@@ -96,10 +139,9 @@ const Index = () => {
                           type="text"
                           id="CustomerUsername"
                           placeholder="Username"
+                          name="name"
                           value={formInput.name}
-                          onChange={(e) =>
-                            setFormInput({ ...formInput, name: e.target.value })
-                          }
+                          onChange={handleInputChange}
                           required
                         />
                         {errors.name && (
@@ -119,13 +161,9 @@ const Index = () => {
                           type="email"
                           id="CustomerEmail"
                           placeholder="Email"
+                          name="email"
                           value={formInput.email}
-                          onChange={(e) =>
-                            setFormInput({
-                              ...formInput,
-                              email: e.target.value,
-                            })
-                          }
+                          onChange={handleInputChange}
                           required
                         />
                         {errors.email && (
@@ -145,10 +183,9 @@ const Index = () => {
                           type="password"
                           id="CustomerPassword"
                           placeholder="Password"
+                          name="pass"
                           value={formInput.pass}
-                          onChange={(e) =>
-                            setFormInput({ ...formInput, pass: e.target.value })
-                          }
+                          onChange={handleInputChange}
                           required
                         />
                         {errors.pass && (
@@ -168,17 +205,35 @@ const Index = () => {
                           id="CustomerConfirmPassword"
                           type="password"
                           placeholder="Confirm Password"
+                          name="confiPass"
                           value={formInput.confiPass}
-                          onChange={(e) =>
-                            setFormInput({
-                              ...formInput,
-                              confiPass: e.target.value,
-                            })
-                          }
+                          onChange={handleInputChange}
                           required
                         />
                         {errors.confiPass && (
                           <p className="text-danger mt-1">{errors.confiPass}</p>
+                        )}
+                      </div>
+
+                      {/* Phone Number */}
+                      <div className="form-group col-12">
+                        <label
+                          className="form-label-title"
+                          htmlFor="CustomerPhone"
+                        >
+                          Phone Number <span className="required"></span>
+                        </label>
+                        <input
+                          type="tel"
+                          id="CustomerPhone"
+                          placeholder="Phone"
+                          name="phone"
+                          value={formInput.phone}
+                          onChange={handleInputChange}
+                          required
+                        />
+                        {errors.phone && (
+                          <p className="text-danger mt-1">{errors.phone}</p>
                         )}
                       </div>
 
@@ -188,10 +243,10 @@ const Index = () => {
                           <div className="agree-check customCheckbox">
                             <input
                               id="agree"
-                              name="agree"
+                              name="agreePolicy"
                               type="checkbox"
                               checked={formInput.agreePolicy}
-                              onChange={handleCheckBox}
+                              onChange={handleInputChange}
                             />
                             <label htmlFor="agree">
                               I agree to{" "}

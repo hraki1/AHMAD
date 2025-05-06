@@ -11,7 +11,7 @@ export default function Index() {
       <PageHeader title="CONTACT US" middleBreadcrumb="PAGES" />
       <ServiceSection
         services={servicesAbout}
-        className="section-color-light"
+        className="section-color-light mb-5"
         pageType="second"
       />
       <ContactPage />

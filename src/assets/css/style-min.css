@@ -10330,3 +10330,32 @@ textarea:-ms-input-placeholder {
   color: #000082;
   font-weight: 600;
 }
+
+.desc-content span {
+  font-weight: bold;
+}
+.Verify-boxs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.Verify-box {
+  background-color: rgb(114, 99, 252);
+  width: 50%;
+  border-radius: 30px;
+  padding: 100px 100px 50px 100px;
+}
+
+.icon-verify {
+  font-size: 4rem;
+  color: purple;
+  background: #c4bfbf61;
+  padding: 15px;
+  border-radius: 50%;
+  transition: 0.3s ease-in;
+}
+.icon-verify:hover {
+  color: whitesmoke;
+  background-color: purple;
+  padding: 20px;
+}

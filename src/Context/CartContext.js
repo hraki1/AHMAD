@@ -19,13 +19,6 @@ export function CartProvider({ children }) {
       parseFloat(localStorage.getItem("cartShipping")) || 0;
 
     // Log to ensure values are being loaded correctly
-    console.log(
-      "Loaded data from localStorage:",
-      storedSubtotal,
-      storedDiscount,
-      storedTax,
-      storedShipping
-    );
 
     // Check if storedDiscount is different from 0 before setting
     if (storedDiscount !== 0) {
@@ -38,13 +31,6 @@ export function CartProvider({ children }) {
 
   // Save data to localStorage whenever it changes
   useEffect(() => {
-    console.log(
-      "Saving data to localStorage:",
-      subtotal,
-      discount,
-      tax,
-      shipping
-    );
     localStorage.setItem("cartSubtotal", subtotal.toString());
     localStorage.setItem("cartDiscount", discount.toString());
     localStorage.setItem("cartTax", tax.toString());

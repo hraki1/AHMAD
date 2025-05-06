@@ -13,9 +13,10 @@ export default function CollectionBanner() {
       <div className="container">
         <div className="collection-banner-grid">
           <div className="row sp-row">
+            {/* Women Wear */}
             <div className="col-12 col-sm-6 col-md-6 col-lg-6 collection-banner-item">
               <div className="collection-item sp-col">
-                <a href="/ShopGrid" className="zoom-scal">
+                <Link to="/ShopGrid" className="zoom-scal">
                   <div className="img">
                     <img
                       className="blur-up lazyload"
@@ -32,18 +33,18 @@ export default function CollectionBanner() {
                       <div className="mb-2 sub-banner">Trending Now</div>
                       <div className="title-banner">Women Wear</div>
                       <span className="btn btn-outline-secondary btn-md">
-                        <Link to="/ShopGrid">Shop Now</Link>
+                        Shop Now
                       </span>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
             </div>
 
+            {/* Men Wear */}
             <div className="col-12 col-sm-6 col-md-6 col-lg-6 collection-banner-item">
-              {/* Men Wear */}
               <div className="collection-item sp-col mb-4 mb-sm-4 mb-md-4 mb-lg-4">
-                <a href="/ShopGrid" className="zoom-scal">
+                <Link to="/ShopGrid" className="zoom-scal">
                   <div className="img">
                     <img
                       className="blur-up lazyload"
@@ -62,16 +63,16 @@ export default function CollectionBanner() {
                         Tailor-made with passion
                       </div>
                       <span className="btn btn-outline-secondary btn-md">
-                        <Link to="/ShopGrid">Shop Now</Link>
+                        Shop Now
                       </span>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
 
               {/* Kids Wear */}
               <div className="collection-item sp-col">
-                <a href="/ShopGrid" className="zoom-scal">
+                <Link to="/ShopGrid" className="zoom-scal">
                   <div className="img">
                     <img
                       className="blur-up lazyload"
@@ -90,11 +91,11 @@ export default function CollectionBanner() {
                       </div>
                       <div className="title-banner">Kids Wear</div>
                       <span className="btn btn-outline-secondary btn-md">
-                        <Link to="/ShopGrid">Shop Now</Link>
+                        Shop Now
                       </span>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

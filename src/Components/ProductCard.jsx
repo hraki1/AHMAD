@@ -27,8 +27,11 @@ const ProductCard = ({ product }) => {
           </a>
           {/* Product Labels */}
           <div className="product-labels">
-            {product.labels.map((label, index) => (
-              <span key={index} className={`lbl ${label.class}`}>
+            {product.labels.map((label) => (
+              <span
+                key={`${label.text}-${label.class}`}
+                className={`lbl ${label.class}`}
+              >
                 {label.text}
               </span>
             ))}
@@ -104,7 +107,7 @@ const ProductCard = ({ product }) => {
           <div className="product-review">
             {[...Array(5)].map((_, index) => (
               <i
-                key={index}
+                key={`star-${index}`}
                 className={
                   index < product.rating ? "fas fa-star" : "far fa-star"
                 }
@@ -116,8 +119,8 @@ const ProductCard = ({ product }) => {
             </span>
           </div>
           <ul className="variants-clr swatches">
-            {product.variants.map((variant, index) => (
-              <li key={index} className={`swatch medium radius ${variant}`}>
+            {product.variants.map((variant) => (
+              <li key={variant} className={`swatch medium radius ${variant}`}>
                 <span
                   className="swatchLbl"
                   data-bs-toggle="tooltip"

@@ -416,7 +416,7 @@ export const productsData = {
       },
     },
     {
-      id: 21,
+      id: 22,
       primaryImg: product9,
       hoverImg: product9_1,
       name: "Narror Neck Tie",
@@ -447,7 +447,7 @@ export const productsData = {
       },
     },
     {
-      id: 21,
+      id: 23,
       primaryImg: product10,
       hoverImg: product10_1,
       name: "Narror Neck Tie",
@@ -478,7 +478,7 @@ export const productsData = {
       },
     },
     {
-      id: 21,
+      id: 24,
       primaryImg: product11,
       hoverImg: product11_1,
       name: "Narror Neck Tie",
@@ -509,7 +509,7 @@ export const productsData = {
       },
     },
     {
-      id: 21,
+      id: 25,
       primaryImg: product12,
       hoverImg: product12_1,
       name: "Narror Neck Tie",
@@ -540,7 +540,7 @@ export const productsData = {
       },
     },
     {
-      id: 21,
+      id: 26,
       primaryImg: product13,
       hoverImg: product13_1,
       name: "Narror Neck Tie",
@@ -571,7 +571,7 @@ export const productsData = {
       },
     },
     {
-      id: 21,
+      id: 27,
       primaryImg: product14,
       hoverImg: product14_1,
       name: "Narror Neck Tie",
@@ -602,7 +602,7 @@ export const productsData = {
       },
     },
     {
-      id: 21,
+      id: 28,
       primaryImg: product15,
       hoverImg: product15_1,
       name: "Narror Neck Tie",

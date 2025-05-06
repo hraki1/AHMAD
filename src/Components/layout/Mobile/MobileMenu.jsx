@@ -1,6 +1,25 @@
-import React from "react";
+import { Home } from "lucide-react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-const MobileMenu = ({ isMenuOpen, toggleMenu }) => {
+const MobileNav = ({ isMenuOpen, toggleMenu }) => {
+  const [dropdowns, setDropdowns] = useState({
+    home: false,
+    homeSub: false,
+    shop: false,
+    blog: false,
+    pages: false,
+  });
+
+  const toggleDropdown = (key, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDropdowns((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
   return (
     <div
       className={`mobile-nav-wrapper ${isMenuOpen ? "active" : ""}`}
@@ -9,149 +28,181 @@ const MobileMenu = ({ isMenuOpen, toggleMenu }) => {
       <div className="closemobileMenu" onClick={toggleMenu}>
         <i className="fas fa-times"></i>
       </div>
+
       <ul id="MobileNav" className="mobile-nav">
-        <li className="lvl1 parent dropdown">
-          <a href="index.html">
-            Home <i className="icon anm anm-angle-down-l fa-solid fa-bars"></i>
-          </a>
-          <ul className="lvl-2">
-            <li>
-              <a href="index.html" className="site-nav">
-                Fashion
-              </a>
-            </li>
-            <li>
-              <a href="index2-footwear.html" className="site-nav">
-                Footwear
-              </a>
-            </li>
-            <li>
-              <a href="index4-electronic.html" className="site-nav">
-                Electronic
-              </a>
-            </li>
-          </ul>
-        </li>
+        {/* HOME */}
         <li className="lvl1 parent megamenu">
-          <a href="#">
-            Shop <i className="icon anm anm-angle-down-l fa-solid fa-bars"></i>
-          </a>
-          <ul className="lvl-2">
-            <li>
-              <a href="#;" className="site-nav">
-                Collection Page <i className="icon anm anm-angle-down-l"></i>
-              </a>
-              <ul className="lvl-3">
-                <li>
-                  <a href="collection-style1.html" className="site-nav">
-                    Collection style
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a href="#;" className="site-nav">
-                Shop Page{" "}
-                <i className="icon anm anm-angle-down-l fa-solid fa-bars"></i>
-              </a>
-              <ul className="lvl-3">
-                <li>
-                  <a href="shop-grid-view.html" className="site-nav">
-                    Shop Grid View
-                  </a>
-                </li>
-                <li>
-                  <a href="shop-list-view.html" className="site-nav">
-                    Shop List View
-                  </a>
-                </li>
-                <li>
-                  <a href="shop-left-sidebar.html" className="site-nav">
-                    Shop Left Sidebar
-                  </a>
-                </li>
-                <li>
-                  <a href="shop-right-sidebar.html" className="site-nav">
-                    Shop Right Sidebar
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a href="#;" className="site-nav">
-                Shop Other Page <i className="icon anm anm-angle-down-l"></i>
-              </a>
-              <ul className="lvl-3">
-                <li>
-                  <a href="wishlist-style1.html" className="site-nav">
-                    Wishlist Style1
-                  </a>
-                </li>
-                <li>
-                  <a href="wishlist-style2.html" className="site-nav">
-                    Wishlist Style2
-                  </a>
-                </li>
-                <li>
-                  <a href="compare-style1.html" className="site-nav">
-                    Compare Style1
-                  </a>
-                </li>
-                <li>
-                  <a href="compare-style2.html" className="site-nav">
-                    Compare Style2
-                  </a>
-                </li>
-                <li>
-                  <a href="cart-style1.html" className="site-nav">
-                    Cart Style1
-                  </a>
-                </li>
-                <li>
-                  <a href="cart-style2.html" className="site-nav">
-                    Cart Style2
-                  </a>
-                </li>
-                <li>
-                  <a href="checkout-style1.html" className="site-nav">
-                    Checkout Style1
-                  </a>
-                </li>
-                <li>
-                  <a href="checkout-style2.html" className="site-nav">
-                    Checkout Style2
-                  </a>
-                </li>
-                <li>
-                  <a href="order-success.html" className="site-nav last">
-                    Order Success
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
+          <Link to="#" onClick={(e) => e.preventDefault()}>
+            Home{" "}
+            <i
+              className="icon fa-solid fa-bars"
+              onClick={(e) => toggleDropdown("home", e)}
+              style={{ cursor: "pointer" }}
+            ></i>
+          </Link>
+          {dropdowns.home && (
+            <ul className="lvl-2 d-block" id="home-dropdown">
+              <li>
+                <div className="d-flex justify-content-between align-items-center">
+                  <Link to="/" className="site-nav">
+                    Home
+                  </Link>
+                  <i
+                    className="icon fa-solid fa-bars"
+                    onClick={(e) => toggleDropdown("homeSub", e)}
+                    style={{ cursor: "pointer" }}
+                  ></i>
+                </div>
+
+                {dropdowns.homeSub && (
+                  <ul className="lvl-3 d-block" id="home-sub-dropdown">
+                    <li>
+                      <Link to="/" className="site-nav">
+                        Home 1
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </li>
+            </ul>
+          )}
         </li>
-        {/* Add other list items as necessary */}
+
+        {/* SHOP */}
+        <li className="lvl1 parent megamenu">
+          <Link to="#" onClick={(e) => e.preventDefault()}>
+            Shop{" "}
+            <i
+              className="icon fa-solid fa-bars"
+              onClick={(e) => toggleDropdown("shop", e)}
+              style={{ cursor: "pointer" }}
+            ></i>
+          </Link>
+          {dropdowns.shop && (
+            <ul className="lvl-2 d-block" id="shop-dropdown">
+              <li>
+                <Link to="/Collection" className="site-nav">
+                  Collection
+                </Link>
+              </li>
+              <li>
+                <Link to="/ShopGrid" className="site-nav">
+                  Wishlist
+                </Link>
+              </li>
+              <li>
+                <Link to="/Wishlist" className="site-nav">
+                  Wishlist
+                </Link>
+              </li>
+              <li></li>
+            </ul>
+          )}
+        </li>
+
+        {/* Pages */}
+        <li className="lvl1 parent megamenu">
+          <Link to="#" onClick={(e) => e.preventDefault()}>
+            Pages{" "}
+            <i
+              className="icon fa-solid fa-bars"
+              onClick={(e) => toggleDropdown("pages", e)}
+              style={{ cursor: "pointer" }}
+            ></i>
+          </Link>
+          {dropdowns.pages && (
+            <ul className="lvl-2 d-block" id="pages-dropdown">
+              <li>
+                <Link to="/AboutUs" className="site-nav">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/ContactUs" className="site-nav">
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/MYAccount" className="site-nav">
+                  My Account
+                </Link>
+              </li>
+              <li>
+                <Link to="/Portfolio" className="site-nav">
+                  Portfolio Page
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="site-nav">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link to="/CMS" className="site-nav">
+                  CMS Page
+                </Link>
+              </li>
+            </ul>
+          )}
+        </li>
+
+        {/* Blog */}
+        <li className="lvl1 parent megamenu">
+          <Link to="#" onClick={(e) => e.preventDefault()}>
+            Blog{" "}
+            <i
+              className="icon fa-solid fa-bars"
+              onClick={(e) => toggleDropdown("blog", e)}
+              style={{ cursor: "pointer" }}
+            ></i>
+          </Link>
+          {dropdowns.blog && (
+            <ul className="lvl-2 d-block" id="blog-dropdown">
+              <li>
+                <Link to="/ShopGrid" className="site-nav">
+                  ShopGrid
+                </Link>
+              </li>
+              <li>
+                <Link to="/Product" className="site-nav">
+                  Product
+                </Link>
+              </li>
+              <li>
+                <Link to="/Collection" className="site-nav">
+                  Collection
+                </Link>
+              </li>
+              <li>
+                <Link to="/Wishlist" className="site-nav">
+                  Wishlist
+                </Link>
+              </li>
+            </ul>
+          )}
+        </li>
+
+        {/* Bottom Section */}
         <li className="mobile-menu-bottom">
           <div className="mobile-links">
             <ul className="list-inline d-inline-flex flex-column w-100">
-              <li>
-                <a href="login.html" className="d-flex align-items-center">
-                  <i className="fa-solid fa-right-to-bracket me-1 "></i> Sign In
-                </a>
+              <li className="mb-3 pt-1 mt-3">
+                <Link to="/LogIn" className="d-flex align-items-center">
+                  <i className="fa-solid fa-right-to-bracket me-1"></i> Sign In
+                </Link>
               </li>
-              <li>
-                <a href="register.html" className="d-flex align-items-center">
+              <li className="mb-3 pt-1">
+                <Link to="/SignUp" className="d-flex align-items-center">
                   <i className="fa-solid fa-user me-1"></i> Register
-                </a>
+                </Link>
               </li>
-              <li>
-                <a href="my-account.html" className="d-flex align-items-center">
+              <li className="pt-1">
+                <Link to="/MYAccount" className="d-flex align-items-center">
                   <i className="fa-solid fa-address-card me-1"></i> My Account
-                </a>
+                </Link>
               </li>
               <li className="Main-title-mobile">Need Help?</li>
-              <li>
+              <li className="mb-3 pt-1">
                 <a
                   href="tel:401234567890"
                   className="d-flex align-items-center"
@@ -159,7 +210,7 @@ const MobileMenu = ({ isMenuOpen, toggleMenu }) => {
                   <i className="fa-solid fa-phone me-1"></i> (+40) 123 456 7890
                 </a>
               </li>
-              <li>
+              <li className="mb-3 pt-1">
                 <a
                   href="mailto:info@example.com"
                   className="d-flex align-items-center"
@@ -172,7 +223,36 @@ const MobileMenu = ({ isMenuOpen, toggleMenu }) => {
           <div className="mobile-follow mt-2">
             <div className="Main-title-mobile">Follow Us</div>
             <ul className="list-inline social-icons d-inline-flex mt-1">
-              {/* Add social icons as needed */}
+              <li className="list-inline-item">
+                <Link to="#" title="Facebook">
+                  <i className="fa-brands fa-facebook-f"></i>
+                </Link>
+              </li>
+              <li className="list-inline-item">
+                <Link to="#" title="Twitter">
+                  <i className="fa-brands fa-x-twitter"></i>
+                </Link>
+              </li>
+              <li className="list-inline-item">
+                <Link to="#" title="Pinterest">
+                  <i className="fa-brands fa-pinterest-p"></i>
+                </Link>
+              </li>
+              <li className="list-inline-item">
+                <Link to="#" title="Linkedin">
+                  <i className="fa-brands fa-linkedin-in"></i>
+                </Link>
+              </li>
+              <li className="list-inline-item">
+                <Link to="#" title="Instagram">
+                  <i className="fa-brands fa-instagram"></i>
+                </Link>
+              </li>
+              <li className="list-inline-item">
+                <Link to="#" title="Youtube">
+                  <i className="fa-brands fa-youtube"></i>
+                </Link>
+              </li>
             </ul>
           </div>
         </li>
@@ -181,4 +261,4 @@ const MobileMenu = ({ isMenuOpen, toggleMenu }) => {
   );
 };
 
-export default MobileMenu;
+export default MobileNav;

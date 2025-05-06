@@ -19,6 +19,7 @@ import ShopGrid from "./Pages/ShopGrid/Index.jsx";
 import Wishlist from "./Pages/Wishlist/Index.jsx";
 import Login from "./Pages/LogIn/Index.jsx";
 import Sign from "./Pages/SignUp/Index.jsx";
+import Verify from "./Pages/SignUp/Verify.jsx";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
           <Route path="/Wishlist" element={<Wishlist />} />
           <Route path="/SignUp" element={<Sign />} />
           <Route path="/LogIn" element={<Login />} />
+          <Route path="/Verify" element={<Verify />} />
         </Routes>
         <ScrollTop />
         <Footer />
