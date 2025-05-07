@@ -1,5 +1,6 @@
 import React from "react";
 import { categories } from "./data";
+import { Link } from "react-router-dom";
 
 const CollectionStyle = () => {
   return (
@@ -13,14 +14,16 @@ const CollectionStyle = () => {
                 className="category-link clr-none"
               >
                 <div className="zoom-scal zoom-scal-nopb">
-                  <img
-                    className="blur-up lazyload w-100"
-                    data-src={cat.image}
-                    src={cat.image}
-                    alt={cat.title}
-                    width="365"
-                    height="365"
-                  />
+                  <Link to="/ShopGrid">
+                    <img
+                      className="blur-up lazyload w-100"
+                      // data-src={cat.image}
+                      src={cat.image}
+                      // alt={cat.title}
+                      width="365"
+                      height="365"
+                    />
+                  </Link>
                 </div>
                 <div className="details mt-3 d-flex justify-content-between align-items-center">
                   <h4 className="category-title mb-0">{cat.title}</h4>

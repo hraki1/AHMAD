@@ -3,6 +3,7 @@ import Slider from "react-slick";
 
 import Button from "../../Components/common/Button";
 import { blogPosts } from "./data";
+import { Link } from "react-router-dom";
 
 export default function BlogPostSection() {
   const settings = {
@@ -37,7 +38,7 @@ export default function BlogPostSection() {
             <div key={i} className="blog-item">
               <div className="blog-article zoomscal-hov">
                 <div className="blog-img">
-                  <a className="featured-image zoom-scal" href={post.link}>
+                  <a className="featured-image zoom-scal" href="/">
                     <img
                       className="blur-up lazyload"
                       src={post.img}
@@ -58,13 +59,13 @@ export default function BlogPostSection() {
 
                 <div className="blog-content">
                   <h2 className="h3 mb-3">
-                    <a href={post.link}>{post.title}</a>
+                    <Link to="/">{post.title}</Link>
                   </h2>
                   <p className="content">{post.description}</p>
 
                   <Button
                     label="Read more"
-                    href={post.link}
+                    href="/home"
                     primary={false} /* .btn-primary if need it make it true */
                     size="sm" /*   */
                     className="btn-sm" /*  */
