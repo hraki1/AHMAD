@@ -1,9 +1,81 @@
-import React from "react";
+import React, { useState } from "react";
 import { faqData } from "./data";
 
 export default function ContactPage() {
+  // State to track form input values
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: ""
+  });
+
+  // State to track validation errors
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: ""
+  });
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+    
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: ""
+      });
+    }
+  };
+
+  // Validate the form
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { ...errors };
+    
+    // Check if all fields are filled
+    for (const field in formData) {
+      if (!formData[field].trim()) {
+        newErrors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+        isValid = false;
+      }
+    }
+    
+    // Phone number validation - must be at least 10 digits
+    if (formData.phone.trim()) {
+      const digitsOnly = formData.phone.replace(/\D/g, '');
+      if (digitsOnly.length < 10) {
+        newErrors.phone = "Phone number must be at least 10 digits";
+        isValid = false;
+      }
+    }
+    
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent the default form submission
+    
+    // Validate form before proceeding
+    if (validateForm()) {
+      // Print form data to console
+      console.log("Form Data:", formData);
+    }
+  };
+
   return (
-    <div id="page-content mt-5">
+    <div id="page-content" className="mt-5">
       <div className="container contact-style2">
         <div className="contact-form-details section pt-0">
           <div className="row">
@@ -18,10 +90,9 @@ export default function ContactPage() {
                 </div>
 
                 <form
-                  action="php/ajax_sendmail.php"
-                  method="post"
                   id="contact-form"
                   className="contact-form"
+                  onSubmit={handleSubmit}
                 >
                   <div className="row">
                     <div className="col-md-6">
@@ -31,9 +102,12 @@ export default function ContactPage() {
                           id="ContactFormName"
                           name="name"
                           className="form-control"
-                          placeholder="Name"
+                          placeholder="Name *"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          required
                         />
-                        <span className="error_msg" id="name_error"></span>
+                        <span className="error_msg" id="name_error">{errors.name}</span>
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -43,9 +117,12 @@ export default function ContactPage() {
                           id="ContactFormEmail"
                           name="email"
                           className="form-control"
-                          placeholder="Email"
+                          placeholder="Email *"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          required
                         />
-                        <span className="error_msg" id="email_error"></span>
+                        <span className="error_msg" id="email_error">{errors.email}</span>
                       </div>
                     </div>
                   </div>
@@ -59,8 +136,12 @@ export default function ContactPage() {
                           id="ContactFormPhone"
                           name="phone"
                           pattern="[0-9\-]*"
-                          placeholder="Phone Number"
+                          placeholder="Phone Number * (min 10 digits)"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          required
                         />
+                        <span className="error_msg" id="phone_error">{errors.phone}</span>
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -71,6 +152,8 @@ export default function ContactPage() {
                           name="subject"
                           className="form-control"
                           placeholder="Subject"
+                          value={formData.subject}
+                          onChange={handleInputChange}
                         />
                         <span className="error_msg" id="subject_error"></span>
                       </div>
@@ -84,6 +167,8 @@ export default function ContactPage() {
                       className="form-control"
                       rows="6"
                       placeholder="Message"
+                      value={formData.message}
+                      onChange={handleInputChange}
                     ></textarea>
                     <span className="error_msg" id="message_error"></span>
                   </div>
