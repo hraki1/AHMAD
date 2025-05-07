@@ -1,37 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Button from "./common/Button";
 import { fetchAllProducts } from "../utils/fetchAllProducts";
 
-export default function ProductSlider({
+const ProductSlider = ({
   showTabs = true,
   subtitle = "Special Offers",
   title = "Browse the huge variety of our best seller",
-}) {
+}) => {
   const [productsData, setProductsData] = useState({
     bestsellers: [],
     newarrivals: [],
     toprated: [],
   });
   const [activeTab, setActiveTab] = useState("bestsellers");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true); // بدء التحميل
       const pages = [1, 2, 3];
       const allProducts = await fetchAllProducts(pages);
 
-      setProductsData({
-        bestsellers: allProducts.slice(0, 4),
-        newarrivals: allProducts.slice(4, 8),
-        toprated: allProducts.slice(8, 13),
-      });
+      if (allProducts && allProducts.length > 0) {
+        setProductsData({
+          bestsellers: allProducts.slice(0, 4),
+          newarrivals: allProducts.slice(4, 8),
+          toprated: allProducts.slice(8, 13),
+        });
+      }
+      setLoading(false); // إنهاء التحميل
     };
 
     fetchProducts();
   }, []);
 
+  const memoizedProductsData = useMemo(() => productsData, [productsData]);
+
   const handleTabClick = (tab) => setActiveTab(tab);
 
-  // دالة بسيطة لعرض كل منتج (بديل ProductCard)
   const renderProduct = (product) => (
     <div className="item col-item" key={product.id}>
       <div className="product-box">
@@ -122,7 +128,9 @@ export default function ProductSlider({
               >
                 <div className="grid-products grid-view-items">
                   <div className="row col-row product-options row-cols-xl-4 row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2">
-                    {productsData[tabKey]?.length > 0 ? (
+                    {loading ? (
+                      <p className="text-center my-4">Loading...</p>
+                    ) : productsData[tabKey]?.length > 0 ? (
                       productsData[tabKey].map(renderProduct)
                     ) : (
                       <p className="text-center my-4">No Product Now.</p>
@@ -143,4 +151,6 @@ export default function ProductSlider({
       </div>
     </section>
   );
-}
+};
+
+export default ProductSlider;

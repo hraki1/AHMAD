@@ -31,7 +31,7 @@ export const availabilityOptions = [
 ];
 
 // BrandFilter
-export const brands = ["ZARA", "NIKE", "ADIDAS"];
+// export const brands = ["ZARA", "NIKE", "ADIDAS"];
 
 // ColorFilter
 export const colors = [

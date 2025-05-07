@@ -1,60 +1,79 @@
-export const fetchAllProducts = async (pages = [1], transformFn = null) => {
+const BASE_URL = "http://192.168.100.13:3250/api/products";
+
+/**
+ * Format a single product into the desired structure
+ */
+const formatProduct = (product) => {
+  const mainImage = product.images?.find((img) => img.is_main);
+  const hoverImage = product.images?.find((img) => !img.is_main);
+
+  return {
+    id: product.product_id,
+    name: product.description?.name || "Name not found",
+    price: product.price || 0,
+    priceOld: (product.price || 0) + 20,
+    primaryImg: mainImage?.single_image || "",
+    hoverImg: hoverImage?.single_image || mainImage?.single_image || "",
+    reviewsCount: 3,
+    rating: 4,
+    href: "/ShopGrid",
+    labels: [{ text: "Sale", className: "on-sale" }],
+    countdown: "2025/01/01",
+    variants:
+      product.images?.map((img, i) => ({
+        src: img.single_image,
+        title: `Color ${i + 1}`,
+      })) || [],
+    buttonLinks: {
+      cart: {
+        href: "#quickshop-modal",
+        className: "addtocart quick-shop-modal",
+        modal: "#quickshop_modal",
+        title: "Quick Shop",
+        text: "Quick Shop",
+      },
+      quickView: {
+        href: "#quickview-modal",
+        className: "quickview quick-view-modal",
+        modal: "#quickview_modal",
+        title: "Quick View",
+      },
+      wishlist: { href: "wishlist-style2.html" },
+      compare: { href: "compare-style2.html" },
+    },
+    categoryId: product.category_id, // ضروري جدًا هنا للفلترة!
+  };
+};
+
+/**
+ * Fetch all products from given pages, with optional transform function.
+ * Supports aborting and error handling per-request.
+ */
+export const fetchAllProducts = async (
+  pages = [1],
+  transformFn = null,
+  abortSignal
+) => {
   try {
-    //
     const fetchPromises = pages.map((page) =>
-      fetch(`http://192.168.100.13:3250/api/products?page=${page}&limit=10`)
+      fetch(`${BASE_URL}?page=${page}&limit=10`, { signal: abortSignal })
     );
 
-    // جلب كل الصفحات بالتوازي
-    const responses = await Promise.all(fetchPromises);
-    const jsonDataArray = await Promise.all(responses.map((res) => res.json()));
+    const results = await Promise.allSettled(fetchPromises);
 
-    // دمج بيانات المنتجات من كل الصفحات
+    const successfulResponses = results
+      .filter((res) => res.status === "fulfilled")
+      .map((res) => res.value);
+
+    const jsonDataArray = await Promise.all(
+      successfulResponses.map((res) => res.json())
+    );
+
     const allProductsRaw = jsonDataArray.flatMap((json) => json.data);
 
-    // إذا تم تمرير دالة تحويل، طبقها على البيانات، وإلا طبق التحويل الافتراضي
     const allProducts = transformFn
       ? transformFn(allProductsRaw)
-      : allProductsRaw.map((product) => {
-          const mainImage = product.images?.find((img) => img.is_main);
-          const hoverImage = product.images?.find((img) => !img.is_main);
-
-          return {
-            id: product.product_id,
-            name: product.description?.name || "اسم غير متوفر",
-            price: product.price || 0,
-            priceOld: (product.price || 0) + 20,
-            primaryImg: mainImage?.single_image || "",
-            hoverImg: hoverImage?.single_image || mainImage?.single_image || "",
-            reviewsCount: 3,
-            rating: 4,
-            href: "/ShopGrid",
-            labels: [{ text: "Sale", className: "on-sale" }],
-            countdown: "2025/01/01",
-            variants:
-              product.images?.map((img, i) => ({
-                src: img.single_image,
-                title: `لون ${i + 1}`,
-              })) || [],
-            buttonLinks: {
-              cart: {
-                href: "#quickshop-modal",
-                className: "addtocart quick-shop-modal",
-                modal: "#quickshop_modal",
-                title: "Quick Shop",
-                text: "Quick Shop",
-              },
-              quickView: {
-                href: "#quickview-modal",
-                className: "quickview quick-view-modal",
-                modal: "#quickview_modal",
-                title: "Quick View",
-              },
-              wishlist: { href: "wishlist-style2.html" },
-              compare: { href: "compare-style2.html" },
-            },
-          };
-        });
+      : allProductsRaw.map(formatProduct);
 
     return allProducts;
   } catch (error) {

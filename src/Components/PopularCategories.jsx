@@ -1,30 +1,50 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
+import useFetchCategories from "../utils/useFetchCategories";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export default function PopularCategories({
-  data,
   showHeader = true,
   italic = "Shop by category",
   heading = "Popular Collections",
+  selectedCategoryId,
+  setSelectedCategoryId,
+  setSelectedParentId, // Add this line
 }) {
+  const [localSelectedParentId, setLocalSelectedParentId] = useState(null);
+  const { categories, loading, error } = useFetchCategories(
+    localSelectedParentId
+  );
+  const sliderRef = useRef(null);
+
+  useEffect(() => {
+    if (sliderRef.current && sliderRef.current.innerSlider) {
+      sliderRef.current.innerSlider.slickGoTo(0);
+    }
+  }, [localSelectedParentId]);
+
+  const shouldAutoplay = categories.length >= 4;
+
   const settings = {
     slidesToShow: 5,
     slidesToScroll: 1,
     arrows: true,
-    infinite: true,
-    autoplay: true, // ← play Auto
-    autoplaySpeed: 3000, // 3s edited
-    pauseOnHover: false, // ← do not stop when hover in mouse
+    infinite: shouldAutoplay,
+    autoplay: shouldAutoplay,
+    autoplaySpeed: 3000,
+    pauseOnHover: false,
     responsive: [
       { breakpoint: 1200, settings: { slidesToShow: 4 } },
       { breakpoint: 992, settings: { slidesToShow: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2 } },
-      //  2 element in 576 px
       { breakpoint: 576, settings: { slidesToShow: 2 } },
-      // 1 element in small screen
       { breakpoint: 420, settings: { slidesToShow: 1 } },
     ],
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error && categories.length === 0) return <div>{error}</div>;
 
   return (
     <section className="section collection-slider pb-0">
@@ -36,13 +56,39 @@ export default function PopularCategories({
           </div>
         )}
 
-        <Slider
-          {...settings}
-          className="collection-slider-5items gp15 arwOut5 hov-arrow"
-        >
-          {data.map((c, i) => (
-            <div key={i} className="category-item zoomscal-hov">
-              <a href="/ShopGrid" className="category-link clr-none">
+        {localSelectedParentId !== null && (
+          <div className="text-center mb-3">
+            <button
+              className="btn btn-outline-primary"
+              onClick={() => {
+                setLocalSelectedParentId(null);
+                setSelectedParentId(null); // Notify parent to reset
+                setSelectedCategoryId(null);
+              }}
+            >
+              BACK
+            </button>
+          </div>
+        )}
+
+        {categories.length > 0 ? (
+          <Slider
+            ref={sliderRef}
+            key={localSelectedParentId ?? "root"}
+            {...settings}
+            className="collection-slider-5items gp15 arwOut5 hov-arrow"
+          >
+            {categories.map((c) => (
+              <div
+                key={c.id}
+                className="category-item zoomscal-hov"
+                onClick={() => {
+                  setSelectedCategoryId(c.id); // تحديث الفئة المحددة
+                  setLocalSelectedParentId(c.id); // تحديث الفئة الفرعية
+                  setSelectedParentId(c.id);
+                }}
+                style={{ cursor: "pointer" }}
+              >
                 <div className="zoom-scal zoom-scal-nopb rounded-3">
                   <img
                     className="blur-up lazyload"
@@ -58,10 +104,12 @@ export default function PopularCategories({
                   <div className="popular-title">{c.title}</div>
                   <div className="counts-popular">{c.count} Products</div>
                 </div>
-              </a>
-            </div>
-          ))}
-        </Slider>
+              </div>
+            ))}
+          </Slider>
+        ) : (
+          <div className="text-center fs-5 text-muted my-5">No Data Found</div>
+        )}
       </div>
     </section>
   );

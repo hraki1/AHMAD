@@ -63,9 +63,13 @@ function SelectBox({ id, label, options, defaultValue }) {
 }
 
 // 🔧 Main Toolbar
-export default function Toolbar({ onFilterClick, onViewChange }) {
+export default function Toolbar({
+  onFilterClick,
+  onViewChange,
+  selectedCategoryId,
+}) {
   const [activeView, setActiveView] = useState(5);
-  const [showFilter, setShowFilter] = useState(false); // حالة لفتح/إغلاق قائمة الفلتر
+  const [showFilter, setShowFilter] = useState(false);
 
   const handleViewChange = (col) => {
     setActiveView(col);
@@ -73,8 +77,8 @@ export default function Toolbar({ onFilterClick, onViewChange }) {
   };
 
   const handleFilterClick = () => {
-    setShowFilter(!showFilter); // تبديل حالة الفلتر
-    onFilterClick?.(); // إذا كان هناك وظيفة خارجية
+    setShowFilter(!showFilter);
+    onFilterClick?.();
   };
 
   return (
@@ -121,7 +125,7 @@ export default function Toolbar({ onFilterClick, onViewChange }) {
         </div>
       </div>
 
-      {/* عرض الفلتر في حالة الضغط على زر الفلتر */}
+      {/* الفلاتر */}
       {showFilter && (
         <div className={`filter-menu ${showFilter ? "visible" : "hidden"}`}>
           <SidebarCategories className="mb-5" />
@@ -134,7 +138,8 @@ export default function Toolbar({ onFilterClick, onViewChange }) {
         </div>
       )}
 
-      <ProductGrid />
+      {/* شبكة المنتجات */}
+      <ProductGrid selectedCategoryId={selectedCategoryId} />
     </div>
   );
 }

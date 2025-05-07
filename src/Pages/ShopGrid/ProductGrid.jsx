@@ -1,75 +1,111 @@
-import React, { useState, useEffect } from "react";
-import { fetchAllProducts } from "../../utils/fetchAllProducts"; // عدل المسار حسب مشروعك
+import React, { useState, useEffect, useCallback } from "react";
+import { fetchAllProducts } from "../../utils/fetchAllProducts";
 
-const ProductGrid = () => {
+const ProductGrid = ({ selectedCategoryId }) => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [cartLoading, setCartLoading] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const loadProducts = async () => {
-      const pages = [1, 2, 3]; // مثلا جلب 3 صفحات
-      const allProducts = await fetchAllProducts(pages);
+      setLoading(true);
+      try {
+        const pages = [1, 2, 3];
+        const allProducts = await fetchAllProducts(
+          pages,
+          null,
+          controller.signal
+        );
 
-      // تحويل البيانات إلى الشكل المطلوب في ProductGrid (مثلا نفس التنسيق القديم)
-      const mappedProducts = allProducts.map((product) => ({
-        id: product.id,
-        name: product.name,
-        oldPrice: `$${(product.priceOld || product.price + 20).toFixed(2)}`,
-        newPrice: `$${product.price.toFixed(2)}`,
-        imageUrl: product.primaryImg || "", // الصورة الافتراضية
-        colors: product.variants.map((variant, i) => ({
-          title: variant.title,
-          imgSrc: variant.src,
-        })),
-        reviews: product.reviewsCount || 3,
-      }));
+        // هنا تأكد أن كل منتج عنده categoryId
+        const mappedProducts = allProducts.map((product) => ({
+          id: product.id,
+          name: product.name,
+          oldPrice: `$${(product.priceOld || product.price + 20).toFixed(2)}`,
+          newPrice: `$${product.price.toFixed(2)}`,
+          imageUrl: product.primaryImg || "",
+          colors: product.variants.map((variant) => ({
+            title: variant.title,
+            imgSrc: variant.src,
+          })),
+          reviews: product.reviewsCount || 3,
+          categoryId: product.categoryId, // <-- ضروري!
+        }));
 
-      setProducts(mappedProducts);
+        setProducts(mappedProducts);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Failed to load products:", error);
+        }
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadProducts();
+    return () => controller.abort();
   }, []);
 
-  // باقي الكود كما هو بدون تغيير...
-  const handleColorChange = (productId, imgSrc) => {
+  const handleColorChange = useCallback((productId, imgSrc) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
         product.id === productId ? { ...product, imageUrl: imgSrc } : product
       )
     );
-  };
+  }, []);
 
-  const addToCart = (product) => {
-    const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+  const addToCart = useCallback(
+    (product) => {
+      if (cartLoading) return;
+      setCartLoading(true);
 
-    const itemExists = existingCart.find((item) => item.id === product.id);
-    if (itemExists) {
-      alert("هذا المنتج موجود بالفعل في السلة");
-      return;
-    }
+      setTimeout(() => {
+        const existingCart =
+          JSON.parse(localStorage.getItem("cartItems")) || [];
 
-    const numericPrice = parseFloat(product.newPrice.replace("$", ""));
+        const itemExists = existingCart.find((item) => item.id === product.id);
+        if (itemExists) {
+          alert("The item has already been added.");
+          setCartLoading(false);
+          return;
+        }
 
-    const updatedCart = [
-      ...existingCart,
-      {
-        ...product,
-        price: numericPrice,
-        image: product.imageUrl,
-        quantity: 1,
-      },
-    ];
+        const numericPrice = parseFloat(product.newPrice.replace("$", ""));
 
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-    alert("✅ تم إضافة المنتج إلى السلة");
-  };
+        const updatedCart = [
+          ...existingCart,
+          {
+            ...product,
+            price: numericPrice,
+            image: product.imageUrl,
+            quantity: 1,
+          },
+        ];
+
+        localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+        alert("✅ The item has been added successfully");
+        setCartLoading(false);
+      }, 200);
+    },
+    [cartLoading]
+  );
+
+  // فلترة المنتجات حسب الفئة
+  const filteredProducts = selectedCategoryId
+    ? products.filter((p) => p.categoryId === selectedCategoryId)
+    : products;
 
   return (
     <div className="grid-products grid-view-items">
       <div className="row col-row product-options row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2">
-        {products.length === 0 ? (
-          <p>جاري تحميل المنتجات...</p>
+        {loading ? (
+          <p>Loading...</p>
+        ) : filteredProducts.length === 0 ? (
+          <p>لا يوجد منتجات لهذه الفئة</p>
         ) : (
-          products.map((product) => (
+          filteredProducts.map((product) => (
             <div className="item col-item" key={product.id}>
               <div className="product-box">
                 <div className="product-image">
@@ -95,6 +131,7 @@ const ProductGrid = () => {
                       className="btn-icon addtocart"
                       onClick={() => addToCart(product)}
                       title="Add to Cart"
+                      disabled={cartLoading}
                     >
                       <i className="fa-solid fa-cart-plus"></i>
                       <span className="text">Add to Cart</span>
