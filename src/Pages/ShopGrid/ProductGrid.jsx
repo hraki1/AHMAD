@@ -18,8 +18,6 @@ const ProductGrid = ({ selectedCategoryId }) => {
           null,
           controller.signal
         );
-
-        // هنا تأكد أن كل منتج عنده categoryId
         const mappedProducts = allProducts.map((product) => ({
           id: product.id,
           name: product.name,
@@ -31,14 +29,12 @@ const ProductGrid = ({ selectedCategoryId }) => {
             imgSrc: variant.src,
           })),
           reviews: product.reviewsCount || 3,
-          categoryId: product.categoryId, // <-- ضروري!
+          categoryId: product.categoryId,
         }));
-
         setProducts(mappedProducts);
       } catch (error) {
-        if (error.name !== "AbortError") {
+        if (error.name !== "AbortError")
           console.error("Failed to load products:", error);
-        }
       } finally {
         setLoading(false);
       }
@@ -64,8 +60,8 @@ const ProductGrid = ({ selectedCategoryId }) => {
       setTimeout(() => {
         const existingCart =
           JSON.parse(localStorage.getItem("cartItems")) || [];
-
         const itemExists = existingCart.find((item) => item.id === product.id);
+
         if (itemExists) {
           alert("The item has already been added.");
           setCartLoading(false);
@@ -73,17 +69,10 @@ const ProductGrid = ({ selectedCategoryId }) => {
         }
 
         const numericPrice = parseFloat(product.newPrice.replace("$", ""));
-
         const updatedCart = [
           ...existingCart,
-          {
-            ...product,
-            price: numericPrice,
-            image: product.imageUrl,
-            quantity: 1,
-          },
+          { ...product, price: numericPrice, quantity: 1 },
         ];
-
         localStorage.setItem("cartItems", JSON.stringify(updatedCart));
         alert("✅ The item has been added successfully");
         setCartLoading(false);
@@ -92,10 +81,18 @@ const ProductGrid = ({ selectedCategoryId }) => {
     [cartLoading]
   );
 
-  // فلترة المنتجات حسب الفئة
   const filteredProducts = selectedCategoryId
     ? products.filter((p) => p.categoryId === selectedCategoryId)
     : products;
+
+  const renderStars = (reviews) =>
+    [...Array(5)].map((_, i) => (
+      <i
+        key={i}
+        className={`fas fa-star ${i < reviews ? "active" : "inactive"}`}
+        style={{ color: i < reviews ? "gold" : "gray" }}
+      ></i>
+    ));
 
   return (
     <div className="grid-products grid-view-items">
@@ -125,7 +122,6 @@ const ProductGrid = ({ selectedCategoryId }) => {
                   <div className="product-labels">
                     <span className="lbl on-sale">Sale</span>
                   </div>
-                  <div className="saleTime" data-countdown="2025/01/01"></div>
                   <div className="button-set style1">
                     <button
                       className="btn-icon addtocart"
@@ -136,40 +132,23 @@ const ProductGrid = ({ selectedCategoryId }) => {
                       <i className="fa-solid fa-cart-plus"></i>
                       <span className="text">Add to Cart</span>
                     </button>
-
                     <a
                       href="#quickview-modal"
-                      className="btn-icon quickview quick-view-modal"
+                      className="btn-icon quickview"
                       data-bs-toggle="modal"
                       data-bs-target="#quickview_modal"
                     >
-                      <span
-                        className="icon-wrap d-flex-justify-center h-100 w-100"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="left"
-                        title="Quick View"
-                      >
-                        <i className="fa-solid fa-eye"></i>
-                        <span className="text">Quick View</span>
-                      </span>
+                      <i className="fa-solid fa-eye"></i>
+                      <span className="text">Quick View</span>
                     </a>
                     <a
                       href="wishlist-style2.html"
                       className="btn-icon wishlist"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="left"
-                      title="Add To Wishlist"
                     >
                       <i className="fa-solid fa-heart"></i>
                       <span className="text">Add To Wishlist</span>
                     </a>
-                    <a
-                      href="compare-style2.html"
-                      className="btn-icon compare"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="left"
-                      title="Add to Compare"
-                    >
+                    <a href="compare-style2.html" className="btn-icon compare">
                       <i className="fa-solid fa-code-compare"></i>
                       <span className="text">Add to Compare</span>
                     </a>
@@ -185,26 +164,13 @@ const ProductGrid = ({ selectedCategoryId }) => {
                     <span className="price">{product.newPrice}</span>
                   </div>
                   <div className="product-review">
-                    {[...Array(5)].map((_, i) => (
-                      <i
-                        key={i}
-                        className={`fas fa-star ${
-                          i < product.reviews ? "active" : "inactive"
-                        }`}
-                        style={{
-                          color: i < product.reviews ? "gold" : "gray",
-                        }}
-                      ></i>
-                    ))}
-                    <span className="caption hidden ms-1">
-                      {product.reviews} Reviews
-                    </span>
+                    {renderStars(product.reviews)}
                   </div>
                   <ul className="variants-clr swatches">
                     {product.colors.map((color, index) => (
                       <li
-                        className="swatch medium radius"
                         key={index}
+                        className="swatch medium radius"
                         onClick={() =>
                           handleColorChange(product.id, color.imgSrc)
                         }

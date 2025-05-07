@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import useFetchCategories from "../utils/useFetchCategories";
+import { useNavigate } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -10,13 +11,15 @@ export default function PopularCategories({
   heading = "Popular Collections",
   selectedCategoryId,
   setSelectedCategoryId,
-  setSelectedParentId, // Add this line
+  setSelectedParentId,
 }) {
   const [localSelectedParentId, setLocalSelectedParentId] = useState(null);
+  const [categoryHierarchy, setCategoryHierarchy] = useState([]); // لتخزين تسلسل الفئات الأبناء
   const { categories, loading, error } = useFetchCategories(
     localSelectedParentId
   );
   const sliderRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (sliderRef.current && sliderRef.current.innerSlider) {
@@ -46,6 +49,24 @@ export default function PopularCategories({
   if (loading) return <div>Loading...</div>;
   if (error && categories.length === 0) return <div>{error}</div>;
 
+  // الدالة للرجوع خطوة واحدة
+  const handleBackOneTime = () => {
+    // الرجوع إلى الفئة الأم في التسلسل
+    if (categoryHierarchy.length > 1) {
+      const parentCategory = categoryHierarchy[categoryHierarchy.length - 2];
+      setLocalSelectedParentId(parentCategory.id); // تحديث الفئة الأم
+      setSelectedCategoryId(parentCategory.id); // إعادة تحديد الفئة الأم
+      setCategoryHierarchy(
+        categoryHierarchy.slice(0, categoryHierarchy.length - 1)
+      ); // إزالة الفئة الحالية من التسلسل
+    } else {
+      // إذا كنت في المستوى الأعلى (فئة رئيسية)
+      setLocalSelectedParentId(null); // العودة إلى الفئات الرئيسية
+      setSelectedCategoryId(null);
+      setCategoryHierarchy([]); // إعادة تعيين التسلسل
+    }
+  };
+
   return (
     <section className="section collection-slider pb-0">
       <div className="container">
@@ -64,9 +85,17 @@ export default function PopularCategories({
                 setLocalSelectedParentId(null);
                 setSelectedParentId(null); // Notify parent to reset
                 setSelectedCategoryId(null);
+                setCategoryHierarchy([]); // إعادة تعيين التسلسل
               }}
             >
-              BACK
+              BACK TO ALL CATEGORIES
+            </button>
+
+            <button
+              className="btn btn-outline-primary"
+              onClick={handleBackOneTime}
+            >
+              Back One Time
             </button>
           </div>
         )}
@@ -83,9 +112,10 @@ export default function PopularCategories({
                 key={c.id}
                 className="category-item zoomscal-hov"
                 onClick={() => {
-                  setSelectedCategoryId(c.id); // تحديث الفئة المحددة
-                  setLocalSelectedParentId(c.id); // تحديث الفئة الفرعية
-                  setSelectedParentId(c.id);
+                  setSelectedCategoryId(c.id); // تحديد الفئة الحالية
+                  setLocalSelectedParentId(c.id); // تحديد الفئة الفرعية
+                  setCategoryHierarchy([...categoryHierarchy, c]); // إضافة الفئة الحالية إلى التسلسل
+                  setSelectedParentId(c.id); // تحديد الفئة الأم
                 }}
                 style={{ cursor: "pointer" }}
               >
