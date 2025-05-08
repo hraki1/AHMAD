@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import MiniCart from "../../../Pages/Cart/MiniCart";
 import logoSarah from "../../../assets/images/2.png";
-import bannerMenu from "../../../assets/images/megamenu/banner-menu.jpg";
 import AccountMenu from "./AccountMenu";
 import imageCart1 from "../../../assets/images/products/product1-120x170.jpg";
 import imageCart2 from "../../../assets/images/products/product2-120x170.jpg";
 import MobileMenu from "../Mobile/MobileMenu";
-
+import useFetchCategories from "../../../utils/useFetchCategories";
 const NavItem = ({ title, links }) => (
   <li className="dropdown head-drop-down">
     <a href="#">
@@ -28,7 +27,7 @@ const NavItem = ({ title, links }) => (
 const ShopMenu = () => (
   <li className="megamenu head-drop-down">
     <Link href="#">
-      Shop <i className="fa-solid fa-angle-down ms-1" />
+      Category <i className="fa-solid fa-angle-down ms-1" />
     </Link>
     <div className="megamenu style1">
       <ul className="row grid--uniform mmWrapper">
@@ -68,35 +67,29 @@ const ShopMenu = () => (
             </li>
           </ul>
         </li>
-        <li className="lvl-1 col-md-3 col-lg-3 w-34 banner-col">
-          <div className="banner-wrap">
-            <Link to="/ShopGrid">
-              <img
-                className="blur-up lazyload"
-                src={bannerMenu}
-                alt="banner"
-                width={600}
-                height={440}
-              />
-            </Link>
-            <div className="banner-content">
-              <h4>Hot deals</h4>
-              <h3>
-                Don't miss <br /> Trending
-              </h3>
-              <div className="banner-save">Save to 50%</div>
-              <div className="banner-btn">
-                <Link to="/ShopGrid" className="btn">
-                  Shop now
-                </Link>
-              </div>
-            </div>
-            <div className="banner-discount">
-              <h3>
-                <span>50%</span> Off
-              </h3>
-            </div>
-          </div>
+        <li className="lvl-1 col-md-3 col-lg-3 w-22">
+          <Link to="/Wishlist" className="site-nav lvl-1 menu-title">
+            Shop Other Page
+          </Link>
+          <ul className="subLinks">
+            <li className="lvl-2">
+              <Link to="/Wishlist" className="site-nav lvl-2">
+                Wishlist Style
+              </Link>
+            </li>
+          </ul>
+        </li>
+        <li className="lvl-1 col-md-3 col-lg-3 w-22">
+          <Link to="/Wishlist" className="site-nav lvl-1 menu-title">
+            Shop Other Page
+          </Link>
+          <ul className="subLinks">
+            <li className="lvl-2">
+              <Link to="/Wishlist" className="site-nav lvl-2">
+                Wishlist Style
+              </Link>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>
