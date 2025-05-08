@@ -3,8 +3,8 @@ import Slider from "react-slick";
 import Button from "../../Components/common/Button";
 // import quoteIcon from "../../assets/images/icons/demo1-quote-icon.png";
 import brandIcon from "../../assets/images/icons/brand-icon.png";
-import { testimonials } from "./data";
-
+import useFetchBrands from "../../utils/useFetchBrands";
+import { Link } from "react-router-dom";
 export default function TestimonialSection() {
   const settings = {
     slidesToShow: 3,
@@ -21,9 +21,10 @@ export default function TestimonialSection() {
       { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
+  const { brands, loading, error } = useFetchBrands();
 
   return (
-    <section className="section testimonial-slider style1">
+    <section className="section home-blog-post">
       <div className="container">
         <div className="section-header">
           <div className="main-italic mb-2 mt-0">Brands</div>
@@ -31,64 +32,46 @@ export default function TestimonialSection() {
         </div>
 
         <div className="testimonial-wraper">
-          <Slider
-            {...settings}
-            className="testimonial-slider-3items gp15 slick-arrow-dots arwOut5"
-          >
-            {testimonials.map((t, index) => (
-              <div key={index} className="testimonial-slide">
-                <div className="testimonial-content text-center">
-                  <div className="quote-icon mb-3 mb-lg-4">
-                    <img
-                      className="blur-up lazyload mx-auto"
-                      src={brandIcon}
-                      alt="icon"
-                      width="40"
-                      height="40"
-                    />
-                  </div>
-
-                  <div className="content">
-                    <div className="text mb-2">
-                      <p>
+          {loading ? (
+            <p className="text-center">Loading...</p>
+          ) : error ? (
+            <p className="text-center text-danger">{error}</p>
+          ) : (
+            <Slider
+              {...settings}
+              className="blog-slider-3items gp15 arwOut5 hov-arrow"
+            >
+              {brands.map((brand, i) => (
+                <div key={i} className="blog-item">
+                  <div className="blog-article zoomscal-hov">
+                    <div className="blog-img">
+                      <Link
+                        className="featured-image zoom-scal"
+                        to={`/brands/${brand.slug}`}
+                      >
                         <img
-                          className="brand-name"
-                          src="https://images-platform.99static.com//pyJ8X3pEcCeRiL-MOiVXWHYQTHk=/509x211:1480x1182/fit-in/500x500/99designs-contests-attachments/89/89453/attachment_89453866"
+                          className="blur-up lazyload"
+                          src={brand.image}
+                          alt={brand.name}
+                          width="740"
+                          height="410"
                         />
-                      </p>
+                      </Link>
                     </div>
 
-                    <div className="product-review my-3">
-                      {/* {[...Array(5)].map((_, i) => (
-                        <i
-                          key={i}
-                          className={`${i < t.stars ? "fas" : "far"} fa-star`}
-                          style={{ color: "gold" }}
-                        />
-                      ))} */}
-                      <span className="caption hidden ms-1"></span>
-                    </div>
-                  </div>
-
-                  <div className="auhimg d-flex-justify-center text-left">
-                    <div className="image">
-                      {/* <img
-                        className="rounded-circle blur-up lazyload"
-                        src={t.img}
-                        alt={t.name}
-                        width="65"
-                        height="65"
-                      /> */}
-                    </div>
-                    <div className="auhtext ms-3">
-                      <h5 className="authour mb-1">{t.name}</h5>
-                      <p className="text-muted"></p>
+                    <div className="blog-content">
+                      <h2 className="h3 mb-3 text-center">
+                        <Link to={`/brands`}>{brand.name}</Link>
+                      </h2>
+                      <p className="content mb-5 text-center">{brand.slug}</p>
+                      {/* <p className="content">{brand.description}</p> */}
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </Slider>
+              ))}
+            </Slider>
+          )}
+
           <div className="view-collection text-center mt-4 mt-md-5">
             <Button label="View brands" to="/Brands" primary={false} />
           </div>

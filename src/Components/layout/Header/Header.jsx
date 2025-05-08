@@ -56,7 +56,6 @@ const HeaderCart = ({
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { categories, loading, error } = useFetchCategoryandSub();
-  const [expandedCategory, setExpandedCategory] = useState(null);
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
