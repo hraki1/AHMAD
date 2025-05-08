@@ -1,96 +1,101 @@
 import React, { useState } from "react";
 import { showOptions, sortOptions, viewModes } from "./data";
 import ProductGrid from "./ProductGrid";
-import PriceFilter from "./Filters/PriceFilter";
 import SidebarCategories from "./Filters/SidebarCategories";
+import PriceFilter from "./Filters/PriceFilter";
 import ColorFilter from "./Filters/ColorFilter";
 import SizeFilter from "./Filters/SizeFilter";
 import ProductTypeFilter from "./Filters/ProductTypeFilter";
 import BrandFilter from "./Filters/BrandFilter";
 import AvailabilityFilter from "./Filters/AvailabilityFilter";
 
-// 🧩 Component: ViewModes
-function ViewModes({ activeView, onChange }) {
-  return (
-    <div className="grid-options view-mode d-flex">
-      {viewModes.map(({ class: cls, col }) => (
-        <a
-          key={col}
-          href="#"
-          className={`icon-mode ${cls} ${activeView === col ? "active" : ""}`}
-          data-col={col}
-          onClick={(e) => {
-            e.preventDefault();
-            onChange(col);
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+// 🔹 ViewModes Component
+const ViewModes = ({ activeView, onChange }) => (
+  <div className="grid-options view-mode d-flex">
+    {viewModes.map(({ class: cls, col }) => (
+      <a
+        key={col}
+        href="#"
+        className={`icon-mode ${cls} ${activeView === col ? "active" : ""}`}
+        data-col={col}
+        onClick={(e) => {
+          e.preventDefault();
+          onChange(col);
+        }}
+      />
+    ))}
+  </div>
+);
 
-// 🧩 Component: SelectBox
-function SelectBox({ id, label, options, defaultValue }) {
-  return (
-    <div className="filters-item d-flex align-items-center ms-2 ms-lg-3">
-      {label && (
-        <label
-          htmlFor={id}
-          className="mb-0 me-2 text-nowrap d-none d-sm-inline-flex"
-        >
-          {label}
-        </label>
-      )}
-      <select
-        id={id}
-        className={`filters-toolbar-${id}`}
-        defaultValue={defaultValue}
+// 🔹 Reusable SelectBox
+const SelectBox = ({ id, label, options, defaultValue }) => (
+  <div className="filters-item d-flex align-items-center ms-2 ms-lg-3">
+    {label && (
+      <label
+        htmlFor={id}
+        className="mb-0 me-2 text-nowrap d-none d-sm-inline-flex"
       >
-        {options.map((opt) =>
-          typeof opt === "object" ? (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ) : (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          )
-        )}
-      </select>
-    </div>
-  );
-}
+        {label}
+      </label>
+    )}
+    <select
+      id={id}
+      className={`filters-toolbar-${id}`}
+      defaultValue={defaultValue}
+    >
+      {options.map((opt) => (
+        <option key={opt.value || opt} value={opt.value || opt}>
+          {opt.label || opt}
+        </option>
+      ))}
+    </select>
+  </div>
+);
 
-// 🔧 Main Toolbar
-export default function Toolbar({ onFilterClick, onViewChange }) {
+// 🔸 Filters List
+const filters = [
+  SidebarCategories,
+  PriceFilter,
+  ColorFilter,
+  SizeFilter,
+  ProductTypeFilter,
+  BrandFilter,
+  AvailabilityFilter,
+];
+
+// 🔶 Main Toolbar
+export default function Toolbar({
+  onFilterClick,
+  onViewChange,
+  selectedCategoryAndChildrenIds,
+}) {
   const [activeView, setActiveView] = useState(5);
-  const [showFilter, setShowFilter] = useState(false); // حالة لفتح/إغلاق قائمة الفلتر
+  const [showFilter, setShowFilter] = useState(false);
 
   const handleViewChange = (col) => {
     setActiveView(col);
     onViewChange?.(col);
   };
 
-  const handleFilterClick = () => {
-    setShowFilter(!showFilter); // تبديل حالة الفلتر
-    onFilterClick?.(); // إذا كان هناك وظيفة خارجية
+  const toggleFilter = () => {
+    setShowFilter((prev) => !prev);
+    onFilterClick?.();
   };
 
   return (
-    <div className="col-12 col-sm-12 col-md-12 col-lg-9 main-col">
+    <div className="col-12 col-lg-9 main-col">
       <div className="toolbar toolbar-wrapper shop-toolbar mt-5">
         <div className="row align-items-center">
           {/* Left */}
-          <div className="col-4 col-sm-2 col-md-4 col-lg-4 text-left filters-toolbar-item d-flex order-1 order-sm-0">
+          <div className="col-4 col-sm-2 col-md-4 col-lg-4 d-flex order-1 order-sm-0">
             <button
               type="button"
               className="btn btn-filter icon anm anm-sliders-hr d-inline-flex d-lg-none me-2"
-              onClick={handleFilterClick}
+              onClick={toggleFilter}
             >
               Filter <i className="fa-solid fa-bars ms-1" />
             </button>
-            <div className="filters-item d-flex align-items-center">
+            <div className="d-flex align-items-center">
               <label className="mb-0 me-2 d-none d-lg-inline-block">
                 View as:
               </label>
@@ -99,12 +104,12 @@ export default function Toolbar({ onFilterClick, onViewChange }) {
           </div>
 
           {/* Center */}
-          <div className="col-12 col-sm-4 col-md-4 col-lg-4 text-center product-count order-0 order-md-1 mb-3 mb-sm-0">
+          <div className="col-12 col-sm-4 col-md-4 col-lg-4 text-center order-0 order-md-1 mb-3 mb-sm-0">
             <span className="toolbar-product-count">Showing: 15 products</span>
           </div>
 
           {/* Right */}
-          <div className="col-8 col-sm-6 col-md-4 col-lg-4 text-right filters-toolbar-item d-flex justify-content-end order-2 order-sm-2">
+          <div className="col-8 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-end order-2">
             <SelectBox
               id="show"
               label="Show:"
@@ -121,20 +126,19 @@ export default function Toolbar({ onFilterClick, onViewChange }) {
         </div>
       </div>
 
-      {/* عرض الفلتر في حالة الضغط على زر الفلتر */}
+      {/* Filters */}
       {showFilter && (
-        <div className={`filter-menu ${showFilter ? "visible" : "hidden"}`}>
-          <SidebarCategories className="mb-5" />
-          <PriceFilter className="mb-5" />
-          <ColorFilter className="mb-5" />
-          <SizeFilter className="mb-5" />
-          <ProductTypeFilter className="mb-5" />
-          <BrandFilter className="mb-5" />
-          <AvailabilityFilter className="mb-5" />
+        <div className="filter-menu visible">
+          {filters.map((FilterComp, idx) => (
+            <FilterComp key={idx} className="mb-5" />
+          ))}
         </div>
       )}
 
-      <ProductGrid />
+      {/* Product Grid */}
+      <ProductGrid
+        selectedCategoryAndChildrenIds={selectedCategoryAndChildrenIds}
+      />
     </div>
   );
 }

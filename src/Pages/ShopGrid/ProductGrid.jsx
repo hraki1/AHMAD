@@ -1,114 +1,136 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { fetchAllProducts } from "../../utils/fetchAllProducts";
+import useFetchCategories from "../../utils/useFetchCategories";
 
-// Importing all images
-import imgOne from "../../assets/images/products/product1-1.jpg";
-import imgNavy from "../../assets/images/products/product1.jpg";
-import imgGreen from "../../assets/images/products/product1-1.jpg";
-import imgGray from "../../assets/images/products/product1-2.jpg";
-import imgOrange from "../../assets/images/products/product1-3.jpg";
+const ProductGrid = ({ selectedCategoryAndChildrenIds }) => {
+  const [products, setProducts] = useState([]);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [subcategoryIds, setSubcategoryIds] = useState([]);
+  const {
+    categories: subcategories,
+    loading: subcategoriesLoading,
+    error: subcategoriesError,
+  } = useFetchCategories(selectedCategoryAndChildrenIds?.[0] || null);
 
-const ProductGrid = () => {
-  // Data
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Oxford Cuban Shirt",
-      oldPrice: "$114.00",
-      newPrice: "$99.00",
-      imageUrl: imgOne, // الصورة الافتراضية
-      colors: [
-        { title: "Navy", imgSrc: imgNavy },
-        { title: "Green", imgSrc: imgGreen },
-        { title: "Gray", imgSrc: imgGray },
-        { title: "Orange", imgSrc: imgOrange },
-      ],
-      reviews: 3,
-    },
-    {
-      id: 2,
-      name: "Oxford Cuban Shirt",
-      oldPrice: "$114.00",
-      newPrice: "$99.00",
-      imageUrl: imgOne, // الصورة الافتراضية
-      colors: [
-        { title: "Navy", imgSrc: imgNavy },
-        { title: "Green", imgSrc: imgGreen },
-        { title: "Gray", imgSrc: imgGray },
-        { title: "Orange", imgSrc: imgOrange },
-      ],
-      reviews: 3,
-    },
-    {
-      id: 3,
-      name: "Oxford Cuban Shirt",
-      oldPrice: "$114.00",
-      newPrice: "$99.00",
-      imageUrl: imgOne, // الصورة الافتراضية
-      colors: [
-        { title: "Navy", imgSrc: imgNavy },
-        { title: "Green", imgSrc: imgGreen },
-        { title: "Gray", imgSrc: imgGray },
-        { title: "Orange", imgSrc: imgOrange },
-      ],
-      reviews: 3,
-    },
-    {
-      id: 4,
-      name: "Oxford Cuban Shirt",
-      oldPrice: "$114.00",
-      newPrice: "$99.00",
-      imageUrl: imgOne, // الصورة الافتراضية
-      colors: [
-        { title: "Navy", imgSrc: imgNavy },
-        { title: "Green", imgSrc: imgGreen },
-        { title: "Gray", imgSrc: imgGray },
-        { title: "Orange", imgSrc: imgOrange },
-      ],
-      reviews: 3,
-    },
+  useEffect(() => {
+    if (
+      !subcategoriesLoading &&
+      !subcategoriesError &&
+      selectedCategoryAndChildrenIds?.[0]
+    ) {
+      setSubcategoryIds(subcategories.map((sub) => sub.id));
+    } else if (!selectedCategoryAndChildrenIds) {
+      setSubcategoryIds([]);
+    }
+  }, [
+    subcategories,
+    subcategoriesLoading,
+    subcategoriesError,
+    selectedCategoryAndChildrenIds,
   ]);
 
-  //  To Change Color
-  const handleColorChange = (productId, imgSrc) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((product) =>
-        product.id === productId
-          ? { ...product, imageUrl: imgSrc } // تغيير الصورة فقط لهذا المنتج
-          : product
-      )
+  useEffect(() => {
+    const controller = new AbortController();
+    const loadProducts = async () => {
+      try {
+        const allProducts = await fetchAllProducts(
+          [1, 2, 3],
+          null,
+          controller.signal
+        );
+        setProducts(
+          allProducts.map(
+            ({
+              id,
+              name,
+              price,
+              priceOld,
+              primaryImg,
+              variants,
+              reviewsCount,
+              categoryId,
+            }) => ({
+              id,
+              name,
+              oldPrice: `$${(priceOld || price + 20).toFixed(2)}`,
+              newPrice: `$${price.toFixed(2)}`,
+              imageUrl: primaryImg || "",
+              categoryId,
+              reviews: reviewsCount || 3,
+              colors: variants.map(({ title, src }) => ({
+                title,
+                imgSrc: src,
+              })),
+            })
+          )
+        );
+      } catch (error) {
+        if (error.name !== "AbortError")
+          console.error("Failed to load products:", error);
+      }
+    };
+
+    loadProducts();
+    return () => controller.abort();
+  }, []);
+
+  const handleColorChange = useCallback((productId, imgSrc) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === productId ? { ...p, imageUrl: imgSrc } : p))
     );
-  };
+  }, []);
 
-  // Function To Add In Cart
-  const addToCart = (product) => {
-    const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+  const addToCart = useCallback(
+    (product) => {
+      if (cartLoading) return;
+      setCartLoading(true);
 
-    const itemExists = existingCart.find((item) => item.id === product.id);
-    if (itemExists) {
-      alert("هذا المنتج موجود بالفعل في السلة");
-      return;
-    }
+      setTimeout(() => {
+        const existing = JSON.parse(localStorage.getItem("cartItems")) || [];
+        if (existing.find((item) => item.id === product.id)) {
+          alert("The item has already been added.");
+          return setCartLoading(false);
+        }
 
-    const numericPrice = parseFloat(product.newPrice.replace("$", ""));
+        const updated = [
+          ...existing,
+          {
+            ...product,
+            price: parseFloat(product.newPrice.replace("$", "")),
+            quantity: 1,
+          },
+        ];
+        localStorage.setItem("cartItems", JSON.stringify(updated));
+        alert("✅ The item has been added successfully");
+        setCartLoading(false);
+      }, 200);
+    },
+    [cartLoading]
+  );
 
-    const updatedCart = [
-      ...existingCart,
-      {
-        ...product,
-        price: numericPrice, //
-        image: product.imageUrl, // to know image
-        quantity: 1,
-      },
-    ];
+  const filteredProducts = useMemo(() => {
+    if (!selectedCategoryAndChildrenIds) return products;
+    const ids = [selectedCategoryAndChildrenIds[0], ...subcategoryIds];
+    return products.filter((p) => ids.includes(p.categoryId));
+  }, [products, selectedCategoryAndChildrenIds, subcategoryIds]);
 
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-    alert("✅ تم إضافة المنتج إلى السلة");
-  };
+  const renderStars = (reviews) =>
+    Array.from({ length: 5 }, (_, i) => (
+      <i
+        key={i}
+        className={`fas fa-star`}
+        style={{ color: i < reviews ? "gold" : "gray" }}
+      />
+    ));
+
+  if (subcategoriesLoading) return <p>Loading subcategories...</p>;
+  if (!filteredProducts.length)
+    return <p>No products found for this category.</p>;
 
   return (
     <div className="grid-products grid-view-items">
       <div className="row col-row product-options row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <div className="item col-item" key={product.id}>
             <div className="product-box">
               <div className="product-image">
@@ -118,9 +140,8 @@ const ProductGrid = () => {
                 >
                   <img
                     className="blur-up lazyload"
-                    src={product.imageUrl} // عرض الصورة المختارة
+                    src={product.imageUrl}
                     alt={product.name}
-                    title={product.name}
                     width="625"
                     height="808"
                   />
@@ -128,50 +149,30 @@ const ProductGrid = () => {
                 <div className="product-labels">
                   <span className="lbl on-sale">Sale</span>
                 </div>
-                <div className="saleTime" data-countdown="2025/01/01"></div>
                 <div className="button-set style1">
                   <button
                     className="btn-icon addtocart"
                     onClick={() => addToCart(product)}
+                    disabled={cartLoading}
                     title="Add to Cart"
                   >
                     <i className="fa-solid fa-cart-plus"></i>
                     <span className="text">Add to Cart</span>
                   </button>
-
                   <a
                     href="#quickview-modal"
-                    className="btn-icon quickview quick-view-modal"
+                    className="btn-icon quickview"
                     data-bs-toggle="modal"
                     data-bs-target="#quickview_modal"
                   >
-                    <span
-                      className="icon-wrap d-flex-justify-center h-100 w-100"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="left"
-                      title="Quick View"
-                    >
-                      <i className="fa-solid fa-eye"></i>
-                      <span className="text">Quick View</span>
-                    </span>
+                    <i className="fa-solid fa-eye"></i>
+                    <span className="text">Quick View</span>
                   </a>
-                  <a
-                    href="wishlist-style2.html"
-                    className="btn-icon wishlist"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="left"
-                    title="Add To Wishlist"
-                  >
+                  <a href="wishlist-style2.html" className="btn-icon wishlist">
                     <i className="fa-solid fa-heart"></i>
                     <span className="text">Add To Wishlist</span>
                   </a>
-                  <a
-                    href="compare-style2.html"
-                    className="btn-icon compare"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="left"
-                    title="Add to Compare"
-                  >
+                  <a href="compare-style2.html" className="btn-icon compare">
                     <i className="fa-solid fa-code-compare"></i>
                     <span className="text">Add to Compare</span>
                   </a>
@@ -187,36 +188,18 @@ const ProductGrid = () => {
                   <span className="price">{product.newPrice}</span>
                 </div>
                 <div className="product-review">
-                  {[...Array(5)].map((_, i) => (
-                    <i
-                      key={i}
-                      className={`fas fa-star ${
-                        i < product.reviews ? "active" : "inactive"
-                      }`}
-                      style={{
-                        color: i < product.reviews ? "gold" : "gray",
-                      }}
-                    ></i>
-                  ))}
-                  <span className="caption hidden ms-1">
-                    {product.reviews} Reviews
-                  </span>
+                  {renderStars(product.reviews)}
                 </div>
                 <ul className="variants-clr swatches">
-                  {product.colors.map((color, index) => (
+                  {product.colors.map((color, i) => (
                     <li
+                      key={i}
                       className="swatch medium radius"
-                      key={index}
                       onClick={() =>
                         handleColorChange(product.id, color.imgSrc)
-                      } // عند النقر تغيير الصورة
+                      }
                     >
-                      <span
-                        className="swatchLbl"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title={color.title}
-                      >
+                      <span className="swatchLbl" title={color.title}>
                         <img
                           src={color.imgSrc}
                           alt={color.title}
