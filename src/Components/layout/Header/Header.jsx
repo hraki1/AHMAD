@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MiniCart from "../../../Pages/Cart/MiniCart";
 import logoSarah from "../../../assets/images/2.png";
@@ -6,7 +6,8 @@ import AccountMenu from "./AccountMenu";
 import imageCart1 from "../../../assets/images/products/product1-120x170.jpg";
 import imageCart2 from "../../../assets/images/products/product2-120x170.jpg";
 import MobileMenu from "../Mobile/MobileMenu";
-import useFetchCategories from "../../../utils/useFetchCategories";
+import useFetchCategoryandSub from "./useFetchCategoryandSub";
+
 const NavItem = ({ title, links }) => (
   <li className="dropdown head-drop-down">
     <a href="#">
@@ -21,78 +22,6 @@ const NavItem = ({ title, links }) => (
         </li>
       ))}
     </ul>
-  </li>
-);
-
-const ShopMenu = () => (
-  <li className="megamenu head-drop-down">
-    <Link href="#">
-      Category <i className="fa-solid fa-angle-down ms-1" />
-    </Link>
-    <div className="megamenu style1">
-      <ul className="row grid--uniform mmWrapper">
-        <li className="lvl-1 col-md-3 col-lg-3 w-22">
-          <Link to="/Collection" className="site-nav lvl-1 menu-title">
-            Collection Page
-          </Link>
-          <ul className="subLinks">
-            <li className="lvl-2">
-              <Link to="/Collection" className="site-nav lvl-2">
-                Collection style
-              </Link>
-            </li>
-          </ul>
-        </li>
-        <li className="lvl-1 col-md-3 col-lg-3 w-22">
-          <Link to="/ShopGrid" className="site-nav lvl-1 menu-title">
-            Shop Page
-          </Link>
-          <ul className="subLinks">
-            <li className="lvl-2">
-              <Link to="/ShopGrid" className="site-nav lvl-2">
-                Shop Grid View
-              </Link>
-            </li>
-          </ul>
-        </li>
-        <li className="lvl-1 col-md-3 col-lg-3 w-22">
-          <Link to="/Wishlist" className="site-nav lvl-1 menu-title">
-            Shop Other Page
-          </Link>
-          <ul className="subLinks">
-            <li className="lvl-2">
-              <Link to="/Wishlist" className="site-nav lvl-2">
-                Wishlist Style
-              </Link>
-            </li>
-          </ul>
-        </li>
-        <li className="lvl-1 col-md-3 col-lg-3 w-22">
-          <Link to="/Wishlist" className="site-nav lvl-1 menu-title">
-            Shop Other Page
-          </Link>
-          <ul className="subLinks">
-            <li className="lvl-2">
-              <Link to="/Wishlist" className="site-nav lvl-2">
-                Wishlist Style
-              </Link>
-            </li>
-          </ul>
-        </li>
-        <li className="lvl-1 col-md-3 col-lg-3 w-22">
-          <Link to="/Wishlist" className="site-nav lvl-1 menu-title">
-            Shop Other Page
-          </Link>
-          <ul className="subLinks">
-            <li className="lvl-2">
-              <Link to="/Wishlist" className="site-nav lvl-2">
-                Wishlist Style
-              </Link>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
   </li>
 );
 
@@ -126,6 +55,8 @@ const HeaderCart = ({
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { categories, loading, error } = useFetchCategoryandSub();
+  const [expandedCategory, setExpandedCategory] = useState(null);
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -164,6 +95,10 @@ const Header = () => {
     setCartItems(updatedItems);
   };
 
+  useEffect(() => {
+    console.log("Fetched Categories in Header:", categories); // Log fetched categories
+  }, [categories]);
+
   return (
     <header className="header d-flex align-items-center header-1 header-fixed">
       <div className="container">
@@ -177,7 +112,62 @@ const Header = () => {
             <nav className="navigation" id="AccessibleNav">
               <ul id="siteNav" className="site-nav medium center">
                 <NavItem title="Home" links={[{ to: "/", label: "Home" }]} />
-                <ShopMenu />
+                {!loading && !error && categories.length > 0 && (
+                  <li className="megamenu head-drop-down">
+                    <Link to="#">
+                      Categories <i className="fa-solid fa-angle-down ms-1" />
+                    </Link>
+                    <div className="megamenu style1">
+                      <ul className="row grid--uniform mmWrapper">
+                        {categories
+                          .filter(
+                            (cat) =>
+                              cat.parentId === null ||
+                              cat.parentId === undefined
+                          )
+                          .map((mainCat) => {
+                            const subCategories = categories.filter(
+                              (subCat) => subCat.parentId === mainCat.id
+                            );
+                            console.log(
+                              `Subcategories for ${mainCat.title} (ID: ${mainCat.id}):`,
+                              subCategories
+                            );
+
+                            return (
+                              <li
+                                key={mainCat.id}
+                                className="lvl-1 col-md-3 col-lg-3 w-22"
+                              >
+                                <Link
+                                  to={`/category/${mainCat.id}`}
+                                  className="site-nav lvl-1 menu-title"
+                                >
+                                  {mainCat.title}
+                                </Link>
+
+                                {/* عرض الـ subcategories */}
+                                {subCategories.length > 0 && (
+                                  <ul className="sub-menu">
+                                    {subCategories.map((subCat) => (
+                                      <li key={subCat.id}>
+                                        <Link
+                                          to={`/category/${subCat.id}`}
+                                          className="site-nav lvl-2"
+                                        >
+                                          {subCat.title}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </li>
+                            );
+                          })}
+                      </ul>
+                    </div>
+                  </li>
+                )}
                 <NavItem
                   title="Pages"
                   links={[
@@ -192,10 +182,10 @@ const Header = () => {
                 <NavItem
                   title="Blog"
                   links={[
-                    { to: "ShopGrid", label: "ShopGrid" },
-                    { to: "Product", label: "Product" },
-                    { to: "Collection", label: "Collection" },
-                    { to: "Wishlist", label: "Wishlist" },
+                    { to: "/ShopGrid", label: "ShopGrid" },
+                    { to: "/Product", label: "Product" },
+                    { to: "/Collection", label: "Collection" },
+                    { to: "/Wishlist", label: "Wishlist" },
                   ]}
                 />
               </ul>
@@ -232,7 +222,7 @@ const Header = () => {
               type="button"
               className="iconset pe-0 menu-icon js-mobile-nav-toggle mobile-nav--open d-lg-none"
               title="Menu"
-              onClick={toggleMenu} //
+              onClick={toggleMenu}
             >
               <i
                 className="fa-solid fa-bars fa-xl"

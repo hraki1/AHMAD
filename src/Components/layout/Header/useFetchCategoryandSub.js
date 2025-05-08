@@ -6,26 +6,20 @@ export default function useFetchCategories(parentId = null) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = "http://192.168.100.13:3250/api/categories";
+  const BASE_URL = "http://192.168.100.13:3250/api/categories"; // Assuming this now returns ALL categories
 
   useEffect(() => {
     const fetchCategoriesData = async () => {
       try {
-        const url =
-          parentId === null
-            ? `${BASE_URL}?parentId=null`
-            : `${BASE_URL}?parentId=${parentId}`;
-
-        const response = await fetch(url);
+        const response = await fetch(BASE_URL);
         const data = await response.json();
-        console.log("Fetched Categories in Header:", data?.data); // Log the raw data
 
         if (data?.data) {
           const formatted = data.data.map((category) => ({
             id: category.id,
             img: category.description?.image || "",
             title: category.description?.name || "No Title",
-            count: category.products?.length || 0,
+            parentId: category.parent_id, // Use the correct parent ID field
           }));
           setCategories(formatted);
         } else {
@@ -39,7 +33,7 @@ export default function useFetchCategories(parentId = null) {
     };
 
     fetchCategoriesData();
-  }, [parentId]);
+  }, [parentId]); // parentId is no longer really needed here if fetching all
 
   return { categories, loading, error };
 }

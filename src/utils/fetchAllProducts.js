@@ -42,6 +42,7 @@ const formatProduct = (product) => {
       compare: { href: "compare-style2.html" },
     },
     categoryId: product.category_id, // ضروري جدًا هنا للفلترة!
+    subcategory: product.subcategory || "No subcategory", // إضافة الـ subcategory هنا
   };
 };
 
