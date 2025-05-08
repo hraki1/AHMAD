@@ -17,7 +17,7 @@ import Portfolio from "./Pages/Portfolio/Index.jsx";
 import Product from "./Pages/Product/Index.jsx";
 import ShopGrid from "./Pages/ShopGrid/Index.jsx";
 import Wishlist from "./Pages/Wishlist/Index.jsx";
-import Login from "./Pages/login/Index.jsx";
+import Login from "./Pages/LogIn/Index.jsx";
 import Sign from "./Pages/SignUp/Index.jsx";
 import Verify from "./Pages/SignUp/Verify.jsx";
 
