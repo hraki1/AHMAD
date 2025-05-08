@@ -968,31 +968,28 @@ export const slides = [
 // For Testimonial Section Componet
 export const testimonials = [
   {
-    name: "John Doe",
-    role: "Founder & CEO",
+    name: "Senger, O'Hara and Simonis",
     reviews: "24 Reviews",
     stars: 4,
     img: testimonial1,
   },
   {
-    name: "Jessica Doe",
-    role: "Marketing",
+    name: "Johns - Lowe",
     reviews: "15 Reviews",
     stars: 5,
     img: testimonial2,
   },
   {
-    name: "Rick Edward",
-    role: "Developer",
+    name: "Dibbert - West",
     reviews: "17 Reviews",
     stars: 2,
     img: testimonial3,
   },
   {
-    name: "Happy Buyer",
-    role: "Designer",
+    name: "Berge, Daniel and Schinner",
     reviews: "29 Reviews",
     stars: 4,
     img: testimonial4,
   },
 ];
+

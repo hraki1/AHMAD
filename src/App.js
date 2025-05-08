@@ -20,10 +20,11 @@ import Wishlist from "./Pages/Wishlist/Index.jsx";
 import Login from "./Pages/LogIn/Index.jsx";
 import Sign from "./Pages/SignUp/Index.jsx";
 import Verify from "./Pages/SignUp/Verify.jsx";
-
+import Brands from "./Pages/Brands/index.jsx";
 function App() {
   return (
     <Router>
+
       <div className="App">
         <TopHeader />
         <Header />
@@ -45,6 +46,7 @@ function App() {
           <Route path="/SignUp" element={<Sign />} />
           <Route path="/LogIn" element={<Login />} />
           <Route path="/Verify" element={<Verify />} />
+          <Route path="/Brands" element={<Brands />} />
         </Routes>
         <ScrollTop />
         <Footer />
