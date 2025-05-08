@@ -1,7 +1,8 @@
 import React from "react";
 import Slider from "react-slick";
-
-import quoteIcon from "../../assets/images/icons/demo1-quote-icon.png";
+import Button from "../../Components/common/Button";
+// import quoteIcon from "../../assets/images/icons/demo1-quote-icon.png";
+import brandIcon from "../../assets/images/icons/brand-icon.png";
 import { testimonials } from "./data";
 
 export default function TestimonialSection() {
@@ -25,8 +26,8 @@ export default function TestimonialSection() {
     <section className="section testimonial-slider style1">
       <div className="container">
         <div className="section-header">
-          <div className="main-italic mb-2 mt-0">Happy Customer</div>
-          <div className="main-title-heading">Loved By Our Customers</div>
+          <div className="main-italic mb-2 mt-0">Brands</div>
+          <div className="main-title-heading">Our brands</div>
         </div>
 
         <div className="testimonial-wraper">
@@ -40,7 +41,7 @@ export default function TestimonialSection() {
                   <div className="quote-icon mb-3 mb-lg-4">
                     <img
                       className="blur-up lazyload mx-auto"
-                      src={quoteIcon}
+                      src={brandIcon}
                       alt="icon"
                       width="40"
                       height="40"
@@ -50,43 +51,47 @@ export default function TestimonialSection() {
                   <div className="content">
                     <div className="text mb-2">
                       <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text since the 1500s.
+                        <img
+                          className="brand-name"
+                          src="https://images-platform.99static.com//pyJ8X3pEcCeRiL-MOiVXWHYQTHk=/509x211:1480x1182/fit-in/500x500/99designs-contests-attachments/89/89453/attachment_89453866"
+                        />
                       </p>
                     </div>
 
                     <div className="product-review my-3">
-                      {[...Array(5)].map((_, i) => (
+                      {/* {[...Array(5)].map((_, i) => (
                         <i
                           key={i}
                           className={`${i < t.stars ? "fas" : "far"} fa-star`}
                           style={{ color: "gold" }}
                         />
-                      ))}
-                      <span className="caption hidden ms-1">{t.reviews}</span>
+                      ))} */}
+                      <span className="caption hidden ms-1"></span>
                     </div>
                   </div>
 
                   <div className="auhimg d-flex-justify-center text-left">
                     <div className="image">
-                      <img
+                      {/* <img
                         className="rounded-circle blur-up lazyload"
                         src={t.img}
                         alt={t.name}
                         width="65"
                         height="65"
-                      />
+                      /> */}
                     </div>
                     <div className="auhtext ms-3">
                       <h5 className="authour mb-1">{t.name}</h5>
-                      <p className="text-muted">{t.role}</p>
+                      <p className="text-muted"></p>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
           </Slider>
+          <div className="view-collection text-center mt-4 mt-md-5">
+            <Button label="View brands" to="/Brands" primary={false} />
+          </div>
         </div>
       </div>
     </section>
