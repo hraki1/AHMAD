@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const BASE_URL = "http://192.168.100.13:3250/api/products";
 
-const useFetchOneProduct = (productId) => {
+const useFetchOneProduct = (urlKey) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,10 +10,10 @@ const useFetchOneProduct = (productId) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        if (!productId) throw new Error("No product ID provided");
+        if (!urlKey) throw new Error("No product ID provided");
 
         setLoading(true);
-        const response = await fetch(`${BASE_URL}/${productId}`);
+        const response = await fetch(`${BASE_URL}/${urlKey}`);
 
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -22,7 +22,6 @@ const useFetchOneProduct = (productId) => {
 
         if (!data) throw new Error("No product data received");
 
-        // Normalize object fields to strings
         const formattedProduct = {
           ...data,
           price: data.price,
@@ -30,17 +29,21 @@ const useFetchOneProduct = (productId) => {
             data.oldPrice && data.oldPrice > data.price
               ? data.oldPrice
               : Math.round(data.price * 1.2),
-          name: data.description?.name || "Untitled Product",
+          name:
+            typeof data.description === "object"
+              ? data.description.name || "Untitled Product"
+              : "Untitled Product",
           description:
             typeof data.description === "object"
-              ? data.description.en
+              ? data.description.en || "No description"
               : data.description || "No description",
+          url_key: data.url_key || "",
           inventory:
             typeof data.inventory === "object"
               ? data.inventory.stock_availability === true
-                ? "IN Stock"
+                ? "In Stock"
                 : "Not Available"
-              : "Not Available", // Ensure inventory has a valid string value
+              : "Not Available",
           category: {
             name:
               typeof data.category === "object"
@@ -55,7 +58,7 @@ const useFetchOneProduct = (productId) => {
             typeof data.brand === "object"
               ? data.brand.name
               : data.brand || "No brand",
-          images: data.images || (data.image ? [data.image] : []) || [],
+          images: data.images || (data.image ? [data.image] : []),
           colors: data.colors || data.variants?.colors || [],
           sizes: data.sizes || data.variants?.sizes || [],
           originalPrice: data.originalPrice || Math.round(data.price * 1.2),
@@ -71,7 +74,7 @@ const useFetchOneProduct = (productId) => {
     };
 
     fetchProduct();
-  }, [productId]);
+  }, [urlKey]);
 
   return { product, loading, error };
 };

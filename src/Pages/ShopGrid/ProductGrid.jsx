@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../../utils/useFetchCategories";
-
+import { Link } from "react-router-dom";
 const ProductGrid = ({
   selectedCategoryAndChildrenIds,
   selectedBrandIds = [],
+  product,
 }) => {
   const [products, setProducts] = useState([]);
   const [cartLoading, setCartLoading] = useState(false);
@@ -170,8 +171,8 @@ const ProductGrid = ({
           <div className="item col-item" key={product.id}>
             <div className="product-box">
               <div className="product-image">
-                <a
-                  href="product-layout1.html"
+                <Link
+                  to={`/product/${product.url_key}`}
                   className="product-img rounded-3"
                 >
                   <img
@@ -181,7 +182,7 @@ const ProductGrid = ({
                     width="625"
                     height="808"
                   />
-                </a>
+                </Link>
                 <div className="product-labels">
                   <span className="lbl on-sale">Sale</span>
                 </div>
@@ -217,7 +218,7 @@ const ProductGrid = ({
 
               <div className="product-details">
                 <div className="product-name">
-                  <a href="product-layout1.html">{product.name}</a>
+                  <Link to={`/product/${product.url_key}`}>{product.name}</Link>
                 </div>
                 <div className="product-price">
                   <span className="price old-price">{product.oldPrice}</span>

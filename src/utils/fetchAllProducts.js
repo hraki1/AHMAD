@@ -32,6 +32,9 @@ const formatProduct = (product) => {
         title: "Quick Shop",
         text: "Quick Shop",
       },
+
+      url_key: product.description?.url_key || `product-${product.id}`,
+
       quickView: {
         href: "#quickview-modal",
         className: "quickview quick-view-modal",
