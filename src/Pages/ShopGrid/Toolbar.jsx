@@ -68,6 +68,7 @@ export default function Toolbar({
   onFilterClick,
   onViewChange,
   selectedCategoryAndChildrenIds,
+  selectedBrandIds = [],
 }) {
   const [activeView, setActiveView] = useState(5);
   const [showFilter, setShowFilter] = useState(false);
@@ -125,7 +126,6 @@ export default function Toolbar({
           </div>
         </div>
       </div>
-
       {/* Filters */}
       {showFilter && (
         <div className="filter-menu visible">
@@ -134,11 +134,11 @@ export default function Toolbar({
           ))}
         </div>
       )}
-
       {/* Product Grid */}
       <ProductGrid
         selectedCategoryAndChildrenIds={selectedCategoryAndChildrenIds}
-      />
+        selectedBrandIds={selectedBrandIds}
+      />{" "}
     </div>
   );
 }

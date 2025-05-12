@@ -8,6 +8,7 @@ import LeftSlidebar from "./leftSlidebar";
 export default function ShopPage() {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(null);
   const [selectedParentId, setSelectedParentId] = useState(null);
+  const [selectedBrandIds, setSelectedBrandIds] = useState([]);
 
   const handleCategoryClick = useCallback((categoryId, childIds) => {
     setSelectedCategoryIds([categoryId, ...childIds]);
@@ -33,8 +34,11 @@ export default function ShopPage() {
       />
       <div className="container">
         <div className="row">
-          <LeftSlidebar />
-          <Toolbar selectedCategoryAndChildrenIds={selectedCategoryIds} />
+          <LeftSlidebar onBrandFilterChange={setSelectedBrandIds} />
+          <Toolbar
+            selectedCategoryAndChildrenIds={selectedCategoryIds}
+            selectedBrandIds={selectedBrandIds}
+          />
         </div>
       </div>
     </div>
