@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Button from "./common/Button";
 import { fetchAllProducts } from "../utils/fetchAllProducts";
+import { Link } from "react-router-dom";
 
 const ProductSlider = ({
   showTabs = true,
@@ -42,16 +43,28 @@ const ProductSlider = ({
     <div className="item col-item" key={product.id}>
       <div className="product-box">
         <div className="product-image">
-          <a href={product.href || "#"} className="product-img rounded-3">
-            <img
-              src={product.primaryImg}
-              alt={product.name}
-              title={product.name}
-              width="625"
-              height="808"
-              className="blur-up lazyload"
-            />
-          </a>
+          <Link to={product.href || "#"} className="product-img rounded-3">
+            {product.primaryImg ? (
+              <img
+                src={product.primaryImg}
+                alt={product.name}
+                title={product.name}
+                width="625"
+                height="808"
+                className="blur-up lazyload"
+              />
+            ) : (
+              // Optionally render a placeholder image if the primaryImg is not available
+              <img
+                src="/path/to/placeholder-image.jpg" // Use a default placeholder image
+                alt={product.name}
+                title={product.name}
+                width="625"
+                height="808"
+                className="blur-up lazyload"
+              />
+            )}
+          </Link>
           <div className="product-labels">
             {product.labels?.map((label, i) => (
               <span key={i} className={`lbl ${label.className}`}>
@@ -62,7 +75,7 @@ const ProductSlider = ({
         </div>
         <div className="product-details">
           <div className="product-name">
-            <a href={product.href || "#"}>{product.name}</a>
+            <Link to={product.href || "#"}>{product.name}</Link>
           </div>
           <div className="product-price">
             <span className="price old-price">

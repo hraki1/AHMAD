@@ -77,8 +77,6 @@ export const fetchAllProducts = async (
       ? transformFn(allProductsRaw)
       : allProductsRaw.map(formatProduct);
 
-    console.log("✅ Fetched Products:", allProducts); // لتتبع البيانات
-
     return allProducts;
   } catch (error) {
     console.error("❌ Error fetching products:", error);

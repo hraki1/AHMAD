@@ -94,9 +94,7 @@ const Header = () => {
     setCartItems(updatedItems);
   };
 
-  useEffect(() => {
-    console.log("Fetched Categories in Header:", categories); // Log fetched categories
-  }, [categories]);
+  useEffect(() => {}, [categories]);
 
   return (
     <header className="header d-flex align-items-center header-1 header-fixed">
@@ -127,10 +125,6 @@ const Header = () => {
                           .map((mainCat) => {
                             const subCategories = categories.filter(
                               (subCat) => subCat.parentId === mainCat.id
-                            );
-                            console.log(
-                              `Subcategories for ${mainCat.title} (ID: ${mainCat.id}):`,
-                              subCategories
                             );
 
                             return (

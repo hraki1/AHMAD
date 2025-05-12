@@ -41,7 +41,7 @@ function App() {
           <Route path="/FAQ" element={<FAQ />} />
           <Route path="/MYAccount" element={<Account />} />
           <Route path="/Portfolio" element={<Portfolio />} />
-          <Route path="/Product" element={<Product />} />
+          <Route path="/Product/:productId" element={<Product />} />
           <Route path="/ShopGrid" element={<ShopGrid />} />
           <Route path="/Wishlist" element={<Wishlist />} />
           <Route path="/SignUp" element={<Sign />} />
