@@ -139,7 +139,7 @@ const Header = () => {
                                 className="lvl-1 col-md-3 col-lg-3 w-22"
                               >
                                 <Link
-                                  to={`/ShopGrid/`}
+                                  to={`/ShopGrid`}
                                   className="site-nav lvl-1 menu-title"
                                 >
                                   {mainCat.title}
