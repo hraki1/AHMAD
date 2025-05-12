@@ -1,5 +1,5 @@
 import React from "react";
-import imgdesc from "../../assets/images/products/addtocart-modal.jpg";
+import imgdesc from "../../assets/images/products/1.jpg";
 const Description = () => {
   return (
     <div className="pt-5">

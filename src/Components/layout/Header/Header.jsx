@@ -151,7 +151,7 @@ const Header = () => {
                                     {subCategories.map((subCat) => (
                                       <li key={subCat.id}>
                                         <Link
-                                          to={`/ShopGrid/`}
+                                          to={`/ShopGrid`}
                                           className="site-nav lvl-2"
                                         >
                                           {subCat.title}
