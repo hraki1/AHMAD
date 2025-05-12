@@ -21,10 +21,11 @@ import Login from "./Pages/LogIn/Index.jsx";
 import Sign from "./Pages/SignUp/Index.jsx";
 import Verify from "./Pages/SignUp/Verify.jsx";
 import Brands from "./Pages/Brands/index.jsx";
+import ForgetPass from "./Pages/LogIn/ForgetPass.jsx";
+import ResetPassword from "./Pages/LogIn/ResetPassword.jsx";
 function App() {
   return (
     <Router>
-
       <div className="App">
         <TopHeader />
         <Header />
@@ -47,6 +48,8 @@ function App() {
           <Route path="/LogIn" element={<Login />} />
           <Route path="/Verify" element={<Verify />} />
           <Route path="/Brands" element={<Brands />} />
+          <Route path="/ForgetPass" element={<ForgetPass />} />
+          <Route path="/ResetPassword" element={<ResetPassword />} />
         </Routes>
         <ScrollTop />
         <Footer />

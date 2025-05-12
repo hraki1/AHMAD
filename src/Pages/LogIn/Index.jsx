@@ -174,9 +174,7 @@ const Index = () => {
                           />
                           <label htmlFor="remember">Remember me</label>
                         </div>
-                        <Link to="forgot-password.html">
-                          Forgot your password?
-                        </Link>
+                        <Link to="/ForgetPass">Forgot your password?</Link>
                       </div>
                     </div>
 

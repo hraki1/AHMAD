@@ -7,7 +7,7 @@ import ProductTypeFilter from "./Filters/ProductTypeFilter";
 import BrandFilter from "./Filters/BrandFilter";
 import AvailabilityFilter from "./Filters/AvailabilityFilter";
 
-export default function LeftSlidebar() {
+export default function LeftSlidebar({ onBrandFilterChange }) {
   const [showContent, setShowContent] = useState(true);
 
   return (
@@ -63,7 +63,7 @@ export default function LeftSlidebar() {
         <ColorFilter />
         <SizeFilter />
         <ProductTypeFilter />
-        <BrandFilter />
+        <BrandFilter onFilterChange={onBrandFilterChange} />
         <AvailabilityFilter />
       </div>
     </div>

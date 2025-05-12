@@ -9,7 +9,6 @@ const ProductGrid = ({
   const [products, setProducts] = useState([]);
   const [cartLoading, setCartLoading] = useState(false);
   const [subcategoryIds, setSubcategoryIds] = useState([]);
-
   const {
     categories: subcategories,
     loading: subcategoriesLoading,
@@ -38,13 +37,9 @@ const ProductGrid = ({
     const controller = new AbortController();
     const loadProducts = async () => {
       try {
-        // تحديد عدد الصفحات التي تريد جلبها
-        const totalPages = 5; // على سبيل المثال، جلب 5 صفحات
-        const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
         const allProducts = await fetchAllProducts(
-          pages,
-          null,
+          [1], // Fetch the first page of all products
+          null, // No transform function
           controller.signal
         );
         setProducts(
@@ -58,7 +53,7 @@ const ProductGrid = ({
               variants,
               reviewsCount,
               categoryId,
-              brandId,
+              brandId, // <-- تأكد إن هذا الاسم مطابق للي جاي من الـ API
             }) => ({
               id,
               name,
@@ -66,7 +61,7 @@ const ProductGrid = ({
               newPrice: `$${price.toFixed(2)}`,
               imageUrl: primaryImg || "",
               categoryId,
-              brandId,
+              brandId, // <-- وتمريره هنا
               reviews: reviewsCount || 3,
               colors: variants.map(({ title, src }) => ({
                 title,
@@ -83,7 +78,7 @@ const ProductGrid = ({
 
     loadProducts();
     return () => controller.abort();
-  }, []);
+  }, []); // Runs only once on mount to fetch all products
 
   const handleColorChange = useCallback((productId, imgSrc) => {
     setProducts((prev) =>
@@ -119,10 +114,15 @@ const ProductGrid = ({
     [cartLoading]
   );
 
-  const filteredProducts = useMemo(() => {
-    let result = [...products];
+  console.log("Products:", products);
+  console.log("Selected Brand IDs:", selectedBrandIds);
+  console.log("Selected Category IDs:", selectedCategoryAndChildrenIds);
+  console.log("Subcategory IDs:", subcategoryIds);
 
-    // Filter by categories
+  const filteredProducts = useMemo(() => {
+    let result = products;
+
+    // Category filter
     if (
       selectedCategoryAndChildrenIds &&
       selectedCategoryAndChildrenIds.length > 0
@@ -136,18 +136,20 @@ const ProductGrid = ({
       );
     }
 
-    // Filter by brands
+    // Brand filter
     if (selectedBrandIds && selectedBrandIds.length > 0) {
-      const brandIdSet = new Set(selectedBrandIds.map(Number));
-      result = result.filter((p) => brandIdSet.has(Number(p.brandId)));
+      const selectedBrandIdsNum = selectedBrandIds.map(Number);
+      result = result.filter((p) =>
+        selectedBrandIdsNum.includes(Number(p.brandId))
+      );
     }
 
     return result;
   }, [
     products,
+    selectedBrandIds,
     selectedCategoryAndChildrenIds,
     subcategoryIds,
-    selectedBrandIds,
   ]);
 
   const renderStars = (reviews) =>
@@ -161,7 +163,7 @@ const ProductGrid = ({
 
   if (subcategoriesLoading) return <p>Loading subcategories...</p>;
   if (!filteredProducts.length)
-    return <p>No products found for this filter.</p>;
+    return <p>No products found for this category.</p>;
 
   return (
     <div className="grid-products grid-view-items">

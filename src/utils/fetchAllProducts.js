@@ -41,8 +41,9 @@ const formatProduct = (product) => {
       wishlist: { href: "wishlist-style2.html" },
       compare: { href: "compare-style2.html" },
     },
-    categoryId: product.category_id, // ضروري جدًا هنا للفلترة!
-    subcategory: product.subcategory || "No subcategory", // إضافة الـ subcategory هنا
+    categoryId: Number(product.category_id), // ✅ لضمان التوافق مع الفلاتر
+    brandId: product.brand_id ? Number(product.brand_id) : null,
+    subcategory: product.subcategory || "No subcategory",
   };
 };
 
@@ -76,9 +77,11 @@ export const fetchAllProducts = async (
       ? transformFn(allProductsRaw)
       : allProductsRaw.map(formatProduct);
 
+    console.log("✅ Fetched Products:", allProducts); // لتتبع البيانات
+
     return allProducts;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("❌ Error fetching products:", error);
     return [];
   }
 };

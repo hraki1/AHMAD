@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import Description from "./Description";
 import AdditionalInformation from "./AdditionalInformation";
 import SizeChart from "./SizeChart";
