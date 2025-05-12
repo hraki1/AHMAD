@@ -133,19 +133,19 @@ const Header = () => {
                                 className="lvl-1 col-md-3 col-lg-3 w-22"
                               >
                                 <Link
-                                  to={`/category/${mainCat.id}`}
+                                  to={`/ShopGrid`}
                                   className="site-nav lvl-1 menu-title"
                                 >
                                   {mainCat.title}
                                 </Link>
 
-                                {/* عرض الـ subcategories */}
+                                عرض الـ subcategories
                                 {subCategories.length > 0 && (
                                   <ul className="sub-menu">
                                     {subCategories.map((subCat) => (
                                       <li key={subCat.id}>
                                         <Link
-                                          to={`/category/${subCat.id}`}
+                                          to={`/ShopGrid`}
                                           className="site-nav lvl-2"
                                         >
                                           {subCat.title}
