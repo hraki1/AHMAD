@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../../utils/useFetchCategories";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
+import { useWishlist } from "../../Context/WishlistContext";
 
 const ProductGrid = ({
   selectedCategoryAndChildrenIds,
@@ -15,7 +16,20 @@ const ProductGrid = ({
   const [subcategoryIds, setSubcategoryIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const { addToWishlist } = useWishlist();
+  const handleAddToWishlist = (e, product) => {
+    e.preventDefault();
+    addToWishlist({
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.newPrice.replace("$", "")),
+      stock: product.inStock ? "in stock" : "Out Of stock",
+      disabled: !product.inStock,
+      imgSrc: product.imageUrl,
+      variant: product.colors[0]?.title || "Default variant",
+    });
+    alert(`${product.name} added to wishlist!`);
+  };
   const {
     categories: subcategories,
     loading: subcategoriesLoading,
@@ -118,7 +132,7 @@ const ProductGrid = ({
       setTimeout(() => {
         const existing = JSON.parse(localStorage.getItem("cartItems")) || [];
         if (existing.find((item) => item.id === product.id)) {
-          alert("The item has already been added.");
+          alert(`${product.name} added to cart!`);
           return setCartLoading(false);
         }
 
@@ -128,10 +142,11 @@ const ProductGrid = ({
             ...product,
             price: parseFloat(product.newPrice.replace("$", "")),
             quantity: 1,
+            image: product.imageUrl, // أضف هذا السطر
           },
         ];
         localStorage.setItem("cartItems", JSON.stringify(updated));
-        alert("✅ The item has been added successfully");
+        alert(`${product.name} added to cart!`);
         setCartLoading(false);
       }, 200);
     },
@@ -229,16 +244,18 @@ const ProductGrid = ({
                     <i className="fa-solid fa-cart-plus"></i>
                     <span className="text">Add to Cart</span>
                   </button>
-                  <a
-                    href="#quickview-modal"
+                  <Link
+                    to={`/product/${product.url_key || product.id}`}
                     className="btn-icon quickview"
-                    data-bs-toggle="modal"
-                    data-bs-target="#quickview_modal"
                   >
                     <i className="fa-solid fa-eye"></i>
                     <span className="text">Quick View</span>
-                  </a>
-                  <a href="wishlist-style2.html" className="btn-icon wishlist">
+                  </Link>
+                  <a
+                    href="wishlist-style2.html"
+                    className="btn-icon wishlist"
+                    onClick={(e) => handleAddToWishlist(e, product)}
+                  >
                     <i className="fa-solid fa-heart"></i>
                     <span className="text">Add To Wishlist</span>
                   </a>

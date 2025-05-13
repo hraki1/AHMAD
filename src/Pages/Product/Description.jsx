@@ -1,10 +1,12 @@
-import React from "react";
-import imgdesc from "../../assets/images/products/1.jpg";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import useFetchOneProduct from "../../utils/useFetchOneProduct";
+
 const Description = () => {
   const { url_key } = useParams();
   const { product, loading, error } = useFetchOneProduct(url_key);
+  const [activeImage, setActiveImage] = useState(null); // ممكن نخليه لو حبيت تغير الصورة لاحقاً
+
   if (loading) {
     return <div className="loading-spinner">Loading...</div>;
   }
@@ -26,6 +28,15 @@ const Description = () => {
     );
   }
 
+  const productImages = product.images || [];
+
+  // نعرض فقط الصورة الرئيسية (أول صورة أو الصورة النشطة)
+  const imageToDisplay =
+    activeImage ||
+    (productImages.length > 0
+      ? productImages[0]?.origin_image || productImages[0]
+      : "path_to_default_image.jpg");
+
   return (
     <div className="pt-5">
       {/* Description */}
@@ -43,7 +54,7 @@ const Description = () => {
                 {product.description.description}.
               </div>
               <div className="mb-3 main-title-2 main">Features</div>
-              <ol className="">
+              <ol>
                 <li className="desc-content mb-2">
                   High quality fabric, very comfortable to touch and wear.
                 </li>
@@ -58,18 +69,11 @@ const Description = () => {
                   Light weight and perfect for layering.
                 </li>
               </ol>
-              <div className="desc-content">
-                The standard chunk of Lorem Ipsum used since the 1500s is
-                reproduced below for those interested. Sections 1.10.32 and
-                1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also
-                reproduced in their exact original form, accompanied by English
-                versions from the 1914 translation by H. Rackham.
-              </div>
             </div>
 
             <div className="col-12 col-sm-12 col-md-4 col-lg-4">
               <img
-                src={imgdesc}
+                src={imageToDisplay}
                 alt="product detail"
                 width="600"
                 height="600"

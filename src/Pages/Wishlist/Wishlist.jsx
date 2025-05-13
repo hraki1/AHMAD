@@ -1,51 +1,16 @@
-import React, { useState } from "react";
-import QuickViewModal from "../ProductModal/QuickViewModal"; // Ensure correct path
-import imgOne from "../../assets/images/products/product1-120x170.jpg";
-import imgTwo from "../../assets/images/products/product1-120x170.jpg";
-import imgThree from "../../assets/images/products/product1-120x170.jpg";
-import imgFour from "../../assets/images/products/product1-120x170.jpg";
+// Wishlist.js
+import { useWishlist } from "../../Context/WishlistContext";
+import { useState } from "react";
+import QuickViewModal from "../ProductModal/QuickViewModal";
 
 const Wishlist = () => {
-  const [products] = useState([
-    {
-      id: 1,
-      name: "Oxford Cuban Shirt",
-      variant: "Black / XL",
-      price: "$143.00",
-      stock: "in stock",
-      imgSrc: imgOne,
-      disabled: false,
-    },
-    {
-      id: 2,
-      name: "Cuff Beanie Cap",
-      variant: "Maroon / M",
-      price: "$128.00",
-      stock: "Out Of stock",
-      imgSrc: imgTwo,
-      disabled: true,
-    },
-    {
-      id: 3,
-      name: "Flannel Collar Shirt",
-      variant: "Blue / M",
-      price: "$116.00",
-      stock: "in stock",
-      imgSrc: imgThree,
-      disabled: false,
-    },
-    {
-      id: 4,
-      name: "Cotton Hooded Hoodie",
-      variant: "Orange / S",
-      price: "$99.00",
-      stock: "in stock",
-      imgSrc: imgFour,
-      disabled: false,
-    },
-  ]);
-
+  const { wishlistItems, removeFromWishlist } = useWishlist();
   const [showModal, setShowModal] = useState(false);
+
+  const handleRemoveItem = (productId, e) => {
+    e.preventDefault();
+    removeFromWishlist(productId);
+  };
 
   return (
     <div className="container">
@@ -53,7 +18,8 @@ const Wishlist = () => {
         className="alert alert-success py-2 alert-dismissible fade show cart-alert"
         role="alert"
       >
-        There are <span className="text-primary fw-600">{products.length}</span>{" "}
+        There are{" "}
+        <span className="text-primary fw-600">{wishlistItems.length}</span>{" "}
         products in this wishlist
         <button
           type="button"
@@ -77,7 +43,7 @@ const Wishlist = () => {
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {wishlistItems.map((product) => (
                 <tr key={product.id}>
                   <td className="product-thumbnail">
                     <a className="product-img" href={QuickViewModal}>
@@ -93,7 +59,7 @@ const Wishlist = () => {
                     <button
                       type="button"
                       className="btn btn-light"
-                      onClick={() => setShowModal(true)} // 👈 Show modal here
+                      onClick={() => setShowModal(true)}
                     >
                       <i className="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -106,12 +72,15 @@ const Wishlist = () => {
                     <button
                       type="button"
                       className="btn remove-icon close-btn position-static me-3"
+                      onClick={(e) => handleRemoveItem(product.id, e)}
                     >
                       <i className="fa-solid fa-xmark"></i>
                     </button>
                   </td>
                   <td className="product-price text-center">
-                    <span className="amount fw-500">{product.price}</span>
+                    <span className="amount fw-500">
+                      ${product.price.toFixed(2)}
+                    </span>
                   </td>
                   <td className="product-stock text-center">
                     <span
@@ -141,7 +110,6 @@ const Wishlist = () => {
         </div>
       </form>
 
-      {/* Include QuickViewModal */}
       <QuickViewModal show={showModal} onHide={() => setShowModal(false)} />
     </div>
   );

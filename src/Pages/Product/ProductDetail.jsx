@@ -6,7 +6,6 @@ import Slider from "react-slick";
 import renderTime from "./renderTime";
 import Countdown from "react-countdown";
 import useFetchOneProduct from "../../utils/useFetchOneProduct";
-
 const socialIcons = [
   { icon: "twitter", title: "Twitter" },
   { icon: "pinterest-p", title: "Pinterest" },
@@ -73,7 +72,15 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (product?.images?.length > 0 && !activeImage) {
-      setActiveImage(product.images[0]?.origin_image || product.images[0]);
+      // البحث عن أول صورة تحتوي على origin_image واستخدامها
+      const firstImageWithOrigin = product.images.find(
+        (img) => img?.origin_image
+      )?.origin_image;
+
+      // إذا وجدت origin_image في أول عنصر، استخدمها، وإلا استخدم أول صورة متاحة
+      setActiveImage(
+        firstImageWithOrigin || product.images[0]?.url || product.images[0]
+      );
     }
   }, [product, activeImage]);
 
@@ -103,7 +110,9 @@ export default function ProductDetail() {
   const imageToDisplay =
     activeImage ||
     (productImages.length > 0
-      ? productImages[0]?.origin_image || productImages[0]
+      ? productImages.find((img) => img?.origin_image)?.origin_image ||
+        productImages[0]?.url ||
+        productImages[0]
       : "path_to_default_image.jpg");
 
   return (
@@ -157,7 +166,8 @@ export default function ProductDetail() {
                   <div id="gallery" className="product-thumb-horizontal">
                     <Slider {...getSliderSettings(productImages.length)}>
                       {productImages.map((image, index) => {
-                        const imageUrl = image?.origin_image || image;
+                        const imageUrl =
+                          image?.origin_image || image?.url || image;
                         return (
                           <div key={index} className="px-1">
                             <button

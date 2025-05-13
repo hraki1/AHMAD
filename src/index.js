@@ -9,12 +9,15 @@ import "./assets/css/plugins.css";
 import "./assets/css/style-min.css";
 import "./assets/css/responsive.css";
 import { CartProvider } from "./Context/CartContext";
+import { WishlistProvider } from "./Context/WishlistContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <CartProvider>
-      <App />
+      <WishlistProvider>
+        <App />
+      </WishlistProvider>
     </CartProvider>
   </React.StrictMode>
 );

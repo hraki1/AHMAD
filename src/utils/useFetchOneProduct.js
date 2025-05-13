@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const BASE_URL = "http://192.168.100.13:3250/api/products";
 
-const useFetchOneProduct = (urlKey) => {
+const useFetchOneProduct = (urlKey, productId) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,17 +10,20 @@ const useFetchOneProduct = (urlKey) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        if (!urlKey) throw new Error("No product ID provided");
+        const finalId = urlKey || productId;
+
+        if (!finalId) throw new Error("No product ID provided");
 
         setLoading(true);
-        const response = await fetch(`${BASE_URL}/${urlKey}`);
+
+        const response = await fetch(`${BASE_URL}/${finalId}`);
 
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
         console.log("Fetched Product Data:", data);
-        console.log("Product ID:", urlKey);
+        console.log("Used ID:", finalId);
 
         if (!data) throw new Error("No product data received");
 
@@ -35,7 +38,7 @@ const useFetchOneProduct = (urlKey) => {
             typeof data.description === "object"
               ? data.description.name || "Untitled Product"
               : "Untitled Product",
-          url_key: data.description?.url_key || `product-${data.product_id}`, // Ensure this line sets url_key correctly
+          url_key: data.description?.url_key || `product-${data.product_id}`,
           inventory:
             typeof data.inventory === "object"
               ? data.inventory.stock_availability === true
@@ -52,11 +55,33 @@ const useFetchOneProduct = (urlKey) => {
                 ? data.category.description?.description || ""
                 : "",
           },
+          attributes: Array.isArray(data.attributes)
+            ? data.attributes.map((attr) => ({
+                attributeName:
+                  attr.attribute?.attribute_name || "Unnamed Attribute",
+                optionText: attr.option?.option_text || "Unnamed Option",
+              }))
+            : [],
           brand:
             typeof data.brand === "object"
               ? data.brand.name
               : data.brand || "No brand",
-          images: data.images || (data.image ? [data.image] : []),
+          images: Array.isArray(data.images)
+            ? data.images
+                .map((img) => ({
+                  ...img,
+                  is_main: img.is_main || false, // Ensure is_main exists
+                }))
+                .sort((a, b) => (b.is_main ? 1 : -1)) // Sort to put main image first
+            : data.image
+            ? [
+                {
+                  url: data.image,
+                  is_main: true,
+                  origin_image: data.origin_image,
+                },
+              ] // Handle single image case
+            : [],
           colors: data.colors || data.variants?.colors || [],
           sizes: data.sizes || data.variants?.sizes || [],
           originalPrice: data.originalPrice || Math.round(data.price * 1.2),
@@ -72,7 +97,7 @@ const useFetchOneProduct = (urlKey) => {
     };
 
     fetchProduct();
-  }, [urlKey]);
+  }, [urlKey, productId]);
 
   return { product, loading, error };
 };
