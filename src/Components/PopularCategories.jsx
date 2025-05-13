@@ -14,6 +14,7 @@ export default function PopularCategories({
   setSelectedParentId,
   onCategoryClick,
   onBackToAll,
+  mode = "default",
 }) {
   const [categoryHierarchy, setCategoryHierarchy] = useState([]);
   const parentId = categoryHierarchy.at(-1)?.id || null;
@@ -27,12 +28,16 @@ export default function PopularCategories({
   }, [parentId]);
 
   const handleCategoryClick = (category) => {
-    setSelectedCategoryId(category.id);
-    setSelectedParentId(category.id);
-    setCategoryHierarchy((prev) => [...prev, category]);
+    if (mode === "navigate") {
+      navigate(`/ShopGrid`);
+    } else {
+      setSelectedCategoryId(category.id);
+      setSelectedParentId(category.id);
+      setCategoryHierarchy((prev) => [...prev, category]);
 
-    const childIds = categories.map((child) => child.id);
-    onCategoryClick?.(category.id, childIds);
+      const childIds = categories.map((child) => child.id);
+      onCategoryClick?.(category.id, childIds);
+    }
   };
 
   const backToAll = () => {

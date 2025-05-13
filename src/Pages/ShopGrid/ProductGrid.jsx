@@ -1,15 +1,20 @@
+// src/components/shop/ProductGrid.js
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../../utils/useFetchCategories";
 import { Link } from "react-router-dom";
+
 const ProductGrid = ({
   selectedCategoryAndChildrenIds,
   selectedBrandIds = [],
-  product,
+  availabilityFilter,
+  priceRange = [0, 1000],
 }) => {
   const [products, setProducts] = useState([]);
   const [cartLoading, setCartLoading] = useState(false);
   const [subcategoryIds, setSubcategoryIds] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const {
     categories: subcategories,
@@ -33,20 +38,25 @@ const ProductGrid = ({
     subcategoriesLoading,
     subcategoriesError,
     selectedCategoryAndChildrenIds,
+    availabilityFilter,
   ]);
 
   useEffect(() => {
     const controller = new AbortController();
     const loadProducts = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        // تحديد عدد الصفحات التي تريد جلبها
-        const totalPages = 5; // على سبيل المثال، جلب 5 صفحات
+        const totalPages = 5;
         const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
         const allProducts = await fetchAllProducts(
           pages,
           null,
-          controller.signal
+          controller.signal,
+          setLoading,
+          setError,
+          availabilityFilter
         );
         setProducts(
           allProducts.map(
@@ -54,16 +64,18 @@ const ProductGrid = ({
               id,
               name,
               price,
-              priceOld,
+              old_price,
               primaryImg,
               variants,
               reviewsCount,
               categoryId,
               brandId,
+              url_key,
+              inStock, // ✅ استقبل حالة التوفر المنطقية
             }) => ({
               id,
               name,
-              oldPrice: `$${(priceOld || price + 20).toFixed(2)}`,
+              oldPrice: `$${(old_price || price + 20).toFixed(2)}`,
               newPrice: `$${price.toFixed(2)}`,
               imageUrl: primaryImg || "",
               categoryId,
@@ -73,18 +85,24 @@ const ProductGrid = ({
                 title,
                 imgSrc: src,
               })),
+              url_key: url_key,
+              inStock, // ✅ مرر حالة التوفر المنطقية
             })
           )
         );
       } catch (error) {
-        if (error.name !== "AbortError")
+        if (error.name !== "AbortError") {
           console.error("Failed to load products:", error);
+          setError(error.message || "Failed to load products.");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
     loadProducts();
     return () => controller.abort();
-  }, []);
+  }, [selectedCategoryAndChildrenIds, selectedBrandIds, availabilityFilter]);
 
   const handleColorChange = useCallback((productId, imgSrc) => {
     setProducts((prev) =>
@@ -123,7 +141,6 @@ const ProductGrid = ({
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Filter by categories
     if (
       selectedCategoryAndChildrenIds &&
       selectedCategoryAndChildrenIds.length > 0
@@ -137,10 +154,23 @@ const ProductGrid = ({
       );
     }
 
-    // Filter by brands
     if (selectedBrandIds && selectedBrandIds.length > 0) {
       const brandIdSet = new Set(selectedBrandIds.map(Number));
       result = result.filter((p) => brandIdSet.has(Number(p.brandId)));
+    }
+
+    // ✅ فلترة حسب التوفر باستخدام inStock القيمة المنطقية
+    if (availabilityFilter?.instock && !availabilityFilter?.outofstock) {
+      result = result.filter((p) => p.inStock);
+    } else if (!availabilityFilter?.instock && availabilityFilter?.outofstock) {
+      result = result.filter((p) => !p.inStock);
+    }
+    if (priceRange && priceRange.length === 2) {
+      const [min, max] = priceRange;
+      result = result.filter((p) => {
+        const price = parseFloat(p.newPrice.replace("$", ""));
+        return price >= min && price <= max;
+      });
     }
 
     return result;
@@ -149,6 +179,8 @@ const ProductGrid = ({
     selectedCategoryAndChildrenIds,
     subcategoryIds,
     selectedBrandIds,
+    availabilityFilter,
+    priceRange,
   ]);
 
   const renderStars = (reviews) =>
@@ -160,7 +192,8 @@ const ProductGrid = ({
       />
     ));
 
-  if (subcategoriesLoading) return <p>Loading subcategories...</p>;
+  if (subcategoriesLoading || loading) return <p>Loading products...</p>;
+  if (error) return <p>Error loading products: {error}</p>;
   if (!filteredProducts.length)
     return <p>No products found for this filter.</p>;
 
@@ -172,7 +205,7 @@ const ProductGrid = ({
             <div className="product-box">
               <div className="product-image">
                 <Link
-                  to={`/product/${product.url_key}`}
+                  to={`/product/${product.url_key || product.id}`}
                   className="product-img rounded-3"
                 >
                   <img

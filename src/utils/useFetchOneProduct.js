@@ -19,6 +19,8 @@ const useFetchOneProduct = (urlKey) => {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
+        console.log("Fetched Product Data:", data);
+        console.log("Product ID:", urlKey);
 
         if (!data) throw new Error("No product data received");
 
@@ -33,11 +35,7 @@ const useFetchOneProduct = (urlKey) => {
             typeof data.description === "object"
               ? data.description.name || "Untitled Product"
               : "Untitled Product",
-          description:
-            typeof data.description === "object"
-              ? data.description.en || "No description"
-              : data.description || "No description",
-          url_key: data.url_key || "",
+          url_key: data.description?.url_key || `product-${data.product_id}`, // Ensure this line sets url_key correctly
           inventory:
             typeof data.inventory === "object"
               ? data.inventory.stock_availability === true

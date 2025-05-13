@@ -17,7 +17,6 @@ const socialIcons = [
 
 export default function ProductDetail() {
   const { url_key } = useParams();
-  console.log("URL Key:", url_key);
   const { product, loading, error } = useFetchOneProduct(url_key);
   const [activeImage, setActiveImage] = useState("");
   const [quantity, setQuantity] = useState(1);

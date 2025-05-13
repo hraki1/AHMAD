@@ -1,14 +1,21 @@
+// src/pages/shop/ShopPage.js
 import React, { useState, useCallback } from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import PopularCategories from "../../Components/PopularCategories";
 import { categoriesData } from "../Home/data";
 import Toolbar from "./Toolbar";
 import LeftSlidebar from "./leftSlidebar";
+import SidebarCategories from "../ShopGrid/Filters/SidebarCategories"; // تأكد من الاستيراد
 
 export default function ShopPage() {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(null);
   const [selectedParentId, setSelectedParentId] = useState(null);
   const [selectedBrandIds, setSelectedBrandIds] = useState([]);
+  const [availabilityFilter, setAvailabilityFilter] = useState({
+    instock: false,
+    outofstock: false,
+  });
+  const [priceRangeFilter, setPriceRangeFilter] = useState([0, 1000]); // حالة لنطاق السعر
 
   const handleCategoryClick = useCallback((categoryId, childIds) => {
     setSelectedCategoryIds([categoryId, ...childIds]);
@@ -17,6 +24,18 @@ export default function ShopPage() {
   const handleBackToAll = useCallback(() => {
     setSelectedCategoryIds(null);
     setSelectedParentId(null);
+  }, []);
+
+  const handleSidebarCategoryFilterChange = useCallback((categoryIds) => {
+    setSelectedCategoryIds(categoryIds);
+  }, []);
+
+  const handleAvailabilityFilterChange = useCallback((availability) => {
+    setAvailabilityFilter(availability);
+  }, []);
+
+  const handlePriceRangeFilterChange = useCallback((priceRange) => {
+    setPriceRangeFilter(priceRange);
   }, []);
 
   return (
@@ -34,10 +53,17 @@ export default function ShopPage() {
       />
       <div className="container">
         <div className="row">
-          <LeftSlidebar onBrandFilterChange={setSelectedBrandIds} />
+          <LeftSlidebar
+            onBrandFilterChange={setSelectedBrandIds}
+            onCategoryFilterChange={handleSidebarCategoryFilterChange}
+            onAvailabilityFilterChange={handleAvailabilityFilterChange}
+            onPriceChange={handlePriceRangeFilterChange} // ✅ تمرير الدالة إلى LeftSlidebar
+          />
           <Toolbar
             selectedCategoryAndChildrenIds={selectedCategoryIds}
             selectedBrandIds={selectedBrandIds}
+            availabilityFilter={availabilityFilter}
+            priceRange={priceRangeFilter} // ✅ تمرير نطاق السعر إلى Toolbar
           />
         </div>
       </div>

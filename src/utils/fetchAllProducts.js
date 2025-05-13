@@ -1,3 +1,4 @@
+// src/utils/fetchAllProducts.js
 const BASE_URL = "http://192.168.100.13:3250/api/products";
 
 /**
@@ -11,7 +12,7 @@ const formatProduct = (product) => {
     id: product.product_id,
     name: product.description?.name || "Name not found",
     price: product.price || 0,
-    priceOld: (product.price || 0) + 20,
+    old_price: product.old_price || 0,
     primaryImg: mainImage?.single_image || "",
     hoverImg: hoverImage?.single_image || mainImage?.single_image || "",
     reviewsCount: 3,
@@ -44,27 +45,57 @@ const formatProduct = (product) => {
       wishlist: { href: "wishlist-style2.html" },
       compare: { href: "compare-style2.html" },
     },
-    categoryId: Number(product.category_id), // ✅ لضمان التوافق مع الفلاتر
+    categoryId: Number(product.category_id),
     brandId: product.brand_id ? Number(product.brand_id) : null,
     subcategory: product.subcategory || "No subcategory",
+    inStock: product.inventory?.stock_availability === true, // ✅ قيمة منطقية للتوفر
   };
 };
 
 /**
- * Fetch all products from given pages, with optional transform function.
- * Supports aborting and error handling per-request.
+ * Fetch all products from given pages
+ * @param {number[]} pages - Array of page numbers to fetch
+ * @param {function|null} transformFn - Optional transformation function
+ * @param {AbortSignal} abortSignal - Optional abort signal
+ * @param {function|null} setLoading - Optional state updater for loading
+ * @param {function|null} setError - Optional state updater for error
+ * @param {object|null} availabilityFilter - Optional filter for availability { instock: boolean, outofstock: boolean }
+ * @returns {Promise<Array>} All formatted products
  */
 export const fetchAllProducts = async (
   pages = [1],
   transformFn = null,
-  abortSignal
+  abortSignal,
+  setLoading = null,
+  setError = null,
+  availabilityFilter
 ) => {
   try {
-    const fetchPromises = pages.map((page) =>
-      fetch(`${BASE_URL}?page=${page}&limit=10`, { signal: abortSignal })
-    );
+    if (setLoading) setLoading(true);
+    if (setError) setError(null);
 
+    console.time("⏱️ Fetching products");
+    let availabilityQuery = "";
+    if (availabilityFilter?.instock && !availabilityFilter?.outofstock) {
+      availabilityQuery = "&stock_availability=true";
+    } else if (!availabilityFilter?.instock && availabilityFilter?.outofstock) {
+      availabilityQuery = "&stock_availability=false";
+    } else {
+      availabilityQuery = "";
+    }
+
+    const fetchPromises = pages.map((page) =>
+      fetch(`${BASE_URL}?page=${page}&limit=10${availabilityQuery}`, {
+        signal: abortSignal,
+      })
+    );
     const results = await Promise.allSettled(fetchPromises);
+
+    results
+      .filter((res) => res.status === "rejected")
+      .forEach((err) =>
+        console.warn("⚠️ Failed request:", err.reason?.message || err.reason)
+      );
 
     const successfulResponses = results
       .filter((res) => res.status === "fulfilled")
@@ -83,6 +114,10 @@ export const fetchAllProducts = async (
     return allProducts;
   } catch (error) {
     console.error("❌ Error fetching products:", error);
+    if (setError) setError(error.message || "حدث خطأ أثناء جلب المنتجات");
     return [];
+  } finally {
+    if (setLoading) setLoading(false);
+    console.timeEnd("⏱️ Fetching products");
   }
 };

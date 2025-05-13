@@ -69,6 +69,8 @@ export default function Toolbar({
   onViewChange,
   selectedCategoryAndChildrenIds,
   selectedBrandIds = [],
+  availabilityFilter,
+  priceRange,
 }) {
   const [activeView, setActiveView] = useState(5);
   const [showFilter, setShowFilter] = useState(false);
@@ -138,6 +140,8 @@ export default function Toolbar({
       <ProductGrid
         selectedCategoryAndChildrenIds={selectedCategoryAndChildrenIds}
         selectedBrandIds={selectedBrandIds}
+        availabilityFilter={availabilityFilter}
+        priceRange={priceRange}
       />{" "}
     </div>
   );

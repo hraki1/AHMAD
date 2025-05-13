@@ -1,34 +1,43 @@
-import React, { useState } from "react";
+// src/components/shop/Filters/AvailabilityFilter.js
+import React, { useState, useEffect } from "react";
 import { availabilityOptions } from "../data";
 
-export default function AvailabilityFilter({ className }) {
+export default function AvailabilityFilter({
+  className,
+  onAvailabilityFilterChange,
+}) {
   const [availability, setAvailability] = useState({
     instock: false,
     outofstock: false,
   });
+  const [showContent, setShowContent] = useState(true);
+
+  useEffect(() => {
+    onAvailabilityFilterChange?.(availability);
+  }, [availability, onAvailabilityFilterChange]);
 
   const handleChange = (e) => {
     const { id, checked } = e.target;
-    setAvailability((prev) => ({
-      ...prev,
-      [id]: checked,
-    }));
+    setAvailability((prev) => {
+      return {
+        instock: id === "instock" ? checked : false,
+        outofstock: id === "outofstock" ? checked : false,
+      };
+    });
   };
-  const [showContent, setShowContent] = useState(true);
 
   return (
     <div className={`sidebar-widget filter-widget availability ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div class="title-slidebar">Availability</div>
+        <div className="title-slidebar">Availability</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}
           onClick={() => setShowContent((prev) => !prev)}
         ></i>
-      </div>{" "}
+      </div>
       {showContent && (
         <div className="widget-content">
-          {" "}
           <div className="widget-content filterDD">
             <ul className="clearfix">
               {availabilityOptions.map(({ id, label }) => (

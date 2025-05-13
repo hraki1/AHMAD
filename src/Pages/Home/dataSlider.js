@@ -29,7 +29,7 @@ export const dataSlider = async () => {
       id: product.product_id,
       name: product.description?.name || "اسم غير متوفر",
       price: product.price || 0,
-      priceOld: (product.price || 0) + 20, //
+      old_price: (product.price || 0) + 20, //
       primaryImg: mainImage?.single_image || "",
       hoverImg: hoverImage?.single_image || mainImage?.single_image || "",
       reviewsCount: 3,

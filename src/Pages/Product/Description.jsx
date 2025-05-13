@@ -1,6 +1,31 @@
 import React from "react";
 import imgdesc from "../../assets/images/products/1.jpg";
+import { Link, useParams } from "react-router-dom";
+import useFetchOneProduct from "../../utils/useFetchOneProduct";
 const Description = () => {
+  const { url_key } = useParams();
+  const { product, loading, error } = useFetchOneProduct(url_key);
+  if (loading) {
+    return <div className="loading-spinner">Loading...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="error-alert">
+        Error: {error}
+        <button onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="empty-state">
+        Product not found. <Link to="/products">Back to products</Link>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-5">
       {/* Description */}
@@ -15,10 +40,7 @@ const Description = () => {
           <div className="row">
             <div className="col-12 col-sm-12 col-md-8 col-lg-8">
               <div className="desc-content">
-                There are many variations of passages of Lorem Ipsum available,
-                but the majority have suffered alteration in some form, by
-                injected humour, or randomised words which don't look even
-                slightly believable.
+                {product.description.description}.
               </div>
               <div className="mb-3 main-title-2 main">Features</div>
               <ol className="">

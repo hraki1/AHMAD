@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function PriceFilter({ className }) {
+export default function PriceFilter({ className, onPriceChange }) {
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [amount, setAmount] = useState("$0 - $100");
 
@@ -8,6 +8,7 @@ export default function PriceFilter({ className }) {
     if (newValue[0] > newValue[1]) return;
     setPriceRange(newValue);
     setAmount(`$${newValue[0]} - $${newValue[1]}`);
+    if (onPriceChange) onPriceChange(newValue);
   };
 
   const handleFilterClick = (e) => {

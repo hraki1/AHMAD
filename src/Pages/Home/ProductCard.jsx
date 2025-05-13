@@ -8,7 +8,7 @@ export default function ProductCard({
   labels = [],
   countdown,
   name,
-  priceOld,
+  old_price,
   price,
   reviewsCount,
   rating, // 0-5
@@ -195,7 +195,7 @@ export default function ProductCard({
             <a href={href}>{name}</a>
           </div>
           <div className="product-price">
-            {priceOld && <span className="price old-price">${priceOld}</span>}
+            {old_price && <span className="price old-price">${old_price}</span>}
             <span className="price">${price}</span>
           </div>
           <div className="product-review">

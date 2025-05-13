@@ -26,6 +26,7 @@ export default function useFetchCategories(parentId = null) {
             img: category.description?.image || "",
             title: category.description?.name || "No Title",
             count: category.products?.length || 0,
+            name: category.description.name || "no name",
           }));
           setCategories(formatted);
         } else {

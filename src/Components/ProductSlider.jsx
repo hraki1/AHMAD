@@ -79,7 +79,7 @@ const ProductSlider = ({
           </div>
           <div className="product-price">
             <span className="price old-price">
-              ${product.priceOld.toFixed(2)}
+              ${product.old_price.toFixed(2)}
             </span>
             <span className="price">${product.price.toFixed(2)}</span>
           </div>
