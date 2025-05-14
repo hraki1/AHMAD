@@ -1,7 +1,9 @@
+// src/components/shop/Filters/PriceFilter.js
 import React, { useState } from "react";
 
 export default function PriceFilter({ className, onPriceChange }) {
-  const [priceRange, setPriceRange] = useState([0, 100]);
+  const defaultPriceRange = [0, 100];
+  const [priceRange, setPriceRange] = useState(defaultPriceRange);
   const [amount, setAmount] = useState("$0 - $100");
 
   const handleSliderChange = (event, newValue) => {
@@ -14,18 +16,29 @@ export default function PriceFilter({ className, onPriceChange }) {
   const handleFilterClick = (e) => {
     e.preventDefault();
     console.log(`Filtered Price Range: ${amount}`);
+    if (onPriceChange) onPriceChange(priceRange);
   };
+
+  const handleResetClick = (e) => {
+    e.preventDefault();
+    // Reset to default values
+    setPriceRange(defaultPriceRange);
+    setAmount(`$${defaultPriceRange[0]} - $${defaultPriceRange[1]}`);
+    if (onPriceChange) onPriceChange(null); // Pass null to clear the filter
+    console.log("Price filter reset");
+  };
+
   const [showContent, setShowContent] = useState(true);
 
   return (
     <div className={`sidebar-widget filterBox filter-widget ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div class="title-slidebar">Price</div>
+        <div className="title-slidebar">Price</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}
           onClick={() => setShowContent((prev) => !prev)}
-        ></i>{" "}
+        ></i>
       </div>
       {showContent && (
         <div className="widget-content">
@@ -73,13 +86,20 @@ export default function PriceFilter({ className, onPriceChange }) {
                   className="form-control"
                 />
               </div>
-              <div className="col-6 text-right">
+              <div className="col-6 text-right d-flex justify-content-end">
+                <button 
+                  className="btn btn-sm btn-outline-secondary me-2"
+                  type="button"
+                  onClick={handleResetClick}
+                >
+                  Reset
+                </button>
                 <button className="btn btn-sm" type="submit">
                   Filter
                 </button>
               </div>
             </div>
-          </form>{" "}
+          </form>
         </div>
       )}
     </div>

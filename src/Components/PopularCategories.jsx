@@ -140,6 +140,21 @@ export default function PopularCategories({
             )}
           </div>
         )}
+        {/* {categoryHierarchy.length > 0 && (
+          <div className="text-center mb-3">
+            <button className="btn btn-outline-primary" onClick={backToAll}>
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+            {categoryHierarchy.length > 1 && (
+              <button
+                className="btn btn-outline-primary ms-2"
+                onClick={backOneLevel}
+              >
+                Back One Level
+              </button>
+            )}
+          </div>
+        )} */}
 
         {loading && (
           <div className="text-center fs-5 text-muted my-5">Loading...</div>
