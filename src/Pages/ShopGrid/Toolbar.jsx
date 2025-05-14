@@ -29,7 +29,9 @@ const ViewModes = ({ activeView, onChange }) => (
 );
 
 // 🔹 Reusable SelectBox
-const SelectBox = ({ id, label, options, defaultValue, value, onChange }) => ( // ✅ Added value and onChange props
+const SelectBox = (
+  { id, label, options, defaultValue, value, onChange } // ✅ Added value and onChange props
+) => (
   <div className="filters-item d-flex align-items-center ms-2 ms-lg-3">
     {label && (
       <label
@@ -93,22 +95,22 @@ export default function Toolbar({
 }) {
   const [activeView, setActiveView] = useState(5);
   const [showFilter, setShowFilter] = useState(false);
-  
+
   // ✅ Added new state variables for product management
   const [showCount, setShowCount] = useState(15);
   const [sortBy, setSortBy] = useState("featured");
   const [products, setProducts] = useState([]); // ✅ Will hold filtered/sorted products
   const [totalProducts, setTotalProducts] = useState(15); // ✅ Track total products count
-  
+
   // ✅ Added useEffect to handle product filtering and sorting
   useEffect(() => {
     // This would normally fetch from an API or filter from props
     // For now, we're just updating the count
     setTotalProducts(showCount);
-    
+
     // Actual implementation would sort and filter products here
     // based on sortBy, showCount, categories, etc.
-    
+
     // Example: Pass the updated products to ProductGrid
     // ProductGrid would receive this data via props
   }, [showCount, sortBy, selectedCategoryAndChildrenIds, selectedBrandIds]);
@@ -122,7 +124,7 @@ export default function Toolbar({
   const handleShowChange = (value) => {
     setShowCount(Number(value));
   };
-  
+
   const handleSortChange = (value) => {
     setSortBy(value);
   };
@@ -156,7 +158,9 @@ export default function Toolbar({
           {/* Center */}
           <div className="col-12 col-sm-4 col-md-4 col-lg-4 text-center order-0 order-md-1 mb-3 mb-sm-0">
             {/* ✅ Updated to use dynamic total count */}
-            <span className="toolbar-product-count">Showing: {totalProducts} products</span>
+            <span className="toolbar-product-count">
+              Showing: {totalProducts} products
+            </span>
           </div>
 
           {/* Right */}
@@ -191,15 +195,9 @@ export default function Toolbar({
       <ProductGrid
         selectedCategoryAndChildrenIds={selectedCategoryAndChildrenIds}
         selectedBrandIds={selectedBrandIds}
-<<<<<<< HEAD
-        availabilityFilter={availabilityFilter}
-        priceRange={priceRange}
+        // availabilityFilter={availabilityFilter}
+        // priceRange={priceRange}
         gridClass={getGridClasses(activeView)}
-=======
-        activeView={activeView} // ✅ Added to control grid layout
-        sortBy={sortBy} // ✅ Added to control sorting
-        showCount={showCount} // ✅ Added to control how many products to show
->>>>>>> origin/thamer-branch
       />{" "}
     </div>
   );
