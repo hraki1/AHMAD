@@ -10,6 +10,7 @@ const ProductGrid = ({
   selectedBrandIds = [],
   availabilityFilter,
   priceRange = [0, 1000],
+  gridClass,
 }) => {
   const [products, setProducts] = useState([]);
   const [cartLoading, setCartLoading] = useState(false);
@@ -214,7 +215,7 @@ const ProductGrid = ({
 
   return (
     <div className="grid-products grid-view-items">
-      <div className="row col-row product-options row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2">
+      <div className={` row col-row product-options ${gridClass}`}>
         {filteredProducts.map((product) => (
           <div className="item col-item" key={product.id}>
             <div className="product-box">

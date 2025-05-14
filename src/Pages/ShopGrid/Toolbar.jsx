@@ -8,14 +8,15 @@ import SizeFilter from "./Filters/SizeFilter";
 import ProductTypeFilter from "./Filters/ProductTypeFilter";
 import BrandFilter from "./Filters/BrandFilter";
 import AvailabilityFilter from "./Filters/AvailabilityFilter";
+import { Link } from "react-router-dom";
 
 // 🔹 ViewModes Component
 const ViewModes = ({ activeView, onChange }) => (
   <div className="grid-options view-mode d-flex">
     {viewModes.map(({ class: cls, col }) => (
-      <a
+      <Link
         key={col}
-        href="#"
+        to="#"
         className={`icon-mode ${cls} ${activeView === col ? "active" : ""}`}
         data-col={col}
         onClick={(e) => {
@@ -62,6 +63,25 @@ const filters = [
   BrandFilter,
   AvailabilityFilter,
 ];
+
+// change col
+const getGridClasses = (view) => {
+  switch (view) {
+    case 1:
+      return "row-cols-1";
+    case 2:
+      return "row-cols-2";
+    case 3:
+      return "row-cols-md-3 row-cols-sm-3 row-cols-2";
+    case 4:
+      return "row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2";
+    case 5:
+    default:
+      return "row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-3 row-cols-2";
+    case 0:
+      return "list-style";
+  }
+};
 
 // 🔶 Main Toolbar
 export default function Toolbar({
@@ -142,6 +162,7 @@ export default function Toolbar({
         selectedBrandIds={selectedBrandIds}
         availabilityFilter={availabilityFilter}
         priceRange={priceRange}
+        gridClass={getGridClasses(activeView)}
       />{" "}
     </div>
   );
