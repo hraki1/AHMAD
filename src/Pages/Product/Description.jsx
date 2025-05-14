@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import useFetchOneProduct from "../../utils/useFetchOneProduct";
+import useFetchOneProduct from "../Hooks/useFetchOneProduct";
 
 const Description = () => {
   const { url_key } = useParams();

@@ -1,17 +1,51 @@
 // Wishlist.js
 import { useWishlist } from "../../Context/WishlistContext";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import QuickViewModal from "../ProductModal/QuickViewModal";
+import { Link } from "react-router-dom";
 
 const Wishlist = () => {
   const { wishlistItems, removeFromWishlist } = useWishlist();
   const [showModal, setShowModal] = useState(false);
+  const [cartLoading, setCartLoading] = useState(false);
 
   const handleRemoveItem = (productId, e) => {
     e.preventDefault();
     removeFromWishlist(productId);
   };
+  const addToCart = useCallback(
+    (product) => {
+      if (cartLoading) return;
+      setCartLoading(true);
 
+      setTimeout(() => {
+        const existing = JSON.parse(localStorage.getItem("cartItems")) || [];
+        // تحقق هل المنتج موجود مسبقًا
+        const alreadyInCart = existing.find((item) => item.id === product.id);
+
+        if (alreadyInCart) {
+          alert(`${product.name} is already in your cart!`);
+          setCartLoading(false);
+          return;
+        }
+
+        // جهز الحقول للمنتج
+        const newItem = {
+          id: product.id,
+          name: product.name,
+          price: product.price, // احذر: إذا كان لديك newPrice كسلسلة "$99" فاستخرج الرقم فقط
+          quantity: 1,
+          image: product.imgSrc || product.imageUrl, // حسب المسمى لديك
+        };
+
+        const updated = [...existing, newItem];
+        localStorage.setItem("cartItems", JSON.stringify(updated));
+        alert(`${product.name} added to cart!`);
+        setCartLoading(false);
+      }, 200);
+    },
+    [cartLoading]
+  );
   return (
     <div className="container">
       <div
@@ -56,13 +90,14 @@ const Wishlist = () => {
                         height="170"
                       />
                     </a>
-                    <button
+                    <Link
+                      to={`/product/${product.url_key || product.id}`}
                       type="button"
                       className="btn btn-light"
                       onClick={() => setShowModal(true)}
                     >
                       <i className="fa-solid fa-magnifying-glass"></i>
-                    </button>
+                    </Link>
                   </td>
                   <td className="product-details">
                     <p className="product-name mb-0">{product.name}</p>
@@ -99,6 +134,9 @@ const Wishlist = () => {
                       className={`btn btn-secondary text-nowrap ${
                         product.disabled ? "soldOutBtn disabled" : ""
                       }`}
+                      onClick={() => {
+                        if (!product.disabled) addToCart(product);
+                      }}
                     >
                       {product.disabled ? "Out Of stock" : "Add To Cart"}
                     </button>

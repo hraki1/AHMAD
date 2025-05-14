@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import Button from "../../Components/common/Button";
 // import quoteIcon from "../../assets/images/icons/demo1-quote-icon.png";
 import brandIcon from "../../assets/images/icons/brand-icon.png";
-import useFetchBrands from "../../utils/useFetchBrands";
+import useFetchBrands from "../Hooks/useFetchBrands";
 import { Link } from "react-router-dom";
 export default function TestimonialSection() {
   const settings = {

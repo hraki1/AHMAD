@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Slider from "react-slick";
 import PageHeader from "../../Components/layout/Header/PageHeader";
-import useFetchBrands from "../../utils/useFetchBrands";
+import useFetchBrands from "../Hooks/useFetchBrands";
 
 const BrandsPage = () => {
   const { brands, loading, error } = useFetchBrands();

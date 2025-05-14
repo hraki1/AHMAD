@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
-import useFetchCategories from "../utils/useFetchCategories";
+import useFetchCategories from "../Pages/Hooks/useFetchCategories";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 

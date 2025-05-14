@@ -1,8 +1,50 @@
-import React, { useState } from "react";
-import { productsData } from "./data";
+import React, { useEffect, useState } from "react";
+import { fetchAllProducts } from "../utils/fetchAllProducts";
+import { Link } from "react-router-dom";
+import Button from "./common/Button";
 
 export default function ProductItem() {
-  const [products] = useState(productsData); // import from data and save it inside usestate
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    const loadProducts = async () => {
+      const data = await fetchAllProducts(
+        [1],
+        null,
+        controller.signal,
+        setLoading,
+        setError
+      );
+
+      const updatedData = data.slice(0, 4).map((product) => ({
+        ...product,
+        selectedImage: product.primaryImg,
+        variants: [
+          {
+            src: product.primaryImg,
+            title: "Default",
+          },
+          ...product.variants,
+        ],
+      }));
+
+      setProducts(updatedData);
+    };
+
+    loadProducts();
+
+    return () => controller.abort();
+  }, []);
+
+  const handleVariantClick = (productIndex, image) => {
+    setProducts((prev) =>
+      prev.map((item, index) =>
+        index === productIndex ? { ...item, selectedImage: image } : item
+      )
+    );
+  };
 
   return (
     <section className="section product-slider pb-0 mb-5">
@@ -12,6 +54,8 @@ export default function ProductItem() {
         </div>
         <div className="product-slider-4items gp10 arwOut5 grid-products">
           <div className="row">
+            {loading && <p>Loading...</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
             {products.map((product, index) => (
               <div
                 key={index}
@@ -20,117 +64,68 @@ export default function ProductItem() {
               >
                 <div className="product-box">
                   <div className="product-image">
-                    <a
-                      href="product-layout1.html"
+                    <Link
+                      to={`/product/${product.url_key || product.id}`}
                       className="product-img rounded-3"
                     >
                       <img
                         className="blur-up lazyload"
-                        src={product.image}
+                        src={product.selectedImage}
                         alt="Product"
                         title="Product"
                         width="625"
                         height="808"
                       />
-                    </a>
+                    </Link>
                     <div className="product-labels productes-labels-imp">
                       <span className="lbl on-sale">Sale</span>
                     </div>
                     <div
                       className="saleTime"
-                      data-countdown={product.saleTime}
+                      data-countdown={product.countdown}
                     ></div>
                     <div className="button-set style1">
-                      <a
-                        href="#quickshop-modal"
-                        className="btn-icon addtocart quick-shop-modal"
-                        data-bs-toggle="modal"
-                        data-bs-target="#quickshop_modal"
-                      >
-                        <span
-                          className="icon-wrap d-flex-justify-center h-100 w-100"
-                          data-bs-toggle="tooltip"
-                          data-bs-placement="left"
-                          title="Quick Shop"
-                        >
-                          <i className="fa-solid fa-cart-plus"></i>
-                          <span className="text">Quick Shop</span>
-                        </span>
-                      </a>
-                      <a
-                        href="#quickview-modal"
-                        className="btn-icon quickview quick-view-modal"
-                        data-bs-toggle="modal"
-                        data-bs-target="#quickview_modal"
-                      >
-                        <span
-                          className="icon-wrap d-flex-justify-center h-100 w-100"
-                          data-bs-toggle="tooltip"
-                          data-bs-placement="left"
-                          title="Quick View"
-                        >
-                          <i className="fa-solid fa-eye"></i>
-                          <span className="text">Quick View</span>
-                        </span>
-                      </a>
-                      <a
-                        href="wishlist-style2.html"
-                        className="btn-icon wishlist"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="left"
-                        title="Add To Wishlist"
-                      >
-                        <i className="fa-solid fa-heart"></i>
-                        <span className="text">Add To Wishlist</span>
-                      </a>
-                      <a
-                        href="compare-style2.html"
-                        className="btn-icon compare"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="left"
-                        title="Add to Compare"
-                      >
-                        <i className="fa-solid fa-code-compare"></i>
-                        <span className="text">Add to Compare</span>
-                      </a>
+                      {/* ... أزرار الشراء ... */}
                     </div>
                   </div>
                   <div className="product-details">
-                    <div className="product-name">
-                      <a href="product-layout1.html">{product.name}</a>
+                    <div className="product-name mt-2 font-weight-bold">
+                      {product.name}
                     </div>
                     <div className="product-price">
                       <span className="price old-price">
-                        {product.oldPrice}
+                        ${product.old_price}
                       </span>
-                      <span className="price">{product.newPrice}</span>
+                      <span className="price">${product.price}</span>
                     </div>
                     <div className="product-review">
-                      {[...Array(5)].map((_, index) => (
+                      {[...Array(5)].map((_, i) => (
                         <i
-                          key={index}
+                          key={i}
                           className={`fas fa-star ${
-                            index < product.reviews ? "filled" : ""
+                            i < product.rating ? "filled" : ""
                           }`}
                           style={{ color: "gold" }}
                         ></i>
                       ))}
                       <span className="caption hidden ms-1">
-                        {product.reviews} Reviews
+                        {product.reviewsCount} Reviews
                       </span>
                     </div>
                     <ul className="variants-clr swatches">
-                      {product.variantImages.map((image, index) => (
-                        <li key={index} className="swatch medium radius">
+                      {product.variants.map((variant, vIndex) => (
+                        <li key={vIndex} className="swatch medium radius">
                           <span
                             className="swatchLbl"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title={`Variant ${index + 1}`}
+                            title={variant.title}
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                              handleVariantClick(index, variant.src)
+                            }
                           >
                             <img
-                              src={image}
-                              alt={`product-${index}`}
+                              src={variant.src}
+                              alt={`variant-${vIndex}`}
                               width="625"
                               height="808"
                             />
@@ -142,6 +137,9 @@ export default function ProductItem() {
                 </div>
               </div>
             ))}
+            <div className="view-collection text-center mt-4 mt-md-5">
+              <Button label="View Collection" to="/ShopGrid" primary={false} />
+            </div>
           </div>
         </div>
       </div>

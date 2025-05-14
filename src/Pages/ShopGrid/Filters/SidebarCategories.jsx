@@ -1,6 +1,6 @@
 // src/components/shop/Filters/SidebarCategories.js
 import React, { useState } from "react";
-import useFetchCategories from "../../../utils/useFetchCategories";
+import useFetchCategories from "../../Hooks/useFetchCategories";
 
 // مكون لعرض الـ Subcategories عند الضغط
 const SubCategoryList = ({ parentId, isOpen, onCategorySelect }) => {

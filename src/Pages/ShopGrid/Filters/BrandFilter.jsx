@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import useFetchBrands from "../../../utils/useFetchBrands";
+import useFetchBrands from "../../Hooks/useFetchBrands";
 
 export default function BrandFilter({ className, onFilterChange }) {
   const { brands, loading, error } = useFetchBrands();

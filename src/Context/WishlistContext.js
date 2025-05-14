@@ -1,14 +1,39 @@
-// contexts/WishlistContext.js
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 
 const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState([]);
+  const [initialized, setInitialized] = useState(false); //
+
+  //
+  useEffect(() => {
+    try {
+      const storedWishlist = localStorage.getItem("wishlist");
+      if (storedWishlist) {
+        const parsedItems = JSON.parse(storedWishlist);
+        if (Array.isArray(parsedItems)) {
+          setWishlistItems(parsedItems);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading wishlist:", error);
+      localStorage.removeItem("wishlist");
+    } finally {
+      setInitialized(true);
+    }
+  }, []);
+
+  //
+  useEffect(() => {
+    if (initialized) {
+      //
+      localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
+    }
+  }, [wishlistItems, initialized]);
 
   const addToWishlist = (product) => {
     setWishlistItems((prevItems) => {
-      // Check if product already exists in wishlist
       const exists = prevItems.some((item) => item.id === product.id);
       if (!exists) {
         return [...prevItems, product];

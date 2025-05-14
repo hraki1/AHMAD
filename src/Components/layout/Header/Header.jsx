@@ -138,7 +138,6 @@ const Header = () => {
                                 >
                                   {mainCat.title}
                                 </Link>
-
                                 عرض الـ subcategories
                                 {subCategories.length > 0 && (
                                   <ul className="sub-menu">
@@ -170,6 +169,8 @@ const Header = () => {
                     { to: "/Portfolio", label: "Portfolio Page" },
                     { to: "/FAQ", label: "FAQs Page" },
                     { to: "/CMS", label: "CMS Page" },
+                    { to: "/Cart", label: "Cart" },
+                    { to: "/CheckOut", label: "CheckOut" },
                   ]}
                 />
                 <NavItem

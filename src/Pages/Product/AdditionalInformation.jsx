@@ -1,5 +1,5 @@
 import React from "react";
-import useFetchOneProduct from "../../utils/useFetchOneProduct";
+import useFetchOneProduct from "../Hooks/useFetchOneProduct";
 import { useParams } from "react-router-dom";
 
 const AdditionalInformation = () => {

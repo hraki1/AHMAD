@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import renderTime from "./renderTime";
 import Countdown from "react-countdown";
-import useFetchOneProduct from "../../utils/useFetchOneProduct";
+import useFetchOneProduct from "../Hooks/useFetchOneProduct";
 const socialIcons = [
   { icon: "twitter", title: "Twitter" },
   { icon: "pinterest-p", title: "Pinterest" },

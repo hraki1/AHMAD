@@ -1,7 +1,7 @@
 // src/components/shop/ProductGrid.js
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllProducts } from "../../utils/fetchAllProducts";
-import useFetchCategories from "../../utils/useFetchCategories";
+import useFetchCategories from "../Hooks/useFetchCategories";
 import { data, Link } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 
@@ -18,8 +18,10 @@ const ProductGrid = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { addToWishlist } = useWishlist();
+
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
+
     addToWishlist({
       id: product.id,
       name: product.name,
@@ -29,8 +31,10 @@ const ProductGrid = ({
       imgSrc: product.imageUrl,
       variant: product.colors[0]?.title || "Default variant",
     });
+
     alert(`${product.name} added to wishlist!`);
   };
+
   const {
     categories: subcategories,
     loading: subcategoriesLoading,
