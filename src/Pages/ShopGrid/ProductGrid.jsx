@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../../utils/useFetchCategories";
-import { data, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 
 const ProductGrid = ({
@@ -11,6 +11,10 @@ const ProductGrid = ({
   availabilityFilter,
   priceRange = [0, 1000],
   gridClass,
+  productsToShow,
+  sortBy = "Featured", // 👈 Adding sortBy parameter
+  displayedProductCount, // ✅ Received displayedProductCount
+  productsPerPageValue, // ✅ Received productsPerPage
 }) => {
   const [products, setProducts] = useState([]);
   const [cartLoading, setCartLoading] = useState(false);
@@ -18,6 +22,7 @@ const ProductGrid = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { addToWishlist } = useWishlist();
+
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
     addToWishlist({
@@ -31,11 +36,13 @@ const ProductGrid = ({
     });
     alert(`${product.name} added to wishlist!`);
   };
+
   const {
     categories: subcategories,
     loading: subcategoriesLoading,
     error: subcategoriesError,
   } = useFetchCategories(selectedCategoryAndChildrenIds?.[0] || null);
+  useEffect(() => {}, [displayedProductCount, productsPerPageValue]);
 
   useEffect(() => {
     if (
@@ -86,12 +93,14 @@ const ProductGrid = ({
               categoryId,
               brandId,
               url_key,
-              inStock, // ✅ استقبل حالة التوفر المنطقية
+              inStock,
+              created_at, // 👈 Add date field for sorting by date
             }) => ({
               id,
               name,
               oldPrice: `$${(old_price || price + 20).toFixed(2)}`,
               newPrice: `$${price.toFixed(2)}`,
+              price: price, // 👈 Store raw price for sorting
               imageUrl: primaryImg || "",
               categoryId,
               brandId,
@@ -101,7 +110,8 @@ const ProductGrid = ({
                 imgSrc: src,
               })),
               url_key: url_key,
-              inStock, // ✅ مرر حالة التوفر المنطقية
+              inStock,
+              createdAt: created_at || new Date().toISOString(), // 👈 Add created date for sorting
             })
           )
         );
@@ -143,7 +153,7 @@ const ProductGrid = ({
             ...product,
             price: parseFloat(product.newPrice.replace("$", "")),
             quantity: 1,
-            image: product.imageUrl, // أضف هذا السطر
+            image: product.imageUrl,
           },
         ];
         localStorage.setItem("cartItems", JSON.stringify(updated));
@@ -175,12 +185,12 @@ const ProductGrid = ({
       result = result.filter((p) => brandIdSet.has(Number(p.brandId)));
     }
 
-    // ✅ فلترة حسب التوفر باستخدام inStock القيمة المنطقية
     if (availabilityFilter?.instock && !availabilityFilter?.outofstock) {
       result = result.filter((p) => p.inStock);
     } else if (!availabilityFilter?.instock && availabilityFilter?.outofstock) {
       result = result.filter((p) => !p.inStock);
     }
+
     if (priceRange && priceRange.length === 2) {
       const [min, max] = priceRange;
       result = result.filter((p) => {
@@ -199,6 +209,56 @@ const ProductGrid = ({
     priceRange,
   ]);
 
+  // Apply sorting based on sortBy value
+  const sortedProducts = useMemo(() => {
+    let result = [...filteredProducts];
+
+    switch (sortBy) {
+      case "Featured":
+        // Featured usually maintains default order or uses a "featured" flag
+        break;
+      case "Best Selling":
+        // Assuming we track sales in the future, for now using reviews as proxy
+        result.sort((a, b) => b.reviews - a.reviews);
+        break;
+      case "Alphabetically, A-Z":
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "Alphabetically, Z-A":
+        result.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "Price, low to high":
+        result.sort((a, b) => {
+          const priceA = parseFloat(a.newPrice.replace("$", ""));
+          const priceB = parseFloat(b.newPrice.replace("$", ""));
+          return priceA - priceB;
+        });
+        break;
+      case "Price, high to low":
+        result.sort((a, b) => {
+          const priceA = parseFloat(a.newPrice.replace("$", ""));
+          const priceB = parseFloat(b.newPrice.replace("$", ""));
+          return priceB - priceA;
+        });
+        break;
+      case "Date, old to new":
+        result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        break;
+      case "Date, new to old":
+        result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      default:
+        // Default sorting logic
+        break;
+    }
+
+    return result;
+  }, [filteredProducts, sortBy]);
+
+  const displayedProducts = useMemo(() => {
+    return sortedProducts.slice(0, productsToShow); // 👈 Use sortedProducts instead of filteredProducts
+  }, [sortedProducts, productsToShow]);
+
   const renderStars = (reviews) =>
     Array.from({ length: 5 }, (_, i) => (
       <i
@@ -210,13 +270,12 @@ const ProductGrid = ({
 
   if (subcategoriesLoading || loading) return <p>Loading products...</p>;
   if (error) return <p>Error loading products: {error}</p>;
-  if (!filteredProducts.length)
-    return <p>No products found for this filter.</p>;
+  if (!sortedProducts.length) return <p>No products found for this filter.</p>;
 
   return (
     <div className="grid-products grid-view-items">
       <div className={` row col-row product-options ${gridClass}`}>
-        {filteredProducts.map((product) => (
+        {displayedProducts.map((product) => (
           <div className="item col-item" key={product.id}>
             <div className="product-box">
               <div className="product-image">

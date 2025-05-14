@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { showOptions, sortOptions, viewModes } from "./data";
 import ProductGrid from "./ProductGrid";
 import SidebarCategories from "./Filters/SidebarCategories";
@@ -8,15 +8,14 @@ import SizeFilter from "./Filters/SizeFilter";
 import ProductTypeFilter from "./Filters/ProductTypeFilter";
 import BrandFilter from "./Filters/BrandFilter";
 import AvailabilityFilter from "./Filters/AvailabilityFilter";
-import { Link } from "react-router-dom";
 
 // 🔹 ViewModes Component
 const ViewModes = ({ activeView, onChange }) => (
   <div className="grid-options view-mode d-flex">
     {viewModes.map(({ class: cls, col }) => (
-      <Link
+      <a
         key={col}
-        to="#"
+        href="#"
         className={`icon-mode ${cls} ${activeView === col ? "active" : ""}`}
         data-col={col}
         onClick={(e) => {
@@ -29,7 +28,7 @@ const ViewModes = ({ activeView, onChange }) => (
 );
 
 // 🔹 Reusable SelectBox
-const SelectBox = ({ id, label, options, defaultValue }) => (
+const SelectBox = ({ id, label, options, value, onChange }) => (
   <div className="filters-item d-flex align-items-center ms-2 ms-lg-3">
     {label && (
       <label
@@ -42,7 +41,8 @@ const SelectBox = ({ id, label, options, defaultValue }) => (
     <select
       id={id}
       className={`filters-toolbar-${id}`}
-      defaultValue={defaultValue}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
     >
       {options.map((opt) => (
         <option key={opt.value || opt} value={opt.value || opt}>
@@ -64,7 +64,6 @@ const filters = [
   AvailabilityFilter,
 ];
 
-// change col
 const getGridClasses = (view) => {
   switch (view) {
     case 1:
@@ -94,6 +93,15 @@ export default function Toolbar({
 }) {
   const [activeView, setActiveView] = useState(5);
   const [showFilter, setShowFilter] = useState(false);
+  const [productsPerPage, setProductsPerPage] = useState(15); // Default for "Show" dropdown
+  const [sortBy, setSortBy] = useState("Featured");
+  const [totalProducts, setTotalProducts] = useState(15); // This would normally come from your data
+
+  // Simulate loading total product count - in a real app, this would come from your API/data source
+  useEffect(() => {
+    // For demo purposes - in a real app, you'd fetch this from your API
+    setTotalProducts(100); // Example total product count
+  }, []);
 
   const handleViewChange = (col) => {
     setActiveView(col);
@@ -104,6 +112,18 @@ export default function Toolbar({
     setShowFilter((prev) => !prev);
     onFilterClick?.();
   };
+
+  const handleProductsPerPageChange = (value) => {
+    setProductsPerPage(Number(value));
+  };
+
+  const handleSortChange = (value) => {
+    console.log("Sorting products by:", value); // 👈 Debug logging
+    setSortBy(value);
+  };
+
+  // Calculate how many products are actually showing (either the per page limit or the total)
+  const displayedProductCount = Math.min(productsPerPage, totalProducts);
 
   return (
     <div className="col-12 col-lg-9 main-col">
@@ -128,7 +148,9 @@ export default function Toolbar({
 
           {/* Center */}
           <div className="col-12 col-sm-4 col-md-4 col-lg-4 text-center order-0 order-md-1 mb-3 mb-sm-0">
-            <span className="toolbar-product-count">Showing: 15 products</span>
+            <span className="toolbar-product-count">
+              Showing: {displayedProductCount} products
+            </span>
           </div>
 
           {/* Right */}
@@ -137,13 +159,15 @@ export default function Toolbar({
               id="show"
               label="Show:"
               options={showOptions}
-              defaultValue={15}
+              value={productsPerPage}
+              onChange={handleProductsPerPageChange}
             />
             <SelectBox
               id="sort"
               label="Sort by:"
               options={sortOptions}
-              defaultValue="featured"
+              value={sortBy}
+              onChange={handleSortChange}
             />
           </div>
         </div>
@@ -162,8 +186,13 @@ export default function Toolbar({
         selectedBrandIds={selectedBrandIds}
         availabilityFilter={availabilityFilter}
         priceRange={priceRange}
+        productsToShow={productsPerPage} // 👈 Renamed to match ProductGrid's props
         gridClass={getGridClasses(activeView)}
-      />{" "}
+        sortBy={sortBy}
+        viewMode={activeView}
+        displayedProductCount={displayedProductCount} // ✅ Pass displayedProductCount
+        productsPerPageValue={productsPerPage} // ✅ Pass productsPerPage
+      />
     </div>
   );
 }
