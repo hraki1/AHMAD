@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
+import { baseUrl } from "../API/ApiConfig";
 const AddressBook = () => {
   const [addresses, setAddresses] = useState([]); // ✅ القيمة الابتدائية مصفوفة فارغة
   const navigate = useNavigate();
@@ -10,14 +10,11 @@ const AddressBook = () => {
     const fetchAddresses = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(
-          "http://192.168.100.13:3250/api/addresses",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${baseUrl}/api/addresses`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const data = await response.json();
         console.log("Fetched address data:", data);

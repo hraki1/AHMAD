@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { baseUrl } from "../API/ApiConfig";
 export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState([]);
@@ -18,7 +18,7 @@ export default function Cart() {
       return;
     }
 
-    fetch("http://192.168.100.13:3250/api/carts/customer", {
+    fetch(`${baseUrl}/api/carts/customer`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
@@ -49,7 +49,7 @@ export default function Cart() {
 
     try {
       const res = await fetch(
-        `http://192.168.100.13:3250/api/carts/${cartId}/items/${cart_item_id}`,
+        `${baseUrl}/api/carts/${cartId}/items/${cart_item_id}`,
         {
           method: "PUT",
           headers: {
@@ -83,7 +83,7 @@ export default function Cart() {
 
     try {
       const res = await fetch(
-        `http://192.168.100.13:3250/api/carts/${cartId}/items/${cart_item_id}`,
+        `${baseUrl}/api/carts/${cartId}/items/${cart_item_id}`,
         { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
       );
 

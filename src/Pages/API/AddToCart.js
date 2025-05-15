@@ -1,3 +1,4 @@
+import { baseUrl } from "./ApiConfig";
 export const AddToCart = async (productId, qty = 1) => {
   const token = localStorage.getItem("token");
 
@@ -14,7 +15,7 @@ export const AddToCart = async (productId, qty = 1) => {
     let cartId = null;
 
     // Step 1: Get the cart
-    const res1 = await fetch("http://192.168.100.13:3250/api/carts/customer", {
+    const res1 = await fetch(`${baseUrl}/api/carts/customer`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -22,7 +23,7 @@ export const AddToCart = async (productId, qty = 1) => {
       const cartData = await res1.json();
       cartId = cartData.id || cartData.cart_id;
     } else if (res1.status === 404) {
-      const res2 = await fetch("http://192.168.100.13:3250/api/carts", {
+      const res2 = await fetch(`${baseUrl}/api/carts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,12 +49,9 @@ export const AddToCart = async (productId, qty = 1) => {
     }
 
     // Step 2: Get existing cart items
-    const itemsRes = await fetch(
-      `http://192.168.100.13:3250/api/carts/${cartId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const itemsRes = await fetch(`${baseUrl}/api/carts/${cartId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     if (!itemsRes.ok) {
       throw new Error("Failed to fetch cart details");
@@ -69,7 +67,7 @@ export const AddToCart = async (productId, qty = 1) => {
       const updatedQty = existingItem.qty + qty;
 
       const updateRes = await fetch(
-        `http://192.168.100.13:3250/api/carts/${cartId}/items/${existingItem.cart_item_id}`,
+        `${baseUrl}/api/carts/${cartId}/items/${existingItem.cart_item_id}`,
         {
           method: "PUT",
           headers: {
@@ -91,17 +89,14 @@ export const AddToCart = async (productId, qty = 1) => {
       };
     } else {
       // Product not in cart → Add new
-      const addRes = await fetch(
-        `http://192.168.100.13:3250/api/carts/${cartId}/items`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ qty, product_id: productId }),
-        }
-      );
+      const addRes = await fetch(`${baseUrl}/api/carts/${cartId}/items`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ qty, product_id: productId }),
+      });
 
       if (!addRes.ok) {
         const errorData = await addRes.json();

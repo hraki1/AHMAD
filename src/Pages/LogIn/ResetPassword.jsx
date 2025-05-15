@@ -3,7 +3,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import Button from "../../Components/common/Button";
-
+import { baseUrl } from "../API/ApiConfig";
 export default function ResetPassword() {
   const [formInput, setFormInput] = useState({
     newPassword: "",
@@ -42,14 +42,11 @@ export default function ResetPassword() {
 
     setLoading(true);
     try {
-      const res = await fetch(
-        "http://192.168.100.13:3250/api/auth/reset-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ newPassword }),
-        }
-      );
+      const res = await fetch(`${baseUrl}/api/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newPassword }),
+      });
 
       const data = await res.json();
       if (res.ok) {

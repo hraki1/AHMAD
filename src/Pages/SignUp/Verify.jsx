@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
-
+import { baseUrl } from "../API/ApiConfig";
 export default function Verify() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -33,16 +33,13 @@ export default function Verify() {
     }
 
     try {
-      const response = await fetch(
-        "http://192.168.100.13:3250/api/auth/verify-otp",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, otp }),
-        }
-      );
+      const response = await fetch(`${baseUrl}/api/auth/verify-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, otp }),
+      });
 
       const result = await response.json();
 

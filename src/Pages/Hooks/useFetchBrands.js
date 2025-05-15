@@ -1,12 +1,12 @@
 // hooks/useFetchBrands.js
 import { useEffect, useState } from "react";
-
+import { baseUrl } from "../API/ApiConfig";
 export default function useFetchBrands(customUrl = null) {
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = customUrl || "http://192.168.100.13:3250/api/brands";
+  const BASE_URL = customUrl || `${baseUrl}/api/brands`;
 
   useEffect(() => {
     const fetchBrandsData = async () => {

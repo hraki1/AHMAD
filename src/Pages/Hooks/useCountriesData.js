@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-
+import { baseUrl } from "../API/ApiConfig";
 export default function useCountriesData() {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://192.168.100.13:3250/api/countries")
+    fetch(`${baseUrl}/api/countries`)
       .then((res) => {
         if (!res.ok) throw new Error("error When Get Data");
         return res.json();

@@ -1,12 +1,12 @@
 // hooks/useFetchCategories.js
 import { useEffect, useState } from "react";
-
+import { baseUrl } from "../../../Pages/API/ApiConfig";
 export default function useFetchCategories(parentId = null) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = "http://192.168.100.13:3250/api/categories"; // Assuming this now returns ALL categories
+  const BASE_URL = `${baseUrl}/api/categories`; // Assuming this now returns ALL categories
 
   useEffect(() => {
     const fetchCategoriesData = async () => {

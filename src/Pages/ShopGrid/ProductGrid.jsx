@@ -3,9 +3,6 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../Hooks/useFetchCategories";
 import { Link } from "react-router-dom";
-import { data, Link } from "react-router-dom";
-import useFetchCategories from "../../utils/useFetchCategories";
-import { Link } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 
 const ProductGrid = ({
@@ -166,23 +163,6 @@ const ProductGrid = ({
   //   },
   //   [cartLoading]
   // );
-
-        const updated = [
-          ...existing,
-          {
-            ...product,
-            price: parseFloat(product.newPrice.replace("$", "")),
-            quantity: 1,
-            image: product.imageUrl,
-          },
-        ];
-        localStorage.setItem("cartItems", JSON.stringify(updated));
-        alert(`${product.name} added to cart!`);
-        setCartLoading(false);
-      }, 200);
-    },
-    [cartLoading]
-  );
 
   const filteredProducts = useMemo(() => {
     let result = [...products];

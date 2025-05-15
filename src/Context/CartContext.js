@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { baseUrl } from "../Pages/API/ApiConfig";
 const CartContext = createContext();
 export function CartProvider({ children }) {
   const [cartCount, setCartCount] = useState(0);
@@ -10,10 +11,9 @@ export function CartProvider({ children }) {
       return;
     }
     try {
-      const response = await fetch(
-        "http://192.168.100.13:3250/api/carts/customer",
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await fetch(`${baseUrl}/api/carts/customer`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (response.ok) {
         const cartData = await response.json();
         setCartCount(cartData.items?.length || 0);

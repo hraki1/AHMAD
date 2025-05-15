@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../../Components/common/Button"; // Adjust the import path as necessary
 import useCountriesData from "../Hooks/useCountriesData";
-
+import { baseUrl } from "../API/ApiConfig";
 export default function Checkout({ country, setCountry }) {
   const { countries, loading, error } = useCountriesData();
   const [savedAddresses, setSavedAddresses] = useState([]);
@@ -41,7 +41,7 @@ export default function Checkout({ country, setCountry }) {
       const token = localStorage.getItem("token");
       if (!token) return;
       try {
-        const res = await fetch("http://192.168.100.13:3250/api/addresses", {
+        const res = await fetch(`${baseUrl}/api/addresses`, {
           method: "get",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -77,17 +77,14 @@ export default function Checkout({ country, setCountry }) {
     // إذا تم اختيار عنوان محفوظ، أرسله مباشرة
     if (selectedSavedAddressId) {
       try {
-        const response = await fetch(
-          "http://192.168.100.13:3250/api/use-saved-address",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ address_id: selectedSavedAddressId }),
-          }
-        );
+        const response = await fetch(`${baseUrl}/api/use-saved-address`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ address_id: selectedSavedAddressId }),
+        });
 
         if (!response.ok) throw new Error("Failed to use saved address.");
         const result = await response.json();
@@ -124,7 +121,7 @@ export default function Checkout({ country, setCountry }) {
     };
 
     try {
-      const response = await fetch("http://192.168.100.13:3250/api/addresses", {
+      const response = await fetch(`${baseUrl}/api/addresses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

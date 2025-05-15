@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-
-const BASE_URL = "http://192.168.100.13:3250/api/products";
+import { baseUrl } from "../API/ApiConfig";
+const BASE_URL = `${baseUrl}/api/products`;
 
 const useFetchOneProduct = (urlKey, productId) => {
   const [product, setProduct] = useState(null);

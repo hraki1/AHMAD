@@ -1,16 +1,12 @@
 import { Link } from "react-router-dom";
-
+import { baseUrl } from "../API/ApiConfig";
 export const dataSlider = async () => {
   // جلب البيانات من الصفحة الأولى
-  const res1 = await fetch(
-    "http://192.168.100.13:3250/api/products?page=1&limit=10"
-  );
+  const res1 = await fetch(`${baseUrl}/api/products?page=1&limit=10`);
   const json1 = await res1.json();
 
   // جلب البيانات من الصفحة الثانية
-  const res2 = await fetch(
-    "http://192.168.100.13:3250/api/products?page=2&limit=10"
-  );
+  const res2 = await fetch(`${baseUrl}/api/products?page=2&limit=10`);
   const json2 = await res2.json();
 
   // mearge pages

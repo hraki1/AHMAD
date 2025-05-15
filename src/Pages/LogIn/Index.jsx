@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import Button from "../../Components/common/Button";
 import { useLocation } from "react-router-dom";
-
+import { baseUrl } from "../API/ApiConfig";
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -50,19 +50,16 @@ const Index = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://192.168.100.13:3250/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formInput.email,
-            password: formInput.pass,
-          }),
-        }
-      );
+      const response = await fetch(`${baseUrl}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formInput.email,
+          password: formInput.pass,
+        }),
+      });
 
       const data = await response.json();
 

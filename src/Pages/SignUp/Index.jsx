@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import SocialMediaRegister from "../../Components/SocialMediaLogin";
-
+import { baseUrl } from "../API/ApiConfig";
 const Index = () => {
   const [formInput, setFormInput] = useState({
     name: "",
@@ -74,21 +74,18 @@ const Index = () => {
     if (Object.keys(newErrors).length === 0) {
       // send data to backend
       try {
-        const response = await fetch(
-          "http://192.168.100.13:3250/api/auth/register",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              full_name: formInput.name,
-              email: formInput.email,
-              password: formInput.pass,
-              phone_number: formInput.phone,
-            }),
-          }
-        );
+        const response = await fetch(`${baseUrl}/api/auth/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            full_name: formInput.name,
+            email: formInput.email,
+            password: formInput.pass,
+            phone_number: formInput.phone,
+          }),
+        });
 
         const result = await response.json();
 

@@ -1,5 +1,6 @@
 // src/utils/fetchAllProducts.js
-const BASE_URL = "http://192.168.100.13:3250/api/products";
+import { baseUrl } from "../Pages/API/ApiConfig";
+const BASE_URL = `${baseUrl}/api/products`;
 
 /**
  * Format a single product into the desired structure
