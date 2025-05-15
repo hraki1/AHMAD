@@ -5,7 +5,6 @@ import PopularCategories from "../../Components/PopularCategories";
 import { categoriesData } from "../Home/data";
 import Toolbar from "./Toolbar";
 import LeftSlidebar from "./leftSlidebar";
-import SidebarCategories from "../ShopGrid/Filters/SidebarCategories"; // تأكد من الاستيراد
 
 export default function ShopPage() {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(null);
@@ -15,7 +14,7 @@ export default function ShopPage() {
     instock: false,
     outofstock: false,
   });
-  const [priceRangeFilter, setPriceRangeFilter] = useState([0, 1000]); // حالة لنطاق السعر
+  const [priceRangeFilter, setPriceRangeFilter] = useState([0, 1000]);
 
   const handleCategoryClick = useCallback((categoryId, childIds) => {
     setSelectedCategoryIds([categoryId, ...childIds]);
@@ -57,13 +56,13 @@ export default function ShopPage() {
             onBrandFilterChange={setSelectedBrandIds}
             onCategoryFilterChange={handleSidebarCategoryFilterChange}
             onAvailabilityFilterChange={handleAvailabilityFilterChange}
-            onPriceChange={handlePriceRangeFilterChange} // ✅ تمرير الدالة إلى LeftSlidebar
+            onPriceChange={handlePriceRangeFilterChange}
           />
           <Toolbar
             selectedCategoryAndChildrenIds={selectedCategoryIds}
             selectedBrandIds={selectedBrandIds}
             availabilityFilter={availabilityFilter}
-            priceRange={priceRangeFilter} // ✅ تمرير نطاق السعر إلى Toolbar
+            priceRange={priceRangeFilter}
           />
         </div>
       </div>

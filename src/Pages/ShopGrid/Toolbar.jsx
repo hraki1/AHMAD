@@ -10,7 +10,6 @@ import BrandFilter from "./Filters/BrandFilter";
 import AvailabilityFilter from "./Filters/AvailabilityFilter";
 import { Link } from "react-router-dom";
 
-// 🔹 ViewModes Component
 const ViewModes = ({ activeView, onChange }) => (
   <div className="grid-options view-mode d-flex">
     {viewModes.map(({ class: cls, col }) => (
@@ -28,7 +27,6 @@ const ViewModes = ({ activeView, onChange }) => (
   </div>
 );
 
-// 🔹 Reusable SelectBox
 const SelectBox = (
   { id, label, options, defaultValue, value, onChange } // ✅ Added value and onChange props
 ) => (
@@ -101,20 +99,10 @@ export default function Toolbar({
   // ✅ Added new state variables for product management
   const [showCount, setShowCount] = useState(15);
   const [sortBy, setSortBy] = useState("featured");
-  const [products, setProducts] = useState([]); // ✅ Will hold filtered/sorted products
   const [totalProducts, setTotalProducts] = useState(15); // ✅ Track total products count
 
-  // ✅ Added useEffect to handle product filtering and sorting
   useEffect(() => {
-    // This would normally fetch from an API or filter from props
-    // For now, we're just updating the count
     setTotalProducts(showCount);
-
-    // Actual implementation would sort and filter products here
-    // based on sortBy, showCount, categories, etc.
-
-    // Example: Pass the updated products to ProductGrid
-    // ProductGrid would receive this data via props
   }, [showCount, sortBy, selectedCategoryAndChildrenIds, selectedBrandIds]);
 
   const handleViewChange = (col) => {
@@ -122,7 +110,7 @@ export default function Toolbar({
     onViewChange?.(col);
   };
 
-  // ✅ Added new handlers for dropdowns
+  //  Added new handlers for dropdowns
   const handleShowChange = (value) => {
     setShowCount(Number(value));
   };
@@ -159,7 +147,6 @@ export default function Toolbar({
 
           {/* Center */}
           <div className="col-12 col-sm-4 col-md-4 col-lg-4 text-center order-0 order-md-1 mb-3 mb-sm-0">
-            {/* ✅ Updated to use dynamic total count */}
             <span className="toolbar-product-count">
               Showing: {totalProducts} products
             </span>
@@ -167,7 +154,6 @@ export default function Toolbar({
 
           {/* Right */}
           <div className="col-8 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-end order-2">
-            {/* ✅ Updated SelectBox components to be controlled components */}
             <SelectBox
               id="show"
               label="Show:"
@@ -185,7 +171,6 @@ export default function Toolbar({
           </div>
         </div>
       </div>
-      {/* Filters */}
       {showFilter && (
         <div className="filter-menu visible">
           {filters.map((FilterComp, idx) => (
@@ -204,10 +189,3 @@ export default function Toolbar({
     </div>
   );
 }
-
-// ✅ Note: ProductGrid component would need to be updated to:
-// 1. Accept and use activeView to set the grid layout
-// 2. Accept sortBy to sort products appropriately
-// 3. Accept showCount to limit number of products displayed
-// 4. Handle the actual filtering and sorting logic that was
-//    outlined in the useEffect in this component

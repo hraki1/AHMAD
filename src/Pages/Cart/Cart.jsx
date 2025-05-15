@@ -1,203 +1,195 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function Cart({ cartItems, setCartItems }) {
-  const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+export default function Cart() {
+  const [loading, setLoading] = useState(true);
+  const [cartItems, setCartItems] = useState([]);
+  const [error, setError] = useState(null);
+  const [cartId, setCartId] = useState(null);
+
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) {
+      setError("Please login to view your cart");
+      setLoading(false);
+      return;
+    }
+
+    fetch("http://192.168.100.13:3250/api/carts/customer", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch cart");
+        return res.json();
+      })
+      .then((data) => {
+        setCartId(data.cart_id);
+        const items = data.items.map((item) => ({
+          id: item.product_id,
+          cart_item_id: item.cart_item_id,
+          name: item.product_name || `Product ${item.product_id}`,
+          price: item.product_price || 0,
+          quantity: item.qty || 1,
+          image: item.image || "default-image.jpg",
+        }));
+        setCartItems(items);
+      })
+      .catch((err) => {
+        setError(err.message);
+        toast.error(err.message);
+      })
+      .finally(() => setLoading(false));
+  }, [token]);
+
+  const updateQuantity = async (cart_item_id, newQty) => {
+    if (!token || !cartId) return toast.error("Please login to update cart");
+
+    try {
+      const res = await fetch(
+        `http://192.168.100.13:3250/api/carts/${cartId}/items/${cart_item_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ qty: newQty }),
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to update cart item");
+      }
+
+      setCartItems((items) =>
+        items.map((item) =>
+          item.cart_item_id === cart_item_id
+            ? { ...item, quantity: newQty }
+            : item
+        )
+      );
+      toast.success("Cart updated");
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
+  const removeItem = async (cart_item_id) => {
+    if (!cartId || !cart_item_id) return toast.error("Missing cart or item ID");
+
+    try {
+      const res = await fetch(
+        `http://192.168.100.13:3250/api/carts/${cartId}/items/${cart_item_id}`,
+        { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Failed to remove item");
+      }
+
+      setCartItems((items) =>
+        items.filter((item) => item.cart_item_id !== cart_item_id)
+      );
+      toast.success("Item removed");
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
+  if (loading) return <div>Loading cart...</div>;
+  if (error) return <div className="alert alert-danger">{error}</div>;
+  if (cartItems.length === 0)
+    return (
+      <div className="empty-cart text-center py-5">
+        <p>Your cart is empty</p>
+        <Link to="/ShopGrid" className="btn btn-primary">
+          Continue shopping
+        </Link>
+      </div>
+    );
+
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
     0
   );
-  // Initialize cart items with sample data
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    const storedItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    setCartItems(storedItems);
-    setIsLoading(false); // انتهى التحميل
-  }, [setCartItems]);
-  if (isLoading) {
-    return <p>Loading cart...</p>; // أو يمكن تركها فارغة أو وضع Spinner
-  }
-
-  // Calculate total price
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => {
-      return total + item.price * item.quantity;
-    }, 0);
-  };
-
-  const totalPrice = calculateTotal();
-
-  // Increase quantity of an item
-  const increaseQuantity = (id) => {
-    const updatedItems = cartItems.map((item) =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-    );
-    setCartItems(updatedItems);
-    localStorage.setItem("cartItems", JSON.stringify(updatedItems)); // حفظ التحديث
-  };
-
-  // Decrease quantity of an item
-  const decreaseQuantity = (id) => {
-    const updatedItems = cartItems.map((item) =>
-      item.id === id && item.quantity > 1
-        ? { ...item, quantity: item.quantity - 1 }
-        : item
-    );
-    setCartItems(updatedItems);
-    localStorage.setItem("cartItems", JSON.stringify(updatedItems)); // حفظ التحديث
-  };
-  const removeItem = (id) => {
-    const updatedItems = cartItems.filter((item) => item.id !== id);
-    setCartItems(updatedItems);
-    localStorage.setItem("cartItems", JSON.stringify(updatedItems)); // حفظ التحديث
-  };
 
   return (
-    <>
-      <form action="#" method="post" className="cart-table table-bottom-brd">
-        <table className="table align-middle">
-          <thead className="cart-row cart-header small-hide position-relative">
-            <tr>
-              <th className="action">&nbsp;</th>
-              <th colSpan="2" className="text-start">
-                Product
-              </th>
-              <th className="text-center">Price</th>
-              <th className="text-center">Quantity</th>
-              <th className="text-center">Total</th>
+    <div className="container py-4">
+      <table className="table align-middle">
+        <thead>
+          <tr>
+            <th></th>
+            <th colSpan="2">Product</th>
+            <th className="text-center">Price</th>
+            <th className="text-center">Quantity</th>
+            <th className="text-center">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cartItems.map(({ cart_item_id, image, name, price, quantity }) => (
+            <tr key={cart_item_id}>
+              <td className="text-center">
+                <button
+                  className="btn btn-link text-danger"
+                  onClick={() =>
+                    window.confirm("Remove this item?") &&
+                    removeItem(cart_item_id)
+                  }
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </button>
+              </td>
+              <td>
+                <img
+                  src={image}
+                  alt={name}
+                  style={{ width: 80, height: "auto" }}
+                  className="img-thumbnail"
+                />
+              </td>
+              <td>{name}</td>
+              <td className="text-center">${price.toFixed(2)}</td>
+              <td className="text-center">
+                <button
+                  onClick={() =>
+                    quantity > 1
+                      ? updateQuantity(cart_item_id, quantity - 1)
+                      : toast.info(
+                          "Minimum quantity is 1. Click remove to delete item."
+                        )
+                  }
+                  className="btn btn-outline-secondary"
+                >
+                  <i className="fa-solid fa-minus"></i>
+                </button>
+                <span className="mx-2">{quantity}</span>
+                <button
+                  onClick={() => updateQuantity(cart_item_id, quantity + 1)}
+                  className="btn btn-outline-secondary"
+                >
+                  <i className="fa-solid fa-plus"></i>
+                </button>
+              </td>
+              <td className="text-center fw-bold">
+                ${(price * quantity).toFixed(2)}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {cartItems.map((item) => (
-              <tr
-                className="cart-row cart-flex position-relative"
-                key={item.id}
-              >
-                <td className="cart-delete text-center small-hide">
-                  <a
-                    href="#"
-                    className="cart-remove remove-icon position-static"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      removeItem(item.id);
-                    }}
-                  >
-                    <i className="fa-solid fa-xmark"></i>
-                  </a>
-                </td>
-                <td className="cart-image cart-flex-item">
-                  <a href="product-layout1.html">
-                    <img
-                      className="cart-image rounded-0 blur-up lazyload"
-                      src={item.image}
-                      alt={item.name}
-                      width="120"
-                      height="170"
-                    />
-                  </a>
-                </td>
-                <td className="cart-meta small-text-left cart-flex-item">
-                  <div className="list-view-item-title">
-                    <a href="product-layout1.html">{item.name}</a>
-                  </div>
-                  <div className="cart-meta-text">
-                    Color: Black
-                    <br />
-                    Size: Small
-                    <br />
-                    Qty: {item.quantity}
-                  </div>
-                  <div className="cart-price d-md-none">
-                    <span className="money fw-500">${item.price}</span>
-                  </div>
-                </td>
-                <td className="cart-price cart-flex-item text-center small-hide">
-                  <span className="money">${item.price}</span>
-                </td>
-                <td className="cart-update-wrapper cart-flex-item text-end text-md-center">
-                  <div className="cart-qty d-flex justify-content-end justify-content-md-center">
-                    <div className="qtyField">
-                      <a
-                        className="qtyBtn minus"
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault(); // Prevent default anchor behavior
-                          decreaseQuantity(item.id);
-                        }}
-                      >
-                        <i className="fa-solid fa-minus"></i>
-                      </a>
-                      <a
-                        className="qtyBtn plus"
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault(); // Prevent default anchor behavior
-                          increaseQuantity(item.id);
-                        }}
-                      >
-                        <i className="fa-solid fa-plus"></i>
-                      </a>
+          ))}
+        </tbody>
+      </table>
 
-                      <input
-                        className="cart-qty-input qty"
-                        type="text"
-                        name="updates[]"
-                        value={item.quantity}
-                        pattern="[0-9]*"
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                  <a
-                    href="#"
-                    title="Remove"
-                    className="removeMb d-md-none d-inline-block text-decoration-underline mt-2 me-3"
-                  >
-                    Remove
-                  </a>
-                </td>
-                <td className="cart-price cart-flex-item text-center small-hide">
-                  <span className="money fw-500">
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan="3" className="text-start">
-                <Link
-                  to="/ShopGrid"
-                  className="btn btn-outline-secondary btn-sm cart-continue"
-                >
-                  {" "}
-                  <i className="icon anm anm-angle-left-r me-2 d-none"></i>{" "}
-                  Continue shopping
-                </Link>
-              </td>
-              <td colSpan="3" className="text-end">
-                <button
-                  type="submit"
-                  name="clear"
-                  className="btn btn-secondary btn-sm small-hide d-none"
-                >
-                  <i className="icon anm anm-times-r me-2 d-none"></i> Clear
-                  Shopping Cart
-                </button>
-                <button
-                  type="submit"
-                  name="update"
-                  className="btn btn-secondary btn-sm cart-continue ms-2 d-none"
-                >
-                  <i className="icon anm anm-sync-ar me-2 d-none"></i> Update
-                  Cart
-                </button>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </form>
-    </>
+      <div className="d-flex justify-content-between align-items-center mt-4">
+        <Link to="/ShopGrid" className="btn btn-outline-secondary">
+          Continue shopping
+        </Link>
+        <div className="fs-4">Total: ${totalPrice.toFixed(2)}</div>
+        <button className="btn btn-primary">Proceed to checkout</button>
+      </div>
+    </div>
   );
 }

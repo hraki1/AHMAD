@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../Hooks/useFetchCategories";
-import { data, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 
 const ProductGrid = ({
@@ -13,7 +13,7 @@ const ProductGrid = ({
   gridClass,
 }) => {
   const [products, setProducts] = useState([]);
-  const [cartLoading, setCartLoading] = useState(false);
+  // const [cartLoading, setCartLoading] = useState(false);
   const [subcategoryIds, setSubcategoryIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,7 +21,6 @@ const ProductGrid = ({
 
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
-
     addToWishlist({
       id: product.id,
       name: product.name,
@@ -31,7 +30,6 @@ const ProductGrid = ({
       imgSrc: product.imageUrl,
       variant: product.colors[0]?.title || "Default variant",
     });
-
     alert(`${product.name} added to wishlist!`);
   };
 
@@ -129,34 +127,34 @@ const ProductGrid = ({
     );
   }, []);
 
-  const addToCart = useCallback(
-    (product) => {
-      if (cartLoading) return;
-      setCartLoading(true);
+  // const addToCart = useCallback(
+  //   (product) => {
+  //     if (cartLoading) return;
+  //     setCartLoading(true);
 
-      setTimeout(() => {
-        const existing = JSON.parse(localStorage.getItem("cartItems")) || [];
-        if (existing.find((item) => item.id === product.id)) {
-          alert(`${product.name} added to cart!`);
-          return setCartLoading(false);
-        }
+  //     setTimeout(() => {
+  //       const existing = JSON.parse(localStorage.getItem("cartItems")) || [];
+  //       if (existing.find((item) => item.id === product.id)) {
+  //         alert(`${product.name} added to cart!`);
+  //         return setCartLoading(false);
+  //       }
 
-        const updated = [
-          ...existing,
-          {
-            ...product,
-            price: parseFloat(product.newPrice.replace("$", "")),
-            quantity: 1,
-            image: product.imageUrl, // أضف هذا السطر
-          },
-        ];
-        localStorage.setItem("cartItems", JSON.stringify(updated));
-        alert(`${product.name} added to cart!`);
-        setCartLoading(false);
-      }, 200);
-    },
-    [cartLoading]
-  );
+  //       const updated = [
+  //         ...existing,
+  //         {
+  //           ...product,
+  //           price: parseFloat(product.newPrice.replace("$", "")),
+  //           quantity: 1,
+  //           image: product.imageUrl, // أضف هذا السطر
+  //         },
+  //       ];
+  //       localStorage.setItem("cartItems", JSON.stringify(updated));
+  //       alert(`${product.name} added to cart!`);
+  //       setCartLoading(false);
+  //     }, 200);
+  //   },
+  //   [cartLoading]
+  // );
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
@@ -240,15 +238,15 @@ const ProductGrid = ({
                   <span className="lbl on-sale">Sale</span>
                 </div>
                 <div className="button-set style1">
-                  <button
+                  {/* <button
                     className="btn-icon addtocart"
-                    onClick={() => addToCart(product)}
-                    disabled={cartLoading}
+                    // onClick={() => addToCart(product)}
+                    // disabled={cartLoading}
                     title="Add to Cart"
                   >
                     <i className="fa-solid fa-cart-plus"></i>
                     <span className="text">Add to Cart</span>
-                  </button>
+                  </button> */}
                   <Link
                     to={`/product/${product.url_key || product.id}`}
                     className="btn-icon quickview"
@@ -256,18 +254,18 @@ const ProductGrid = ({
                     <i className="fa-solid fa-eye"></i>
                     <span className="text">Quick View</span>
                   </Link>
-                  <a
-                    href="wishlist-style2.html"
+                  <Link
+                    href="#"
                     className="btn-icon wishlist"
                     onClick={(e) => handleAddToWishlist(e, product)}
                   >
                     <i className="fa-solid fa-heart"></i>
                     <span className="text">Add To Wishlist</span>
-                  </a>
-                  <a href="compare-style2.html" className="btn-icon compare">
+                  </Link>
+                  {/* <Link href="compare-style2.html" className="btn-icon compare">
                     <i className="fa-solid fa-code-compare"></i>
                     <span className="text">Add to Compare</span>
-                  </a>
+                  </Link> */}
                 </div>
               </div>
 

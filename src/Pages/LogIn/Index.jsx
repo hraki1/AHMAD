@@ -5,11 +5,15 @@ import { Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import Button from "../../Components/common/Button";
+import { useLocation } from "react-router-dom";
 
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const redirectPath = params.get("redirect") || "/";
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -79,7 +83,7 @@ const Index = () => {
           localStorage.removeItem("rememberedEmail");
         }
 
-        navigate("/");
+        navigate(redirectPath);
       } else {
         alert(data.message || "Login failed");
       }

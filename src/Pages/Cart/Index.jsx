@@ -3,33 +3,13 @@ import PageHeader from "../../Components/layout/Header/PageHeader";
 import Cart from "./Cart";
 import CartForms from "./CartForms";
 import CartSummary from "./CartSummary";
-import imageCart1 from "../../assets/images/products/product1-120x170.jpg";
-import imageCart2 from "../../assets/images/products/product2-120x170.jpg";
 import ProductItem from "../../Components/ProductItem";
-import MiniCart from "./MiniCart";
-import img from "../../assets/images/products/cart-product-img1.jpg";
-import imgtow from "../../assets/images/products/cart-product-img2.jpg";
+// import MiniCart from "./MiniCart";
 
 export default function Index() {
   const [discount, setDiscount] = useState(0);
   const [couponApplied, setCouponApplied] = useState(false);
-
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Oxford Cuban Shirt",
-      price: 99,
-      quantity: 2,
-      image: imageCart1,
-    },
-    {
-      id: 2,
-      name: "Cuff Beanie Cap",
-      price: 128,
-      quantity: 1,
-      image: imageCart2,
-    },
-  ]);
+  const [cartItems, setCartItems] = useState([]);
 
   // Load discount from localStorage if available
   useEffect(() => {
@@ -38,30 +18,33 @@ export default function Index() {
     if (storedDiscount > 0) {
       setDiscount(storedDiscount);
     }
-  }, []); // Runs only once when the component is mounted
+  }, []);
 
   // Save discount to localStorage whenever it changes
   useEffect(() => {
     if (discount > 0) {
-      // Only save when discount is greater than 0
-      console.log("Saving discount to localStorage:", discount); // Log the value being saved
+      console.log("Saving discount to localStorage:", discount);
       localStorage.setItem("cartDiscount", discount.toString());
     }
-  }, [discount]); // Runs every time discount changes
+  }, [discount]);
 
   const calculateTotal = () => {
     const subtotal = cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     );
-    // Apply discount
-    const totalWithDiscount = subtotal - (subtotal * discount) / 100;
-    return totalWithDiscount;
+    const discountAmount = (subtotal * discount) / 100;
+    const totalAfterDiscount = subtotal - discountAmount;
+
+    return { subtotal, discountAmount, totalAfterDiscount };
   };
+
   const removeDiscount = () => {
-    setDiscount(0); // Reset discount to 0
-    localStorage.setItem("cartDiscount", "0"); // Save to localStorage
+    setDiscount(0);
+    localStorage.setItem("cartDiscount", "0");
   };
+
+  const { subtotal, discountAmount, totalAfterDiscount } = calculateTotal();
 
   return (
     <div>
@@ -78,15 +61,15 @@ export default function Index() {
           </div>
           <div className="col-lg-4">
             <CartSummary
-              subtotal={calculateTotal()}
-              discount={(calculateTotal() * discount) / 100}
+              subtotal={subtotal}
+              discount={discountAmount}
               tax={10}
               shipping={0}
-              setDiscount={setDiscount} //
+              setDiscount={setDiscount}
             />
           </div>
         </div>
-        {/* CartForms under Cart */}
+
         <div className="row">
           <div className="col-12">
             <CartForms
@@ -97,7 +80,7 @@ export default function Index() {
         </div>
       </div>
       <ProductItem />
-      <MiniCart
+      {/* <MiniCart
         items={[
           {
             name: "Women Sandals",
@@ -122,7 +105,7 @@ export default function Index() {
         onQuantityChange={(index, newQty) => console.log(index, newQty)}
         onRemove={(index) => console.log("Remove", index)}
         onClose={() => console.log("Cart closed")}
-      />
+      /> */}
     </div>
   );
 }

@@ -1,5 +1,4 @@
 // src/components/shop/leftSlidebar.js
-import React, { useState } from "react";
 import SidebarCategories from "./Filters/SidebarCategories";
 import PriceFilter from "./Filters/PriceFilter";
 import ColorFilter from "./Filters/ColorFilter";
@@ -12,14 +11,10 @@ export default function LeftSlidebar({
   onBrandFilterChange,
   onCategoryFilterChange,
   onAvailabilityFilterChange,
-  onPriceChange, // ✅ استقبل الدالة من ShopPage
+  onPriceChange,
 }) {
-  const [showContent, setShowContent] = useState(true);
-  const [priceRange, setPriceRange] = useState([0, 1000]);
-
   const handlePriceFilterChange = (range) => {
-    setPriceRange(range);
-    onPriceChange?.(range); // ✅ استدعاء الدالة لتحديث حالة ShopPage
+    onPriceChange?.(range);
   };
 
   return (

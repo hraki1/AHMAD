@@ -29,6 +29,7 @@ const useFetchOneProduct = (urlKey, productId) => {
 
         const formattedProduct = {
           ...data,
+          id: data.product_id,
           price: data.price,
           oldPrice:
             data.oldPrice && data.oldPrice > data.price

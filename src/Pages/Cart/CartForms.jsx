@@ -84,7 +84,6 @@ const CartForms = ({ setDiscount, setCouponApplied }) => {
                     { value: "0", label: "Select a country..." },
                     { value: "US", label: "United States" },
                     { value: "CA", label: "Canada" },
-                    // أضف المزيد حسب الحاجة
                   ]}
                 />
                 <FormGroup
@@ -95,7 +94,6 @@ const CartForms = ({ setDiscount, setCouponApplied }) => {
                     { value: "0", label: "Select a state..." },
                     { value: "AL", label: "Alabama" },
                     { value: "CA", label: "California" },
-                    // أضف المزيد حسب الحاجة
                   ]}
                 />
                 <FormGroup
