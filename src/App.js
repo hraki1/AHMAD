@@ -23,13 +23,14 @@ import Verify from "./Pages/SignUp/Verify.jsx";
 import Brands from "./Pages/Brands/index.jsx";
 import ForgetPass from "./Pages/LogIn/ForgetPass.jsx";
 import ResetPassword from "./Pages/LogIn/ResetPassword.jsx";
+import ScrollToTop from "./Components/common/ScrollToTop.jsx";
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="App">
         <TopHeader />
         <Header />
-
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/AboutUs" element={<AboutUsPage />} />

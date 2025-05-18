@@ -9,6 +9,7 @@ import useFetchOneProduct from "../Hooks/useFetchOneProduct";
 import { AddToCart } from "../API/AddToCart";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useWishlist } from "../../Context/WishlistContext";
 
 const SOCIAL_ICONS = [
   { icon: "twitter", title: "Twitter" },
@@ -34,6 +35,30 @@ const ProductDetail = () => {
   console.log("Product in component:", product);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { addToWishlist } = useWishlist();
+  const isInStock =
+    product?.inStock ??
+    (typeof product?.inventory === "number" ? product.inventory > 0 : true);
+
+  const handleAddToWishlist = (e, product) => {
+    e.preventDefault();
+    addToWishlist({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      stock: isInStock ? "in stock" : "Out Of stock",
+
+      disabled: !isInStock,
+      imgSrc:
+        product.images?.[0]?.origin_image ||
+        product.images?.[0]?.url ||
+        product.images?.[0] ||
+        "",
+      variant: product.colors?.[0] || "Default variant",
+    });
+    alert(`${product.name} added to wishlist!`);
+  };
 
   const handleAddToCart = async () => {
     if (loading) {
@@ -374,7 +399,9 @@ const ProductDetail = () => {
               </div>
 
               <hr />
-              <div className="desc-content">{product.category.description}</div>
+              <div className="desc-content">
+                {product.description.short_description}
+              </div>
               <hr />
 
               <div className="harry-up-text">Hurry up! Sales Ends In</div>
@@ -438,26 +465,46 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              <p className="infolinks d-flex-center justify-content-between">
-                <Link to="/wishlist" className="text-link wishlist">
-                  <i className="fa-regular fa-heart me-2" /> Add to Wishlist
-                </Link>
-                <Link to="/compare" className="text-link compare">
+              <p className="infolinks d-flex-center">
+                {!product ? (
+                  <div className="text-muted">Loading...</div>
+                ) : (
+                  <Link
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (product?.inventory === "In Stock") {
+                        handleAddToWishlist(e, product);
+                      }
+                    }}
+                    className={`text-link wishlist ${
+                      product?.inventory !== "In Stock" ? "disabled" : ""
+                    }`}
+                    style={{
+                      pointerEvents:
+                        product?.inventory !== "In Stock" ? "none" : "auto",
+                      opacity: product?.inventory !== "In Stock" ? 0.5 : 1,
+                    }}
+                  >
+                    <i className="fa-regular fa-heart me-2" />
+                    {product?.inventory === "In Stock"
+                      ? "Add to Wishlist"
+                      : "Out of Stock"}
+                  </Link>
+                )}
+                {/* <Link to="/compare" className="text-link compare">
                   <i className="fa-solid fa-rotate me-2" /> Add to Compare
-                </Link>
-                <Link
-                  to="#shippingInfo-modal"
-                  className="text-link shippingInfo"
-                >
+                </Link> */}
+                <Link to="/FAQ" className="text-link shippingInfo">
                   <i className="fa-regular fa-paper-plane me-2" /> Delivery &
                   Returns
                 </Link>
-                <Link
+                {/* <Link
                   to="#productInquiry-modal"
                   className="text-link emaillink me-0"
                 >
                   <i className="fa-regular fa-circle-question me-2" /> Enquiry
-                </Link>
+                </Link> */}
               </p>
             </form>
 
@@ -465,7 +512,6 @@ const ProductDetail = () => {
               <i className="fa-regular fa-eye me-1" />
               <b>{product.views || 0}</b> People are Looking for this Product
             </div>
-
             <div className="shippingMsg featureText">
               <i className="fa-regular fa-clock me-1" />
               Estimated Delivery Between <b>Wed, May 1</b> and <b>Tue, May 7</b>

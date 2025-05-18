@@ -10360,3 +10360,14 @@ textarea:-ms-input-placeholder {
   background-color: purple;
   padding: 20px;
 }
+
+.hei-imp {
+  height: revert-layer !important;
+}
+.brand-name{
+      font-weight: 600;
+    color: #171717;
+    font-size: 14px;
+    line-height: 1.7;
+        letter-spacing: 0;
+}

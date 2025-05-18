@@ -31,9 +31,9 @@ export default function LeftSlidebar({
         <SidebarCategories onCategoryFilterChange={onCategoryFilterChange} />
         <PriceFilter onPriceChange={handlePriceFilterChange} />{" "}
         {/* ✅ تمرير الدالة إلى PriceFilter */}
-        <ColorFilter />
-        <SizeFilter />
-        <ProductTypeFilter />
+        {/* <ColorFilter /> */}
+        {/* <SizeFilter /> */}
+        {/* <ProductTypeFilter /> */}
         <BrandFilter onFilterChange={onBrandFilterChange} />
         <AvailabilityFilter
           onAvailabilityFilterChange={onAvailabilityFilterChange}

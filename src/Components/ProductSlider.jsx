@@ -43,7 +43,10 @@ const ProductSlider = ({
     <div className="item col-item" key={product.id}>
       <div className="product-box">
         <div className="product-image">
-          <Link to={product.href || "#"} className="product-img rounded-3">
+          <Link
+            to={`/product/${product.url_key || product.id}`}
+            className="product-img rounded-3"
+          >
             {product.primaryImg ? (
               <img
                 src={product.primaryImg}

@@ -4,17 +4,38 @@ import Cart from "./Cart";
 import CartForms from "./CartForms";
 import CartSummary from "./CartSummary";
 import ProductItem from "../../Components/ProductItem";
-// import MiniCart from "./MiniCart";
+import { baseUrl } from "../API/ApiConfig";
 
 export default function Index() {
-  const [discount, setDiscount] = useState(0);
+  const [discount, setDiscount] = useState(0); // Check this initial value
   const [couponApplied, setCouponApplied] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [cartId, setCartId] = useState(null);
+
+  console.log("Discount state in Index (initial):", discount); // Debugging log
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetch(`${baseUrl}/api/carts/customer`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setCartId(data.cart_id);
+          console.log("Discount from cart API:", data.discount_amount); // Check the discount from the cart API
+        })
+        .catch((error) => {
+          console.error("Error fetching cart ID:", error);
+        });
+    }
+  }, []);
 
   // Load discount from localStorage if available
   useEffect(() => {
     const storedDiscount =
       parseFloat(localStorage.getItem("cartDiscount")) || 0;
+    console.log("Stored discount from local storage:", storedDiscount); // Debugging log
     if (storedDiscount > 0) {
       setDiscount(storedDiscount);
     }
@@ -22,6 +43,7 @@ export default function Index() {
 
   // Save discount to localStorage whenever it changes
   useEffect(() => {
+    console.log("Discount state before saving to local storage:", discount); // Debugging log
     if (discount > 0) {
       console.log("Saving discount to localStorage:", discount);
       localStorage.setItem("cartDiscount", discount.toString());
@@ -33,15 +55,10 @@ export default function Index() {
       (total, item) => total + item.price * item.quantity,
       0
     );
-    const discountAmount = (subtotal * discount) / 100;
+    const discountAmount = discount;
     const totalAfterDiscount = subtotal - discountAmount;
 
     return { subtotal, discountAmount, totalAfterDiscount };
-  };
-
-  const removeDiscount = () => {
-    setDiscount(0);
-    localStorage.setItem("cartDiscount", "0");
   };
 
   const { subtotal, discountAmount, totalAfterDiscount } = calculateTotal();
@@ -57,14 +74,16 @@ export default function Index() {
               setCartItems={setCartItems}
               discount={discount}
               couponApplied={couponApplied}
+              setCartId={setCartId}
+              cartId={cartId}
             />
           </div>
           <div className="col-lg-4">
             <CartSummary
               subtotal={subtotal}
               discount={discountAmount}
-              tax={10}
-              shipping={0}
+              tax={0} // Adjust as necessary
+              shipping={0} // Adjust as necessary
               setDiscount={setDiscount}
             />
           </div>
@@ -75,37 +94,12 @@ export default function Index() {
             <CartForms
               setDiscount={setDiscount}
               setCouponApplied={setCouponApplied}
+              cartId={cartId}
             />
           </div>
         </div>
       </div>
       <ProductItem />
-      {/* <MiniCart
-        items={[
-          {
-            name: "Women Sandals",
-            variant: "Black",
-            size: "XL",
-            price: 54.0,
-            quantity: 1,
-            img: img,
-            link: "product-layout1.html",
-          },
-          {
-            name: "Sleeve Round T-Shirt",
-            variant: "Yellow",
-            size: "M",
-            price: 99.0,
-            oldPrice: 114.0,
-            quantity: 1,
-            img: imgtow,
-            link: "product-layout1.html",
-          },
-        ]}
-        onQuantityChange={(index, newQty) => console.log(index, newQty)}
-        onRemove={(index) => console.log("Remove", index)}
-        onClose={() => console.log("Cart closed")}
-      /> */}
     </div>
   );
 }

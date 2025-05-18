@@ -254,9 +254,10 @@ const ProductGrid = ({
 
     return result;
   }, [filteredProducts, sortBy]);
+  const actualDisplayedCount = Math.min(sortedProducts.length, productsToShow);
 
   const displayedProducts = useMemo(() => {
-    return sortedProducts.slice(0, productsToShow); // 👈 Use sortedProducts instead of filteredProducts
+    return sortedProducts.slice(0, productsToShow);
   }, [sortedProducts, productsToShow]);
 
   const renderStars = (reviews) =>

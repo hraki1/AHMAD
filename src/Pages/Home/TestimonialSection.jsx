@@ -45,10 +45,7 @@ export default function TestimonialSection() {
                 <div key={i} className="blog-item">
                   <div className="blog-article zoomscal-hov">
                     <div className="blog-img">
-                      <Link
-                        className="featured-image zoom-scal"
-                        to={`/brands/${brand.slug}`}
-                      >
+                      <Link className="featured-image zoom-scal" to="/Brands">
                         <img
                           className="blur-up lazyload"
                           src={brand.image}
@@ -61,10 +58,10 @@ export default function TestimonialSection() {
 
                     <div className="blog-content">
                       <h2 className="h3 mb-3 text-center">
-                        <Link to={`/brands`}>{brand.name}</Link>
+                        <Link to="/Brands"></Link>
                       </h2>
-                      <p className="content mb-5 text-center">{brand.slug}</p>
-                      {/* <p className="content">{brand.description}</p> */}
+                      <div className="brand-name mb-1 ">{brand.slug}</div>
+                      <p className="content mb-5">{brand.description}</p>
                     </div>
                   </div>
                 </div>

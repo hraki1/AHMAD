@@ -1,62 +1,39 @@
-// src/components/shop/Filters/SidebarCategories.js
 import React, { useState } from "react";
 import useFetchCategories from "../../Hooks/useFetchCategories";
-
-// مكون لعرض الـ Subcategories عند الضغط
-const SubCategoryList = ({ parentId, isOpen, onCategorySelect }) => {
-  const {
-    categories: subcategories,
-    loading,
-    error,
-  } = useFetchCategories(parentId);
-
-  const handleSubCategoryClick = (subcategoryId) => {
-    onCategorySelect(subcategoryId);
-  };
-
-  return (
-    <ul className={`sublinks ps-3 ${isOpen ? "d-block" : "d-none"}`}>
-      {loading && <li>Loading...</li>}
-      {error && <li>Error loading subcategories</li>}
-      {!loading &&
-        !error &&
-        subcategories?.map((sub) => (
-          <li key={sub.id} className="lvl2">
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                handleSubCategoryClick(sub.id);
-              }}
-            >
-              {sub.name}
-            </a>
-          </li>
-        ))}
-    </ul>
-  );
-};
 
 export default function SidebarCategories({
   onCategoryFilterChange,
   className,
 }) {
-  const [openCategories, setOpenCategories] = useState({});
+  const [categoryHierarchy, setCategoryHierarchy] = useState([]);
+  const parentId = categoryHierarchy.at(-1)?.id || null;
+  const { categories, loading, error } = useFetchCategories(parentId);
   const [showContent, setShowContent] = useState(true);
-  const { categories, loading, error } = useFetchCategories();
 
-  const toggleCategory = (categoryId) => {
-    setOpenCategories((prev) => ({
-      ...prev,
-      [categoryId]: !prev[categoryId],
-    }));
+  const handleCategoryClick = (category) => {
+    setCategoryHierarchy((prev) => [...prev, category]);
+    const childIds = categories.map((c) => c.id);
+    onCategoryFilterChange?.([category.id, ...childIds]);
   };
 
-  const handleCategoryClick = (categoryId) => {
-    onCategoryFilterChange?.([categoryId]); // تمرير معرف الفئة كمصفوفة
+  const backToAll = () => {
+    setCategoryHierarchy([]);
+    onCategoryFilterChange?.([]);
   };
 
-  const renderToggleIcon = () => <i className="fa-solid fa-bars ms-2"></i>;
+  const backOneLevel = () => {
+    if (categoryHierarchy.length > 1) {
+      const updatedHierarchy = categoryHierarchy.slice(0, -1);
+      const parent = updatedHierarchy.at(-1);
+      setCategoryHierarchy(updatedHierarchy);
+
+      // تمرير الفئة الجديدة والفئات الفرعية المعروضة حالياً
+      const childIds = categories.map((c) => c.id);
+      onCategoryFilterChange?.([parent.id, ...childIds]);
+    } else {
+      backToAll();
+    }
+  };
 
   return (
     <div
@@ -70,12 +47,32 @@ export default function SidebarCategories({
           onClick={() => setShowContent((prev) => !prev)}
         ></i>
       </div>
+
       {showContent && (
         <div className="widget-content">
+          {categoryHierarchy.length > 0 && (
+            <div className="mb-3 text-center">
+              <button
+                className="btn btn-outline-primary btn-sm mb-3"
+                onClick={backToAll}
+              >
+                BACK TO ALL CATEGORIES
+              </button>
+              {categoryHierarchy.length > 1 && (
+                <button
+                  className="btn btn-outline-primary btn-sm "
+                  onClick={backOneLevel}
+                >
+                  Back One Level
+                </button>
+              )}
+            </div>
+          )}
+
           <div className="widget-content filterDD">
             <ul className="sidebar-categories scrollspy clearfix">
-              {loading && <p>Loading...</p>}
-              {error && <p>Error loading categories.</p>}
+              {loading && <li>Loading...</li>}
+              {error && <li>Error loading categories</li>}
               {!loading &&
                 !error &&
                 categories?.map((category) => (
@@ -85,20 +82,12 @@ export default function SidebarCategories({
                       className="site-nav d-flex justify-content-between align-items-center"
                       onClick={(e) => {
                         e.preventDefault();
-                        handleCategoryClick(category.id); // فلترة عند النقر على الفئة الرئيسية
-                        toggleCategory(category.id);
+                        handleCategoryClick(category);
                       }}
                     >
                       <span>{category.name}</span>
-                      {renderToggleIcon()}
+                      <i className="fa-solid fa-chevron-right"></i>
                     </a>
-
-                    {/* عند الضغط على الفئة، يتم عرض الـ Subcategories */}
-                    <SubCategoryList
-                      parentId={category.id}
-                      isOpen={openCategories[category.id]}
-                      onCategorySelect={handleCategoryClick} // تمرير دالة الفلترة إلى الفئات الفرعية
-                    />
                   </li>
                 ))}
             </ul>

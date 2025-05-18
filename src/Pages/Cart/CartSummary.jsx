@@ -3,32 +3,31 @@ import paymentimg from "../../assets/images/icons/safepayment.png";
 import { Link } from "react-router-dom";
 
 export default function CartSummary({
-  subtotal,
-  discount,
-  shipping,
+  subtotal = 0, // Default value set to 0
+  discount = 0,
+  shipping = 0,
   setDiscount,
   country,
 }) {
-  const [taxAmount, setTaxAmount] = useState(0); // لا نحتاج إلى 'tax' من الـ props
+  const [taxAmount, setTaxAmount] = useState(0);
   const discountPercentage = (discount / subtotal) * 100;
 
-  // دالة لإزالة الخصم
   const removeDiscount = () => {
-    setDiscount(0); // إعادة تعيين الخصم إلى 0
-    localStorage.setItem("cartDiscount", "0"); // حفظ القيمة في localStorage
+    setDiscount(0);
+    localStorage.setItem("cartDiscount", "0");
   };
 
-  // تحديث الضريبة بناءً على البلد
   useEffect(() => {
     if (country === "Jordan") {
       const newTaxAmount = (subtotal * 0.1).toFixed(2);
       setTaxAmount(parseFloat(newTaxAmount));
     } else {
-      // لا تحسب الضريبة إذا country غير موجودة أو غير الأردن
       setTaxAmount(0);
     }
-  }, [country, subtotal]); // حساب المجموع الإجمالي بعد الخصم والضريبة
-  const total = subtotal - discount + taxAmount;
+  }, [country, subtotal]);
+
+  // ✅ حساب المجموع الإجمالي هنا باستخدام subtotal المستلم
+  const total = subtotal - discount + taxAmount + shipping; // إضافة الشحن إلى الإجمالي
 
   return (
     <div className="cart-info sidebar-sticky">
@@ -48,11 +47,6 @@ export default function CartSummary({
           </span>
           <span className="col-6 col-sm-6 cart-subtotal-title cart-subtotal text-end">
             <span className="money">-${discount.toFixed(2)}</span>
-            {discountPercentage > 0 ? (
-              <div className="small text-muted">
-                Discount: {discountPercentage.toFixed(2)}%
-              </div>
-            ) : null}
           </span>
         </div>
 
@@ -95,7 +89,8 @@ export default function CartSummary({
             <strong>Total</strong>
           </span>
           <span className="col-6 col-sm-6 cart-subtotal-title fs-5 cart-subtotal text-end text-primary">
-            <b className="money">${total.toFixed(2)}</b>
+            <b className="money">${total.toFixed(2)}</b>{" "}
+            {/* ✅ استخدام total المحسوب */}
           </span>
         </div>
 

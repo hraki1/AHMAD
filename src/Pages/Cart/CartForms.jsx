@@ -1,21 +1,69 @@
-import React from "react";
+import React, { useState } from "react";
+import { baseUrl } from "../API/ApiConfig";
 
-const CartForms = ({ setDiscount, setCouponApplied }) => {
-  const applyCoupon = (e) => {
+const CartForms = ({ cartId, setDiscount, setCouponApplied }) => {
+  const [couponCode, setCouponCode] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleCouponApplied = async (e) => {
     e.preventDefault();
-    const couponInput = e.target.elements.coupon.value.trim();
 
-    //  admin copoun
-    if (couponInput === "admin") {
-      setDiscount(10);
-      setCouponApplied(true);
-    } else if (couponInput === "admin") {
-      setDiscount(20);
-      setCouponApplied(true);
-    } else {
+    if (!couponCode.trim()) {
+      setMessage("Please enter a coupon code.");
+      return;
+    }
+
+    if (!cartId) {
+      setMessage("Please wait, cart is still loading!");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      // 1. تطبيق الكوبون
+      const response = await fetch(`${baseUrl}/api/coupons/apply`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          cartId: cartId,
+          couponCode: couponCode,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage(data.message || "Coupon applied successfully.");
+
+        // 2. جلب بيانات السلة المحدثة بعد تطبيق الكوبون
+        const cartResponse = await fetch(`${baseUrl}/api/carts/customer`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (cartResponse.ok) {
+          const cartData = await cartResponse.json();
+          console.log("Updated cart data:", cartData);
+
+          // 3. تحديث قيمة الخصم من استجابة السلة
+          setDiscount(cartData.discount_amount);
+          setCouponApplied(true);
+        } else {
+          throw new Error("Failed to fetch updated cart data");
+        }
+      } else {
+        setMessage(data.message || "Invalid coupon code.");
+        setDiscount(0);
+        setCouponApplied(false);
+      }
+    } catch (error) {
+      console.error("Error applying coupon:", error);
+      setMessage("Failed to apply coupon. Please try again.");
       setDiscount(0);
       setCouponApplied(false);
-      alert("Invalid coupon code. Try again.");
     }
   };
 
@@ -44,7 +92,7 @@ const CartForms = ({ setDiscount, setCouponApplied }) => {
           <div className="col-12 col-sm-12 col-md-12 col-lg-6 mb-12 cart-col">
             <div className="cart-discount">
               <h5>Apply Discount Code</h5>
-              <form onSubmit={applyCoupon}>
+              <form onSubmit={handleCouponApplied}>
                 <div className="form-group">
                   <label htmlFor="coupon">Enter your coupon code.</label>
                   <div className="input-group0">
@@ -53,87 +101,30 @@ const CartForms = ({ setDiscount, setCouponApplied }) => {
                       type="text"
                       name="coupon"
                       id="coupon"
-                      placeholder="e.g., DISCOUNT10"
-                      required
+                      placeholder="e.g., DISCOUNT"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
                     />
                     <input
                       type="submit"
                       className="btn text-nowrap mt-3"
                       value="Apply Coupon"
+                      disabled={!cartId || !couponCode.trim()}
                     />
                   </div>
                 </div>
-              </form>
-            </div>
-          </div>
-
-          {/* Shipping Calculator Section */}
-          <div className="col-12 mb-12 cart-col d-none">
-            <div id="shipping-calculator" className="mt-4">
-              <h5>Get shipping estimates</h5>
-              <form
-                className="estimate-form row row-cols-lg-3 row-cols-md-3 row-cols-1"
-                action="#"
-                method="post"
-              >
-                <FormGroup
-                  label="Country"
-                  id="address_country"
-                  name="address[country]"
-                  options={[
-                    { value: "0", label: "Select a country..." },
-                    { value: "US", label: "United States" },
-                    { value: "CA", label: "Canada" },
-                  ]}
-                />
-                <FormGroup
-                  label="State"
-                  id="address_province"
-                  name="address[province]"
-                  options={[
-                    { value: "0", label: "Select a state..." },
-                    { value: "AL", label: "Alabama" },
-                    { value: "CA", label: "California" },
-                  ]}
-                />
-                <FormGroup
-                  label="Postal/Zip Code"
-                  id="address_zip"
-                  name="address[zip]"
-                  inputType="text"
-                />
-                <div className="actionRow">
-                  <input
-                    type="button"
-                    className="btn btn-secondary get-rates"
-                    value="Calculate shipping"
-                  />
-                </div>
+                {/* Message Feedback */}
+                {message && (
+                  <div className="alert alert-info mt-2" role="alert">
+                    {message}
+                  </div>
+                )}
               </form>
             </div>
           </div>
         </div>
       </div>
     </>
-  );
-};
-
-const FormGroup = ({ label, id, name, options, inputType }) => {
-  return (
-    <div className="form-group mb-3">
-      <label htmlFor={id}>{label}</label>
-      {options ? (
-        <select id={id} name={name} className="form-control">
-          {options.map((option, index) => (
-            <option key={index} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <input type={inputType} id={id} name={name} className="form-control" />
-      )}
-    </div>
   );
 };
 

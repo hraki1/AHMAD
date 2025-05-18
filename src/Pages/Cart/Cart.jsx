@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { baseUrl } from "../API/ApiConfig";
-export default function Cart() {
+
+export default function Cart({ cartItems, setCartItems, setCartId, cartId }) {
   const [loading, setLoading] = useState(true);
-  const [cartItems, setCartItems] = useState([]);
   const [error, setError] = useState(null);
-  const [cartId, setCartId] = useState(null);
+  const [isCartIdLoaded, setIsCartIdLoaded] = useState(false);
 
   const token = localStorage.getItem("token");
+  console.log("Token:", token);
+  console.log("CartId prop in Cart:", cartId);
 
   useEffect(() => {
     if (!token) {
@@ -26,7 +28,10 @@ export default function Cart() {
         return res.json();
       })
       .then((data) => {
+        console.log("Cart API Response:", data);
         setCartId(data.cart_id);
+        console.log("Cart ID set:", data.cart_id);
+        setIsCartIdLoaded(true);
         const items = data.items.map((item) => ({
           id: item.product_id,
           cart_item_id: item.cart_item_id,
@@ -42,10 +47,13 @@ export default function Cart() {
         toast.error(err.message);
       })
       .finally(() => setLoading(false));
-  }, [token]);
+  }, [token, setCartId]);
 
   const updateQuantity = async (cart_item_id, newQty) => {
-    if (!token || !cartId) return toast.error("Please login to update cart");
+    if (!token || !cartId || !isCartIdLoaded) {
+      toast.error("Cart data is loading, please wait...");
+      return;
+    }
 
     try {
       const res = await fetch(
@@ -65,13 +73,12 @@ export default function Cart() {
         throw new Error(errorData.message || "Failed to update cart item");
       }
 
-      setCartItems((items) =>
-        items.map((item) =>
-          item.cart_item_id === cart_item_id
-            ? { ...item, quantity: newQty }
-            : item
-        )
+      const updatedItems = cartItems.map((item) =>
+        item.cart_item_id === cart_item_id
+          ? { ...item, quantity: newQty }
+          : item
       );
+      setCartItems(updatedItems);
       toast.success("Cart updated");
     } catch (err) {
       toast.error(err.message);
@@ -79,7 +86,10 @@ export default function Cart() {
   };
 
   const removeItem = async (cart_item_id) => {
-    if (!cartId || !cart_item_id) return toast.error("Missing cart or item ID");
+    if (!cartId || !cart_item_id || !isCartIdLoaded) {
+      toast.error("Cart data is loading, please wait...");
+      return;
+    }
 
     try {
       const res = await fetch(
@@ -140,6 +150,7 @@ export default function Cart() {
                     window.confirm("Remove this item?") &&
                     removeItem(cart_item_id)
                   }
+                  disabled={!isCartIdLoaded}
                 >
                   <i className="fa-solid fa-xmark"></i>
                 </button>
@@ -164,6 +175,7 @@ export default function Cart() {
                         )
                   }
                   className="btn btn-outline-secondary"
+                  disabled={!isCartIdLoaded}
                 >
                   <i className="fa-solid fa-minus"></i>
                 </button>
@@ -171,6 +183,7 @@ export default function Cart() {
                 <button
                   onClick={() => updateQuantity(cart_item_id, quantity + 1)}
                   className="btn btn-outline-secondary"
+                  disabled={!isCartIdLoaded}
                 >
                   <i className="fa-solid fa-plus"></i>
                 </button>
@@ -187,8 +200,13 @@ export default function Cart() {
         <Link to="/ShopGrid" className="btn btn-outline-secondary">
           Continue shopping
         </Link>
-        <div className="fs-4">Total: ${totalPrice.toFixed(2)}</div>
-        <button className="btn btn-primary">Proceed to checkout</button>
+        <Link
+          to="/CheckOut"
+          className="btn btn-primary"
+          disabled={!isCartIdLoaded}
+        >
+          Proceed to checkout
+        </Link>
       </div>
     </div>
   );

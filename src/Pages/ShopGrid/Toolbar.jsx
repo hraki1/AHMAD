@@ -96,7 +96,6 @@ export default function Toolbar({
   const [showFilter, setShowFilter] = useState(false);
   const [productsPerPage, setProductsPerPage] = useState(15);
   const [sortBy, setSortBy] = useState("Featured");
-  const [totalProducts, setTotalProducts] = useState(100); // يمكن تعديلها حسب بيانات الـ API
 
   const handleViewChange = (col) => {
     setActiveView(col);
@@ -116,8 +115,7 @@ export default function Toolbar({
     onFilterClick?.();
   };
 
-  // ✅ عدد المنتجات المعروضة فعليًا
-  const displayedProductCount = Math.min(productsPerPage, totalProducts);
+  const displayedProductCount = productsPerPage;
 
   return (
     <div className="col-12 col-lg-9 main-col">
@@ -143,7 +141,7 @@ export default function Toolbar({
           {/* Center - Total Products Count */}
           <div className="col-12 col-sm-4 col-md-4 col-lg-4 text-center order-0 order-md-1 mb-3 mb-sm-0">
             <span className="toolbar-product-count">
-              Showing: {displayedProductCount} of {totalProducts} products
+              Showing: {displayedProductCount} products
             </span>
           </div>
 
@@ -185,7 +183,7 @@ export default function Toolbar({
         gridClass={getGridClasses(activeView)}
         activeView={activeView}
         sortBy={sortBy}
-        showCount={productsPerPage}
+        productsToShow={productsPerPage}
       />
     </div>
   );
