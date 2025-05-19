@@ -1,143 +1,28 @@
+// src/components/shop/ProductGrid.js
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../Hooks/useFetchCategories";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 
-const ProductGrid = ({
-  selectedCategoryAndChildrenIds: propCategoryAndChildrenIds = null,
+const Category = ({
+  selectedCategoryAndChildrenIds,
   selectedBrandIds = [],
   availabilityFilter,
   priceRange = [0, 1000],
-  gridClass = "",
-  productsToShow = 20,
-  sortBy = "Featured",
+  gridClass,
+  productsToShow,
+  sortBy = "Featured", // 👈 Adding sortBy parameter
+  displayedProductCount, // ✅ Received displayedProductCount
+  productsPerPageValue, // ✅ Received productsPerPage
 }) => {
   const [products, setProducts] = useState([]);
+  // const [cartLoading, setCartLoading] = useState(false);
   const [subcategoryIds, setSubcategoryIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { addToWishlist } = useWishlist();
-  const [searchParams] = useSearchParams();
-  const categoryId = searchParams.get("category");
-  const subcategoryId = searchParams.get("subcategory");
 
-  // نقرأ categoryId مباشرة من الرابط (URL)
-  const categoryIdFromUrl = searchParams.get("categoryId");
-
-  // نحسب selectedCategoryAndChildrenIds بناءً على URL أو props
-
-  const [selectedCategoryAndChildrenIds, setSelectedCategoryAndChildrenIds] =
-    useState(() => {
-      if (categoryId) {
-        return [parseInt(categoryId)];
-      }
-      return propCategoryAndChildrenIds || null;
-    });
-  useEffect(() => {
-    if (categoryId) {
-      setSelectedCategoryAndChildrenIds([parseInt(categoryId)]);
-    } else {
-      setSelectedCategoryAndChildrenIds(propCategoryAndChildrenIds || null);
-    }
-  }, [categoryId, propCategoryAndChildrenIds]);
-
-  // جلب الفئات الفرعية (Subcategories) للفلترة
-  const {
-    categories: subcategories,
-    loading: subcategoriesLoading,
-    error: subcategoriesError,
-  } = useFetchCategories(selectedCategoryAndChildrenIds?.[0] || null);
-
-  useEffect(() => {
-    if (
-      !subcategoriesLoading &&
-      !subcategoriesError &&
-      selectedCategoryAndChildrenIds?.[0] &&
-      subcategories
-    ) {
-      setSubcategoryIds(subcategories.map((sub) => sub.id));
-    } else {
-      setSubcategoryIds([]);
-    }
-  }, [
-    subcategories,
-    subcategoriesLoading,
-    subcategoriesError,
-    selectedCategoryAndChildrenIds,
-  ]);
-
-  // تحميل المنتجات (يمكن تعديل الاعتمادات لإعادة التحميل عند تغيّر الفلاتر)
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const loadProducts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const totalPages = 5; // عدد صفحات المنتجات لتحميلها
-        const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
-        const allProducts = await fetchAllProducts(
-          pages,
-          null,
-          controller.signal,
-          setLoading,
-          setError,
-          availabilityFilter
-        );
-
-        setProducts(
-          allProducts.map(
-            ({
-              id,
-              name,
-              price,
-              old_price,
-              primaryImg,
-              variants,
-              reviewsCount,
-              categoryId,
-              brandId,
-              url_key,
-              inStock,
-              created_at,
-            }) => ({
-              id,
-              name,
-              oldPrice: `$${(old_price || price + 20).toFixed(2)}`,
-              newPrice: `$${price.toFixed(2)}`,
-              price,
-              imageUrl: primaryImg || "",
-              categoryId,
-              brandId,
-              reviews: reviewsCount || 3,
-              colors: variants.map(({ title, src }) => ({
-                title,
-                imgSrc: src,
-              })),
-              url_key,
-              inStock,
-              createdAt: created_at || new Date().toISOString(),
-            })
-          )
-        );
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          console.error("Failed to load products:", error);
-          setError(error.message || "Failed to load products.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProducts();
-
-    return () => controller.abort();
-  }, [availabilityFilter]); // ممكن تضيف selectedCategoryAndChildrenIds لو تبي تعيد تحميل المنتجات عند تغير الكاتيجوري
-
-  // دالة لإضافة المنتج للمفضلة (Wishlist)
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
     addToWishlist({
@@ -152,35 +37,150 @@ const ProductGrid = ({
     alert(`${product.name} added to wishlist!`);
   };
 
-  // تغيير صورة المنتج عند اختيار لون
+  const {
+    categories: subcategories,
+    loading: subcategoriesLoading,
+    error: subcategoriesError,
+  } = useFetchCategories(selectedCategoryAndChildrenIds?.[0] || null);
+  useEffect(() => {}, [displayedProductCount, productsPerPageValue]);
+
+  useEffect(() => {
+    if (
+      !subcategoriesLoading &&
+      !subcategoriesError &&
+      selectedCategoryAndChildrenIds?.[0] &&
+      subcategories
+    ) {
+      setSubcategoryIds(subcategories.map((sub) => sub.id));
+    } else if (!selectedCategoryAndChildrenIds) {
+      setSubcategoryIds([]);
+    }
+  }, [
+    subcategories,
+    subcategoriesLoading,
+    subcategoriesError,
+    selectedCategoryAndChildrenIds,
+    availabilityFilter,
+  ]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const loadProducts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const totalPages = 5;
+        const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+        const allProducts = await fetchAllProducts(
+          pages,
+          null,
+          controller.signal,
+          setLoading,
+          setError,
+          availabilityFilter
+        );
+        setProducts(
+          allProducts.map(
+            ({
+              id,
+              name,
+              price,
+              old_price,
+              primaryImg,
+              variants,
+              reviewsCount,
+              categoryId,
+              brandId,
+              url_key,
+              inStock,
+              created_at, // 👈 Add date field for sorting by date
+            }) => ({
+              id,
+              name,
+              oldPrice: `$${(old_price || price + 20).toFixed(2)}`,
+              newPrice: `$${price.toFixed(2)}`,
+              price: price, // 👈 Store raw price for sorting
+              imageUrl: primaryImg || "",
+              categoryId,
+              brandId,
+              reviews: reviewsCount || 3,
+              colors: variants.map(({ title, src }) => ({
+                title,
+                imgSrc: src,
+              })),
+              url_key: url_key,
+              inStock,
+              createdAt: created_at || new Date().toISOString(), // 👈 Add created date for sorting
+            })
+          )
+        );
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Failed to load products:", error);
+          setError(error.message || "Failed to load products.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+    return () => controller.abort();
+  }, [selectedCategoryAndChildrenIds, selectedBrandIds, availabilityFilter]);
+
   const handleColorChange = useCallback((productId, imgSrc) => {
     setProducts((prev) =>
       prev.map((p) => (p.id === productId ? { ...p, imageUrl: imgSrc } : p))
     );
   }, []);
 
-  // فلترة المنتجات بناءً على الفئة، العلامة التجارية، التوفر، السعر
+  // const addToCart = useCallback(
+  //   (product) => {
+  //     if (cartLoading) return;
+  //     setCartLoading(true);
+
+  //     setTimeout(() => {
+  //       const existing = JSON.parse(localStorage.getItem("cartItems")) || [];
+  //       if (existing.find((item) => item.id === product.id)) {
+  //         alert(`${product.name} added to cart!`);
+  //         return setCartLoading(false);
+  //       }
+
+  //       const updated = [
+  //         ...existing,
+  //         {
+  //           ...product,
+  //           price: parseFloat(product.newPrice.replace("$", "")),
+  //           quantity: 1,
+  //           image: product.imageUrl, // أضف هذا السطر
+  //         },
+  //       ];
+  //       localStorage.setItem("cartItems", JSON.stringify(updated));
+  //       alert(`${product.name} added to cart!`);
+  //       setCartLoading(false);
+  //     }, 200);
+  //   },
+  //   [cartLoading]
+  // );
+
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    if (selectedCategoryAndChildrenIds?.length > 0) {
-      let categoryFilterIds = []; // إذا تم اختيار subcategory من الرابط، استخدمه فقط للفلاتر
-
-      if (subcategoryId) {
-        categoryFilterIds = [parseInt(subcategoryId)];
-      } else {
-        categoryFilterIds = [
-          ...selectedCategoryAndChildrenIds,
-          ...subcategoryIds,
-        ].map(Number);
-      }
-
+    if (
+      selectedCategoryAndChildrenIds &&
+      selectedCategoryAndChildrenIds.length > 0
+    ) {
+      const allCategoryIds = [
+        selectedCategoryAndChildrenIds[0],
+        ...subcategoryIds,
+      ].map(Number);
       result = result.filter((p) =>
-        categoryFilterIds.includes(Number(p.categoryId))
+        allCategoryIds.includes(Number(p.categoryId))
       );
     }
 
-    if (selectedBrandIds.length > 0) {
+    if (selectedBrandIds && selectedBrandIds.length > 0) {
       const brandIdSet = new Set(selectedBrandIds.map(Number));
       result = result.filter((p) => brandIdSet.has(Number(p.brandId)));
     }
@@ -209,14 +209,16 @@ const ProductGrid = ({
     priceRange,
   ]);
 
-  // ترتيب المنتجات
+  // Apply sorting based on sortBy value
   const sortedProducts = useMemo(() => {
     let result = [...filteredProducts];
 
     switch (sortBy) {
       case "Featured":
+        // Featured usually maintains default order or uses a "featured" flag
         break;
       case "Best Selling":
+        // Assuming we track sales in the future, for now using reviews as proxy
         result.sort((a, b) => b.reviews - a.reviews);
         break;
       case "Alphabetically, A-Z":
@@ -246,18 +248,18 @@ const ProductGrid = ({
         result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         break;
       default:
+        // Default sorting logic
         break;
     }
 
     return result;
   }, [filteredProducts, sortBy]);
+  const actualDisplayedCount = Math.min(sortedProducts.length, productsToShow);
 
-  // المنتجات التي ستظهر حسب العدد المطلوب
   const displayedProducts = useMemo(() => {
     return sortedProducts.slice(0, productsToShow);
   }, [sortedProducts, productsToShow]);
 
-  // دالة لعرض النجوم حسب تقييم المنتج
   const renderStars = (reviews) =>
     Array.from({ length: 5 }, (_, i) => (
       <i
@@ -273,7 +275,7 @@ const ProductGrid = ({
 
   return (
     <div className="grid-products grid-view-items">
-      <div className={`row col-row product-options ${gridClass}`}>
+      <div className={` row col-row product-options ${gridClass}`}>
         {displayedProducts.map((product) => (
           <div className="item col-item" key={product.id}>
             <div className="product-box">
@@ -294,6 +296,15 @@ const ProductGrid = ({
                   <span className="lbl on-sale">Sale</span>
                 </div>
                 <div className="button-set style1">
+                  {/* <button
+                    className="btn-icon addtocart"
+                    // onClick={() => addToCart(product)}
+                    // disabled={cartLoading}
+                    title="Add to Cart"
+                  >
+                    <i className="fa-solid fa-cart-plus"></i>
+                    <span className="text">Add to Cart</span>
+                  </button> */}
                   <Link
                     to={`/product/${product.url_key || product.id}`}
                     className="btn-icon quickview"
@@ -356,4 +367,4 @@ const ProductGrid = ({
   );
 };
 
-export default ProductGrid;
+export default Category;

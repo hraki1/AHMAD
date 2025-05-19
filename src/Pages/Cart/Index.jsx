@@ -20,35 +20,28 @@ export default function Index() {
       fetch(`${baseUrl}/api/carts/customer`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch cart");
+          return res.json();
+        })
         .then((data) => {
           setCartId(data.cart_id);
-          console.log("Discount from cart API:", data.discount_amount); // Check the discount from the cart API
+          setDiscount(data.discount_amount || 0); // <-- Set discount from API
+          const items = data.items.map((item) => ({
+            id: item.product_id,
+            cart_item_id: item.cart_item_id,
+            name: item.product_name || `Product ${item.product_id}`,
+            price: item.product_price || 0,
+            quantity: item.qty || 1,
+            image: item.image || "default-image.jpg",
+          }));
+          setCartItems(items);
         })
         .catch((error) => {
-          console.error("Error fetching cart ID:", error);
+          console.error("Error fetching cart:", error);
         });
     }
   }, []);
-
-  // Load discount from localStorage if available
-  useEffect(() => {
-    const storedDiscount =
-      parseFloat(localStorage.getItem("cartDiscount")) || 0;
-    console.log("Stored discount from local storage:", storedDiscount); // Debugging log
-    if (storedDiscount > 0) {
-      setDiscount(storedDiscount);
-    }
-  }, []);
-
-  // Save discount to localStorage whenever it changes
-  useEffect(() => {
-    console.log("Discount state before saving to local storage:", discount); // Debugging log
-    if (discount > 0) {
-      console.log("Saving discount to localStorage:", discount);
-      localStorage.setItem("cartDiscount", discount.toString());
-    }
-  }, [discount]);
 
   const calculateTotal = () => {
     const subtotal = cartItems.reduce(
@@ -76,6 +69,7 @@ export default function Index() {
               couponApplied={couponApplied}
               setCartId={setCartId}
               cartId={cartId}
+              btnName={"Proceed To Checkout"}
             />
           </div>
           <div className="col-lg-4">
@@ -85,6 +79,7 @@ export default function Index() {
               tax={0} // Adjust as necessary
               shipping={0} // Adjust as necessary
               setDiscount={setDiscount}
+              btnName={"Proceed To Checkout"}
             />
           </div>
         </div>

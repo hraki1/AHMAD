@@ -1,5 +1,5 @@
 import { baseUrl } from "./ApiConfig";
-export const AddToCart = async (productId, qty = 1) => {
+export const AddToCart = async (productId, qty = 1, productName = "") => {
   const token = localStorage.getItem("token");
 
   if (!productId) {
@@ -85,7 +85,9 @@ export const AddToCart = async (productId, qty = 1) => {
 
       return {
         success: true,
-        message: "Quantity increased successfully",
+        message: `${
+          productName || "Product"
+        } quantity has been increased successfully.`,
       };
     } else {
       // Product not in cart → Add new
@@ -105,7 +107,9 @@ export const AddToCart = async (productId, qty = 1) => {
 
       return {
         success: true,
-        message: "Item added successfully",
+        message: `The Item ${
+          productName || "Product"
+        } has been added to your cart successfully`,
       };
     }
   } catch (error) {

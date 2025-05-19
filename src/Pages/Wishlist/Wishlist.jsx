@@ -1,51 +1,105 @@
-// Wishlist.js
 import { useWishlist } from "../../Context/WishlistContext";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import QuickViewModal from "../ProductModal/QuickViewModal";
 import { Link } from "react-router-dom";
+import { AddToCart } from "../API/AddToCart";
+import { toast } from "react-toastify";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Wishlist = () => {
   const { wishlistItems, removeFromWishlist } = useWishlist();
   const [showModal, setShowModal] = useState(false);
-  const [cartLoading, setCartLoading] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [addToCartStatus, setAddToCartStatus] = useState({
+    loading: false,
+    productId: null,
+    message: "",
+    error: null,
+  });
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { addToWishlist } = useWishlist();
+  const handleAddToWishlist = (e, product) => {
+    e.preventDefault();
+    const isInStock = product?.inventory === "In Stock";
+
+    addToWishlist({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      stock: isInStock ? "In Stock" : "Out Of Stock",
+      disabled: !isInStock,
+      imgSrc:
+        product.images?.[0]?.origin_image ||
+        product.images?.[0]?.url ||
+        product.images?.[0] ||
+        "",
+      variant: product.colors?.[0] || "Default variant",
+    });
+
+    alert(`${product.name} added to wishlist!`);
+  };
 
   const handleRemoveItem = (productId, e) => {
     e.preventDefault();
     removeFromWishlist(productId);
   };
-  const addToCart = useCallback(
-    (product) => {
-      if (cartLoading) return;
-      setCartLoading(true);
 
-      setTimeout(() => {
-        const existing = JSON.parse(localStorage.getItem("cartItems")) || [];
-        // تحقق هل المنتج موجود مسبقًا
-        const alreadyInCart = existing.find((item) => item.id === product.id);
+  const handleAddToCart = async (product) => {
+    const productId = product.id || product.product_id;
+    if (!productId) {
+      setAddToCartStatus({
+        loading: false,
+        productId: null,
+        message: "Product ID is missing",
+        error: true,
+      });
+      toast.error("Product ID is missing"); // إضافة رسالة خطأ
+      return;
+    }
 
-        if (alreadyInCart) {
-          alert(`${product.name} is already in your cart!`);
-          setCartLoading(false);
-          return;
-        }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setAddToCartStatus({
+        loading: false,
+        productId: null,
+        message: "You should Sign In",
+        error: true,
+      });
+      toast.error("You should Sign In"); // إضافة رسالة خطأ
+      navigate(`/LogIn?redirect=${location.pathname}`);
+      return;
+    }
 
-        // جهز الحقول للمنتج
-        const newItem = {
-          id: product.id,
-          name: product.name,
-          price: product.price, // احذر: إذا كان لديك newPrice كسلسلة "$99" فاستخرج الرقم فقط
-          quantity: 1,
-          image: product.imgSrc || product.imageUrl, // حسب المسمى لديك
-        };
+    setAddToCartStatus({
+      loading: true,
+      productId,
+      message: "",
+      error: null,
+    });
 
-        const updated = [...existing, newItem];
-        localStorage.setItem("cartItems", JSON.stringify(updated));
-        alert(`${product.name} added to cart!`);
-        setCartLoading(false);
-      }, 200);
-    },
-    [cartLoading]
-  );
+    // قم بتمرير الكمية (1) إلى دالة AddToCart
+    const result = await AddToCart(productId, 1, product.name);
+
+    setAddToCartStatus({
+      loading: false,
+      productId,
+      message: result.message,
+      error: !result.success,
+    });
+
+    if (result.success) {
+      toast.success(result.message); // إظهار رسالة نجاح
+    } else {
+      toast.error(result.message || "Failed to add item."); // إظهار رسالة خطأ
+    }
+  };
+  const handleQuickView = (product, e) => {
+    e.preventDefault();
+    setSelectedProduct(product);
+    setShowModal(true);
+  };
+
   return (
     <div className="container">
       <div
@@ -80,24 +134,26 @@ const Wishlist = () => {
               {wishlistItems.map((product) => (
                 <tr key={product.id}>
                   <td className="product-thumbnail">
-                    <a className="product-img" href={QuickViewModal}>
+                    <Link
+                      to={`/product/${product.url_key || product.id}`}
+                      className="product-img"
+                    >
                       <img
                         className="image rounded-0"
                         src={product.imgSrc}
-                        alt="Product"
-                        title="Product"
+                        alt={product.name}
+                        title={product.name}
                         width="120"
                         height="170"
                       />
-                    </a>
-                    <Link
-                      to={`/product/${product.url_key || product.id}`}
+                    </Link>
+                    <button
                       type="button"
                       className="btn btn-light"
-                      onClick={() => setShowModal(true)}
+                      onClick={(e) => handleQuickView(product, e)}
                     >
                       <i className="fa-solid fa-magnifying-glass"></i>
-                    </Link>
+                    </button>
                   </td>
                   <td className="product-details">
                     <p className="product-name mb-0">{product.name}</p>
@@ -120,7 +176,7 @@ const Wishlist = () => {
                   <td className="product-stock text-center">
                     <span
                       className={
-                        product.stock === "in stock"
+                        product.stock?.toLowerCase() === "in stock"
                           ? "text-in-stock"
                           : "text-out-stock"
                       }
@@ -131,16 +187,43 @@ const Wishlist = () => {
                   <td className="product-action text-center">
                     <button
                       type="button"
-                      className={`btn btn-secondary text-nowrap ${
-                        product.disabled ? "soldOutBtn disabled" : ""
+                      className={`btn btn-secondary proceed-to-checkout text-nowrap ${
+                        product.stock?.toLowerCase() !== "in stock"
+                          ? "soldOutBtn disabled"
+                          : ""
                       }`}
-                      onClick={() => {
-                        if (!product.disabled) addToCart(product);
-                      }}
+                      onClick={() => handleAddToCart(product)}
+                      disabled={
+                        product.stock?.toLowerCase() !== "in stock" ||
+                        (addToCartStatus.loading &&
+                          addToCartStatus.productId === product.id)
+                      }
                     >
-                      {product.disabled ? "Out Of stock" : "Add To Cart"}
+                      {addToCartStatus.loading &&
+                      addToCartStatus.productId === product.id ? (
+                        <>
+                          <i className="fa-solid fa-spinner fa-spin me-2"></i>
+                          Adding ...
+                        </>
+                      ) : product.stock?.toLowerCase() !== "in stock" ? (
+                        "Out Of Stock"
+                      ) : (
+                        "Add To Cart"
+                      )}
                     </button>
-                  </td>
+                    {addToCartStatus.productId === product.id &&
+                      addToCartStatus.message && (
+                        <div
+                          className={`mt-2 alert ${
+                            addToCartStatus.error
+                              ? "alert-danger"
+                              : "alert-success"
+                          } wishlist-alert-style`} //  class name
+                        >
+                          {addToCartStatus.message}
+                        </div>
+                      )}
+                  </td>{" "}
                 </tr>
               ))}
             </tbody>
@@ -148,7 +231,11 @@ const Wishlist = () => {
         </div>
       </form>
 
-      <QuickViewModal show={showModal} onHide={() => setShowModal(false)} />
+      <QuickViewModal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        product={selectedProduct}
+      />
     </div>
   );
 };

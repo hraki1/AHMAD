@@ -8,6 +8,7 @@ export default function CartSummary({
   shipping = 0,
   setDiscount,
   country,
+  btnName = "",
 }) {
   const [taxAmount, setTaxAmount] = useState(0);
   const discountPercentage = (discount / subtotal) * 100;
@@ -115,7 +116,7 @@ export default function CartSummary({
           id="cartCheckout"
           className="btn btn-lg my-4 checkout w-100"
         >
-          Proceed To Checkout
+          {btnName}
         </Link>
 
         <div className="paymnet-img text-center">

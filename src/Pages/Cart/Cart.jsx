@@ -4,7 +4,13 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { baseUrl } from "../API/ApiConfig";
 
-export default function Cart({ cartItems, setCartItems, setCartId, cartId }) {
+export default function Cart({
+  cartItems,
+  setCartItems,
+  setCartId,
+  cartId,
+  btnName,
+}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCartIdLoaded, setIsCartIdLoaded] = useState(false);
@@ -147,8 +153,7 @@ export default function Cart({ cartItems, setCartItems, setCartId, cartId }) {
                 <button
                   className="btn btn-link text-danger"
                   onClick={() =>
-                    window.confirm("Remove this item?") &&
-                    removeItem(cart_item_id)
+                    window.confirm(`Remove ${name}`) && removeItem(cart_item_id)
                   }
                   disabled={!isCartIdLoaded}
                 >
@@ -205,7 +210,7 @@ export default function Cart({ cartItems, setCartItems, setCartId, cartId }) {
           className="btn btn-primary"
           disabled={!isCartIdLoaded}
         >
-          Proceed to checkout
+          {btnName}
         </Link>
       </div>
     </div>

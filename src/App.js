@@ -24,6 +24,7 @@ import Brands from "./Pages/Brands/index.jsx";
 import ForgetPass from "./Pages/LogIn/ForgetPass.jsx";
 import ResetPassword from "./Pages/LogIn/ResetPassword.jsx";
 import ScrollToTop from "./Components/common/ScrollToTop.jsx";
+import Category from "./Pages/ShopGrid/Category.jsx";
 function App() {
   return (
     <Router>
@@ -44,6 +45,7 @@ function App() {
           <Route path="/Portfolio" element={<Portfolio />} />
           <Route path="/Product/:url_key" element={<Product />} />
           <Route path="/ShopGrid" element={<ShopGrid />} />
+          <Route path="/Category" element={<Category />} />
           <Route path="/Wishlist" element={<Wishlist />} />
           <Route path="/SignUp" element={<Sign />} />
           <Route path="/LogIn" element={<Login />} />

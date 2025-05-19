@@ -15,12 +15,44 @@ export default function PopularCategories({
   onCategoryClick,
   onBackToAll,
   mode = "default",
+  resetHierarchy = false,
+  forcedParentId = null,
+  forcedCategoryData = null,
+  data = [],
 }) {
   const [categoryHierarchy, setCategoryHierarchy] = useState([]);
   const parentId = categoryHierarchy.at(-1)?.id || null;
   const { categories, loading, error } = useFetchCategories(parentId);
   const sliderRef = useRef(null);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (resetHierarchy) {
+      setCategoryHierarchy([]);
+    }
+  }, [resetHierarchy]);
+
+  useEffect(() => {
+    if (
+      forcedParentId &&
+      !categoryHierarchy.some((c) => c.id === forcedParentId)
+    ) {
+      // البحث في data الممررة كخاصية
+      const foundCategory = data.find((cat) => cat.id === forcedParentId);
+      if (foundCategory) {
+        setCategoryHierarchy([foundCategory]);
+      } else {
+        // إذا لم يتم العثور على الفئة، ننشئ كائنًا مؤقتًا
+        setCategoryHierarchy([
+          {
+            id: forcedParentId,
+            title: "Loading...",
+            img: "",
+            count: 0,
+          },
+        ]);
+      }
+    }
+  }, [forcedParentId, data]); // أضف data إلى تبعيات useEffect
 
   useEffect(() => {
     if (sliderRef.current?.innerSlider)

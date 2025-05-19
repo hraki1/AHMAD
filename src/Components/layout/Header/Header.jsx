@@ -111,7 +111,7 @@ const Header = () => {
                 <NavItem title="Home" links={[{ to: "/", label: "Home" }]} />
                 {!loading && !error && categories.length > 0 && (
                   <li className="megamenu head-drop-down">
-                    <Link to="#">
+                    <Link to="/ShopGrid">
                       Categories <i className="fa-solid fa-angle-down ms-1" />
                     </Link>
                     <div className="megamenu style1">
@@ -133,18 +133,17 @@ const Header = () => {
                                 className="lvl-1 col-md-3 col-lg-3 w-22"
                               >
                                 <Link
-                                  to={`/ShopGrid`}
+                                  to={`/ShopGrid?category=${mainCat.id}`}
                                   className="site-nav lvl-1 menu-title"
                                 >
                                   {mainCat.title}
                                 </Link>
-                                عرض الـ subcategories
                                 {subCategories.length > 0 && (
                                   <ul className="sub-menu">
                                     {subCategories.map((subCat) => (
                                       <li key={subCat.id}>
                                         <Link
-                                          to={`/ShopGrid`}
+                                          to={`/ShopGrid?category=${mainCat.id}&subcategory=${subCat.id}`}
                                           className="site-nav lvl-2"
                                         >
                                           {subCat.title}

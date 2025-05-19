@@ -43,12 +43,13 @@ const ProductDetail = () => {
 
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
+    const isInStock = product?.inventory === "In Stock";
+
     addToWishlist({
       id: product.id,
       name: product.name,
       price: product.price,
-      stock: isInStock ? "in stock" : "Out Of stock",
-
+      stock: isInStock ? "In Stock" : "Out Of Stock",
       disabled: !isInStock,
       imgSrc:
         product.images?.[0]?.origin_image ||
@@ -57,6 +58,7 @@ const ProductDetail = () => {
         "",
       variant: product.colors?.[0] || "Default variant",
     });
+
     alert(`${product.name} added to wishlist!`);
   };
 
@@ -74,9 +76,10 @@ const ProductDetail = () => {
       });
       return;
     }
+
     const productId = product.id || product.product_id;
     if (!productId) {
-      console.error("Product structure:", product); // لفحص هيكل البيانات
+      console.error("Product structure:", product);
       setAddToCartStatus({
         loading: false,
         message: "Product ID is missing in product data",
@@ -92,14 +95,13 @@ const ProductDetail = () => {
         message: "You should Sign In",
         error: true,
       });
-
       navigate(`/LogIn?redirect=${location.pathname}`);
       return;
     }
 
     setAddToCartStatus({ loading: true, message: "", error: null });
 
-    const result = await AddToCart(productId, quantity);
+    const result = await AddToCart(productId, quantity, product.name);
 
     setAddToCartStatus({
       loading: false,
@@ -108,16 +110,7 @@ const ProductDetail = () => {
     });
 
     if (result.success) {
-      if (result.message && result.message.includes("already in your cart")) {
-        toast.info(result.message);
-        // Consider navigating to the cart or updating a local cart state if you manage one
-      } else if (result.message && result.message.includes("increased")) {
-        toast.success(result.message);
-        // Consider navigating to the cart or updating a local cart state
-      } else {
-        toast.success(result.message || "Item added to cart!");
-        // Consider navigating to the cart or updating a local cart state
-      }
+      toast.success(result.message);
     } else {
       toast.error(result.message || "Failed to add item.");
     }
@@ -439,17 +432,23 @@ const ProductDetail = () => {
                 <div className="product-form-submit buyit fl-1 ms-3">
                   <button
                     type="button"
-                    className="btn btn-secondary proceed-to-checkout"
+                    className={`btn btn-secondary proceed-to-checkout text-nowrap ${
+                      product?.inventory !== "In Stock"
+                        ? "soldOutBtn disabled"
+                        : ""
+                    }`}
                     onClick={handleAddToCart}
-                    // disabled={product.stock <= 0}
+                    disabled={product?.inventory !== "In Stock"}
                   >
                     {addToCartStatus.loading ? (
                       <>
                         <i className="fa-solid fa-spinner fa-spin me-2"></i>
                         Adding ...
                       </>
+                    ) : product?.inventory !== "In Stock" ? (
+                      "Out Of Stock"
                     ) : (
-                      "ADD to Cart"
+                      "Add To Cart"
                     )}
                   </button>
 
@@ -471,19 +470,11 @@ const ProductDetail = () => {
                 ) : (
                   <Link
                     to="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (product?.inventory === "In Stock") {
-                        handleAddToWishlist(e, product);
-                      }
-                    }}
-                    className={`text-link wishlist ${
-                      product?.inventory !== "In Stock" ? "disabled" : ""
-                    }`}
+                    onClick={(e) => handleAddToWishlist(e, product)}
+                    className="text-link wishlist"
                     style={{
-                      pointerEvents:
-                        product?.inventory !== "In Stock" ? "none" : "auto",
-                      opacity: product?.inventory !== "In Stock" ? 0.5 : 1,
+                      pointerEvents: "auto",
+                      opacity: 1,
                     }}
                   >
                     <i className="fa-regular fa-heart me-2" />
