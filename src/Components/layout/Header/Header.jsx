@@ -8,22 +8,32 @@ import imageCart2 from "../../../assets/images/products/product2-120x170.jpg";
 import MobileMenu from "../Mobile/MobileMenu";
 import useFetchCategoryandSub from "./useFetchCategoryandSub";
 
-const NavItem = ({ title, links }) => (
-  <li className="dropdown head-drop-down">
-    <a href="#">
-      {title} <i className="fa-solid fa-angle-down ms-1" />
-    </a>
-    <ul className="dropdown">
-      {links.map((link, index) => (
-        <li key={index}>
-          <Link to={link.to} className="site-nav">
-            {link.label}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  </li>
-);
+const NavItem = ({ title, links }) => {
+  const isSingleLink = links.length === 1;
+
+  return (
+    <li className="dropdown head-drop-down">
+      {isSingleLink ? (
+        <Link to={links[0].to} className="site-nav">
+          {title} <i className="fa-solid fa-angle-down ms-1" />
+        </Link>
+      ) : (
+        <a href="#">
+          {title} <i className="fa-solid fa-angle-down ms-1" />
+        </a>
+      )}
+      <ul className="dropdown">
+        {links.map((link, index) => (
+          <li key={index}>
+            <Link to={link.to} className="site-nav">
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </li>
+  );
+};
 
 const HeaderCart = ({
   cartItems,
@@ -109,6 +119,7 @@ const Header = () => {
             <nav className="navigation" id="AccessibleNav">
               <ul id="siteNav" className="site-nav medium center">
                 <NavItem title="Home" links={[{ to: "/", label: "Home" }]} />
+
                 {!loading && !error && categories.length > 0 && (
                   <li className="megamenu head-drop-down">
                     <Link to="/ShopGrid">

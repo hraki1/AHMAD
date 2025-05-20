@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import Button from "../../Components/common/Button"; // Adjust the import path as necessary
 import useCountriesData from "../Hooks/useCountriesData";
 import { baseUrl } from "../API/ApiConfig";
+
 export default function Checkout({ country, setCountry }) {
   const { countries, loading, error } = useCountriesData();
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [selectedCountryData, setSelectedCountryData] = useState(null);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -48,14 +50,8 @@ export default function Checkout({ country, setCountry }) {
           },
         });
 
-        console.log("Token", token);
         const data = await res.json();
-        console.log("API Response:", data); // Add this to see the exact response structure
-
-        // Try different ways to access the data
         const addresses = data.data || data.items || data.addresses || data;
-        console.log("Addresses extracted:", addresses);
-
         setSavedAddresses(addresses || []);
       } catch (err) {
         console.error("Failed to fetch saved addresses", err);
@@ -64,6 +60,17 @@ export default function Checkout({ country, setCountry }) {
 
     fetchSavedAddresses();
   }, []);
+
+  useEffect(() => {
+    if (formData.country) {
+      const countryData = countries.find(
+        (c) => c.country_code === formData.country
+      );
+      setSelectedCountryData(countryData);
+      // Reset city when country changes
+      setFormData((prev) => ({ ...prev, city: "" }));
+    }
+  }, [formData.country, countries]);
 
   // Handle Save button click: update country in parent component
   const handleSaveCountry = async (e) => {
@@ -74,7 +81,7 @@ export default function Checkout({ country, setCountry }) {
       return;
     }
 
-    // إذا تم اختيار عنوان محفوظ، أرسله مباشرة
+    // If a saved address is selected, use it directly
     if (selectedSavedAddressId) {
       try {
         const response = await fetch(`${baseUrl}/api/use-saved-address`, {
@@ -97,7 +104,7 @@ export default function Checkout({ country, setCountry }) {
       }
     }
 
-    // غير ذلك، استخدم البيانات من الفورم (كما هو موجود حاليًا)
+    // Otherwise, use the form data
     const selectedCountry = countries.find(
       (c) => c.country_code === formData.country
     );
@@ -142,15 +149,28 @@ export default function Checkout({ country, setCountry }) {
     }
   };
 
+  const calculateShippingCost = () => {
+    if (!formData.country || !formData.deliveryMethod) return 0;
+
+    const selectedMethod =
+      selectedCountryData?.ShippingZone?.[0]?.zone_methods?.find(
+        (method) => method.method.name === formData.deliveryMethod
+      );
+
+    return selectedMethod?.cost || 0;
+  };
   // Optional example tax calculation based on country
   const taxRate = 0.16;
   const calculateTax = () => {
     if (formData.country === "JO") {
-      const taxAmount = 100 * taxRate;
+      const subtotal = 100; // Replace with your actual subtotal
+      const shippingCost = calculateShippingCost();
+      const taxAmount = (subtotal + shippingCost) * taxRate;
       return taxAmount;
     }
     return 0;
   };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -171,8 +191,6 @@ export default function Checkout({ country, setCountry }) {
             >
               <div className="block-content">
                 <div className="main-title-check mb-3">Saved Address</div>
-
-                {/* Accordion to select another address */}
                 <div className="payment-accordion">
                   <div className="accordion" id="accordionExample">
                     <div className="accordion-item card mb-4">
@@ -182,43 +200,73 @@ export default function Checkout({ country, setCountry }) {
                           type="button"
                           data-bs-toggle="collapse"
                           data-bs-target="#collapseFourr"
-                          aria-expanded={isCollapsed ? "true" : "false"} // تحديث حالة الـ aria-expanded بناءً على isCollapsed
+                          aria-expanded={isCollapsed ? "true" : "false"}
                           aria-controls="collapseFourr"
-                          onClick={() => setIsCollapsed(!isCollapsed)} // تغيير حالة collapse عند الضغط
+                          onClick={() => setIsCollapsed(!isCollapsed)}
                         >
-                          {(() => {
-                            const selectedAddress = savedAddresses.find(
-                              (addr) => addr.id === selectedSavedAddressId
-                            );
-                            return selectedAddress ? (
-                              <>
+                          {selectedSavedAddressId ? (
+                            <div className="w-100">
+                              <div className="d-flex justify-content-between w-100">
                                 <div>
-                                  <strong className="me-1">
-                                    {selectedAddress.full_name}
+                                  <strong className="me-2">
+                                    {savedAddresses.find(
+                                      (addr) =>
+                                        addr.id === selectedSavedAddressId
+                                    )?.full_name || "Name"}
                                   </strong>
-                                  <small className="me-1">
-                                    {selectedAddress.address_1}
-                                  </small>
-                                  <small className="me-1">
-                                    {selectedAddress.city?.name ||
-                                      selectedAddress.city}
-                                    ,{" "}
-                                    {selectedAddress.country?.name ||
-                                      selectedAddress.country}
+                                </div>
+                                <div>
+                                  <small className="text-muted">
+                                    {savedAddresses.find(
+                                      (addr) =>
+                                        addr.id === selectedSavedAddressId
+                                    )?.delivery_method?.method?.name ||
+                                      "No shipping method"}
                                   </small>
                                 </div>
-                              </>
-                            ) : (
-                              "Select a saved address"
-                            );
-                          })()}
+                              </div>
+                              <div className="text-start w-100">
+                                <small className="d-block">
+                                  {savedAddresses.find(
+                                    (addr) => addr.id === selectedSavedAddressId
+                                  )?.address_1 || "Address 1"}
+                                </small>
+                                <small className="d-block">
+                                  {savedAddresses.find(
+                                    (addr) => addr.id === selectedSavedAddressId
+                                  )?.city?.name || "City"}{" "}
+                                  ,
+                                  {savedAddresses.find(
+                                    (addr) => addr.id === selectedSavedAddressId
+                                  )?.country?.name || "Country"}
+                                </small>
+                                {savedAddresses.find(
+                                  (addr) => addr.id === selectedSavedAddressId
+                                )?.delivery_method?.cost && (
+                                  <small className="text-success d-block">
+                                    Cost:{" "}
+                                    {savedAddresses.find(
+                                      (addr) =>
+                                        addr.id === selectedSavedAddressId
+                                    )?.delivery_method?.cost || 0}{" "}
+                                    {savedAddresses.find(
+                                      (addr) =>
+                                        addr.id === selectedSavedAddressId
+                                    )?.delivery_method?.currency || "JOD"}
+                                  </small>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            "Select a saved address"
+                          )}
                           <i className="fa-solid fa-bars"></i>
                         </button>
                       </div>
                       <div
                         className={`accordion-collapse collapse ${
                           isCollapsed ? "show" : ""
-                        }`} // استخدام حالة isCollapsed للتحكم في الفتح والإغلاق
+                        }`}
                         id="collapseFourr"
                         aria-labelledby="headingFour"
                         data-bs-parent="#accordionExample"
@@ -229,7 +277,7 @@ export default function Checkout({ country, setCountry }) {
                               {savedAddresses.map((addr) => (
                                 <div
                                   key={addr.id}
-                                  className={`p-2 mb-2 rounded ${
+                                  className={`p-3 mb-2 rounded ${
                                     selectedSavedAddressId === addr.id
                                       ? "bg-primary text-white fw-bold"
                                       : "bg-light"
@@ -237,12 +285,48 @@ export default function Checkout({ country, setCountry }) {
                                   style={{ cursor: "pointer" }}
                                   onClick={() => {
                                     setSelectedSavedAddressId(addr.id);
-                                    setIsCollapsed(false); // إغلاق القائمة بعد اختيار العنوان
+                                    setIsCollapsed(false);
+                                    // Update form data with selected address
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      fullName: addr.full_name,
+                                      phoneNumber: addr.phone_number,
+                                      addressOne: addr.address_1,
+                                      addressTwo: addr.address_2 || "",
+                                      postCode: addr.postcode || "",
+                                      country: addr.country?.country_code || "",
+                                      city: addr.city?.name || addr.city || "",
+                                      deliveryMethod:
+                                        addr.delivery_method?.method?.name ||
+                                        "",
+                                    }));
                                   }}
                                 >
-                                  {addr.full_name}, {addr.address_1},{" "}
-                                  {addr.city?.name || addr.city},{" "}
-                                  {addr.country?.name || addr.country}
+                                  <div className="d-flex justify-content-between">
+                                    <strong>{addr.full_name}</strong>
+                                    {addr.delivery_method?.method?.name && (
+                                      <span className="badge bg-secondary">
+                                        {addr.delivery_method.method.name}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="mt-1">
+                                    <small className="d-block">
+                                      {addr.address_1}
+                                      {addr.address_2 && `, ${addr.address_2}`}
+                                    </small>
+                                    <small className="d-block">
+                                      {addr.city?.name || addr.city},{" "}
+                                      {addr.country?.name || addr.country}
+                                    </small>
+                                    {addr.delivery_method?.cost && (
+                                      <small className="text-success d-block">
+                                        Shipping Cost:{" "}
+                                        {addr.delivery_method.cost}{" "}
+                                        {addr.delivery_method.currency || "JOD"}
+                                      </small>
+                                    )}
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -364,22 +448,34 @@ export default function Checkout({ country, setCountry }) {
                   </div>
 
                   <div className="row">
-                    <div className="form-group col-12 col-sm-6 d-none">
+                    <div className="form-group col-12 col-sm-6">
                       <label htmlFor="address_State" className="form-label">
-                        State <span className="required">*</span>
+                        Shipping Method <span className="required">*</span>
                       </label>
                       <select
                         id="address_State"
-                        name="state"
-                        value={formData.state}
+                        name="deliveryMethod"
+                        value={formData.deliveryMethod}
                         className="form-control"
                         onChange={handleChange}
+                        required
                       >
-                        <option value="JERASH">Jerash</option>
-                        <option value="Amman">Amman</option>
-                        <option value="Riydeh">Riydeh</option>
+                        <option value="">Select Shipping Method</option>
+                        {selectedCountryData?.ShippingZone?.[0]?.zone_methods
+                          ?.filter((method) => method.is_enabled)
+                          .map((method) => (
+                            <option
+                              key={method.shipping_zone_method_id}
+                              value={method.method.name}
+                              data-cost={method.cost}
+                            >
+                              {method.method.name} - {method.cost}{" "}
+                              {selectedCountryData?.currency?.code || "JOD"}
+                            </option>
+                          ))}
                       </select>
                     </div>
+
                     <div className="form-group col-12 col-sm-6">
                       <label htmlFor="address_province" className="form-label">
                         Town / City <span className="required">*</span>
@@ -392,14 +488,11 @@ export default function Checkout({ country, setCountry }) {
                         onChange={handleChange}
                       >
                         <option value="">Select a City</option>
-                        {formData.country &&
-                          countries
-                            .find((c) => c.country_code === formData.country)
-                            ?.Cities?.map((city) => (
-                              <option key={city.id} value={city.name}>
-                                {city.name}
-                              </option>
-                            ))}
+                        {selectedCountryData?.Cities?.map((city) => (
+                          <option key={city.id} value={city.name}>
+                            {city.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>

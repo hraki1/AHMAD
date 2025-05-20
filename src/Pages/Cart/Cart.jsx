@@ -16,8 +16,6 @@ export default function Cart({
   const [isCartIdLoaded, setIsCartIdLoaded] = useState(false);
 
   const token = localStorage.getItem("token");
-  console.log("Token:", token);
-  console.log("CartId prop in Cart:", cartId);
 
   useEffect(() => {
     if (!token) {
@@ -34,9 +32,7 @@ export default function Cart({
         return res.json();
       })
       .then((data) => {
-        console.log("Cart API Response:", data);
         setCartId(data.cart_id);
-        console.log("Cart ID set:", data.cart_id);
         setIsCartIdLoaded(true);
         const items = data.items.map((item) => ({
           id: item.product_id,

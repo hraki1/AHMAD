@@ -1,9 +1,5 @@
-// src/components/shop/leftSlidebar.js
 import SidebarCategories from "./Filters/SidebarCategories";
 import PriceFilter from "./Filters/PriceFilter";
-import ColorFilter from "./Filters/ColorFilter";
-import SizeFilter from "./Filters/SizeFilter";
-import ProductTypeFilter from "./Filters/ProductTypeFilter";
 import BrandFilter from "./Filters/BrandFilter";
 import AvailabilityFilter from "./Filters/AvailabilityFilter";
 
@@ -12,6 +8,7 @@ export default function LeftSlidebar({
   onCategoryFilterChange,
   onAvailabilityFilterChange,
   onPriceChange,
+  resetTrigger,
 }) {
   const handlePriceFilterChange = (range) => {
     onPriceChange?.(range);
@@ -23,17 +20,11 @@ export default function LeftSlidebar({
         <i className="fa-solid fa-x" style={{ cursor: "pointer" }}></i>
       </div>
       <div className="sidebar-tags sidebar-sticky clearfix">
-        {/* Filter By */}
-        <div className="sidebar-widget filterBox filter-widget">
-          {/* ... */}
-        </div>
-        {/* */}
-        <SidebarCategories onCategoryFilterChange={onCategoryFilterChange} />
-        <PriceFilter onPriceChange={handlePriceFilterChange} />{" "}
-        {/* ✅ تمرير الدالة إلى PriceFilter */}
-        {/* <ColorFilter /> */}
-        {/* <SizeFilter /> */}
-        {/* <ProductTypeFilter /> */}
+        <SidebarCategories
+          onCategoryFilterChange={onCategoryFilterChange}
+          resetTrigger={resetTrigger}
+        />
+        <PriceFilter onPriceChange={handlePriceFilterChange} />
         <BrandFilter onFilterChange={onBrandFilterChange} />
         <AvailabilityFilter
           onAvailabilityFilterChange={onAvailabilityFilterChange}

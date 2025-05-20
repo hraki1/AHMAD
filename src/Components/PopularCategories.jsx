@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useFetchCategories from "../Pages/Hooks/useFetchCategories";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -15,33 +15,39 @@ export default function PopularCategories({
   onCategoryClick,
   onBackToAll,
   mode = "default",
-  resetHierarchy = false,
-  forcedParentId = null,
-  forcedCategoryData = null,
+  resetHierarchy,
+  forcedParentId,
+  forcedCategoryData,
   data = [],
 }) {
+  const location = useLocation();
+  const initialHierarchy = location.state?.categoryHierarchy || [];
+
   const [categoryHierarchy, setCategoryHierarchy] = useState([]);
-  const parentId = categoryHierarchy.at(-1)?.id || null;
+
+  const parentId =
+    categoryHierarchy.length > 0
+      ? categoryHierarchy[categoryHierarchy.length - 1].id
+      : forcedParentId || null;
+
   const { categories, loading, error } = useFetchCategories(parentId);
   const sliderRef = useRef(null);
   const navigate = useNavigate();
+
+  // Reset on prop change
   useEffect(() => {
     if (resetHierarchy) {
       setCategoryHierarchy([]);
     }
   }, [resetHierarchy]);
 
+  // Load hierarchy from forcedParentId
   useEffect(() => {
-    if (
-      forcedParentId &&
-      !categoryHierarchy.some((c) => c.id === forcedParentId)
-    ) {
-      // البحث في data الممررة كخاصية
+    if (forcedParentId && categoryHierarchy.length === 0) {
       const foundCategory = data.find((cat) => cat.id === forcedParentId);
       if (foundCategory) {
         setCategoryHierarchy([foundCategory]);
       } else {
-        // إذا لم يتم العثور على الفئة، ننشئ كائنًا مؤقتًا
         setCategoryHierarchy([
           {
             id: forcedParentId,
@@ -52,16 +58,21 @@ export default function PopularCategories({
         ]);
       }
     }
-  }, [forcedParentId, data]); // أضف data إلى تبعيات useEffect
+  }, [forcedParentId, data]);
 
   useEffect(() => {
-    if (sliderRef.current?.innerSlider)
+    if (sliderRef.current?.innerSlider) {
       sliderRef.current.innerSlider.slickGoTo(0);
+    }
   }, [parentId]);
 
   const handleCategoryClick = (category) => {
     if (mode === "navigate") {
-      navigate(`/ShopGrid`);
+      navigate(`/ShopGrid?category=${category.id}`, {
+        state: {
+          categoryHierarchy: [...categoryHierarchy, category],
+        },
+      });
     } else {
       setSelectedCategoryId(category.id);
       setSelectedParentId(category.id);
@@ -82,7 +93,7 @@ export default function PopularCategories({
   const backOneLevel = () => {
     if (categoryHierarchy.length > 1) {
       const updatedHierarchy = categoryHierarchy.slice(0, -1);
-      const parent = updatedHierarchy.at(-1);
+      const parent = updatedHierarchy[updatedHierarchy.length - 1];
       setCategoryHierarchy(updatedHierarchy);
       setSelectedCategoryId(parent.id);
       setSelectedParentId(parent.id);
@@ -159,9 +170,6 @@ export default function PopularCategories({
 
         {categoryHierarchy.length > 0 && (
           <div className="text-center mb-3">
-            <button className="btn btn-outline-primary" onClick={backToAll}>
-              BACK TO ALL CATEGORIES
-            </button>
             {categoryHierarchy.length > 1 && (
               <button
                 className="btn btn-outline-primary ms-2"
@@ -172,6 +180,7 @@ export default function PopularCategories({
             )}
           </div>
         )}
+
         {loading && (
           <div className="text-center fs-5 text-muted my-5">Loading...</div>
         )}

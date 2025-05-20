@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useFetchCategories from "../../Hooks/useFetchCategories";
 
 export default function SidebarCategories({
   onCategoryFilterChange,
   className,
+  resetTrigger,
 }) {
   const [categoryHierarchy, setCategoryHierarchy] = useState([]);
   const parentId = categoryHierarchy.at(-1)?.id || null;
   const { categories, loading, error } = useFetchCategories(parentId);
   const [showContent, setShowContent] = useState(true);
+
+  useEffect(() => {
+    if (resetTrigger) {
+      setCategoryHierarchy([]);
+    }
+  }, [resetTrigger]);
 
   const handleCategoryClick = (category) => {
     setCategoryHierarchy((prev) => [...prev, category]);

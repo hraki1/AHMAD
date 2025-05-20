@@ -12,8 +12,20 @@ export default function useCountriesData() {
         return res.json();
       })
       .then((data) => {
-        setCountries(data);
-        setLoading(false);
+        // Fetch shipping zones for each country
+        const countriesWithShipping = data.map((country) => {
+          return fetch(`${baseUrl}/api/countries/${country.id}`)
+            .then((res) => res.json())
+            .then((countryDetails) => ({
+              ...country,
+              ShippingZone: countryDetails.ShippingZone || [],
+            }));
+        });
+
+        Promise.all(countriesWithShipping).then((completeCountries) => {
+          setCountries(completeCountries);
+          setLoading(false);
+        });
       })
       .catch((err) => {
         console.error(err);

@@ -1,4 +1,3 @@
-// src/pages/shop/ShopPage.js
 import React, { useState, useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageHeader from "../../Components/layout/Header/PageHeader";
@@ -10,12 +9,12 @@ import useFetchCategories from "../Hooks/useFetchCategories";
 
 export default function ShopPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const categoryId = queryParams.get("category");
   const subcategoryId = queryParams.get("subcategory");
-  const navigate = useNavigate();
+  const [forceReset, setForceReset] = useState(false);
   const [hidePopularCategories, setHidePopularCategories] = useState(false);
-
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(null);
   const [selectedParentId, setSelectedParentId] = useState(null);
   const [selectedBrandIds, setSelectedBrandIds] = useState([]);
@@ -25,41 +24,22 @@ export default function ShopPage() {
   });
   const [priceRangeFilter, setPriceRangeFilter] = useState([0, 1000]);
 
-  const { categories: subcategories } = useFetchCategories(
-    selectedCategoryIds?.[0] || null
-  );
+  const { categories: subcategories, loading: subcatLoading } =
+    useFetchCategories(selectedCategoryIds?.[0] || null);
 
-  useEffect(() => {
-    const updateFiltersFromURL = () => {
-      if (categoryId) {
-        const categoryIdNum = parseInt(categoryId);
-        const subcategoryIdNum = subcategoryId ? parseInt(subcategoryId) : null;
-
-        if (subcategoryIdNum) {
-          setSelectedCategoryIds([subcategoryIdNum]);
-        } else {
-          // جلب الفئات الفرعية للفئة الرئيسية
-          const childIds = subcategories
-            .filter((cat) => cat.parentId === categoryIdNum)
-            .map((cat) => cat.id);
-
-          setSelectedCategoryIds([categoryIdNum, ...childIds]);
-        }
+  // Define handleSidebarCategoryFilterChange first
+  const handleSidebarCategoryFilterChange = useCallback(
+    (categoryIds) => {
+      if (categoryIds && categoryIds.length > 0) {
+        navigate(`/ShopGrid?category=${categoryIds[0]}`);
       } else {
-        setSelectedCategoryIds(null);
+        navigate("/ShopGrid");
       }
-    };
-
-    updateFiltersFromURL();
-  }, [categoryId, subcategoryId, subcategories]);
-
-  const handleCategoryClick = useCallback(
-    (categoryId, childIds) => {
-      setHidePopularCategories(true);
-      navigate(`/ShopGrid?category=${categoryId}`);
     },
     [navigate]
   );
+
+  // Then define backToAll that uses it
   const backToAll = useCallback(() => {
     setHidePopularCategories(false);
     setSelectedCategoryIds(null);
@@ -71,15 +51,44 @@ export default function ShopPage() {
     });
     setPriceRangeFilter([0, 1000]);
     navigate("/ShopGrid");
-  }, [navigate]);
+    handleSidebarCategoryFilterChange([]);
+  }, [navigate, handleSidebarCategoryFilterChange]);
 
-  const handleSidebarCategoryFilterChange = useCallback(
-    (categoryIds) => {
-      if (categoryIds && categoryIds.length > 0) {
-        navigate(`/ShopGrid?category=${categoryIds[0]}`);
+  useEffect(() => {
+    const updateFiltersFromURL = () => {
+      if (categoryId) {
+        const categoryIdNum = parseInt(categoryId);
+        const subcategoryIdNum = subcategoryId ? parseInt(subcategoryId) : null;
+
+        if (subcategoryIdNum) {
+          setSelectedCategoryIds([subcategoryIdNum]);
+          setSelectedParentId(categoryIdNum);
+        } else {
+          const childIds = subcategories
+            .filter((cat) => cat.parentId === categoryIdNum)
+            .map((cat) => cat.id);
+          setSelectedCategoryIds([categoryIdNum, ...childIds]);
+          setSelectedParentId(categoryIdNum);
+        }
+        setHidePopularCategories(true);
       } else {
-        navigate("/ShopGrid");
+        setSelectedCategoryIds(null);
+        setSelectedParentId(null);
+        setHidePopularCategories(false);
       }
+    };
+
+    updateFiltersFromURL();
+  }, [categoryId, subcategoryId, subcategories, location.search]);
+  useEffect(() => {
+    // When categoryId changes, force a reset
+    setForceReset((prev) => !prev);
+  }, [categoryId]);
+
+  const handleCategoryClick = useCallback(
+    (categoryId) => {
+      setHidePopularCategories(true);
+      navigate(`/ShopGrid?category=${categoryId}`);
     },
     [navigate]
   );
@@ -96,11 +105,10 @@ export default function ShopPage() {
     <div>
       <PageHeader title="Shop Grid" middleBreadcrumb="PAGES" />
 
-      {/* ✅ زر العودة للكل إذا في فئة مختارة */}
       {(categoryId || subcategoryId) && (
         <div className="container my-3 text-end">
           <button className="btn btn-outline-secondary" onClick={backToAll}>
-            Back to All Products
+            Back to All
           </button>
         </div>
       )}
@@ -114,14 +122,16 @@ export default function ShopPage() {
         setSelectedCategoryId={(id) => setSelectedCategoryIds(id ? [id] : null)}
         setSelectedParentId={setSelectedParentId}
         onBackToAll={backToAll}
-        resetHierarchy={!categoryId && !subcategoryId}
+        resetHierarchy={forceReset} // Use the forceReset state here
         forcedParentId={categoryId ? parseInt(categoryId) : null}
         forcedCategoryData={
           categoryId
             ? categoriesData.find((cat) => cat.id === parseInt(categoryId))
             : null
         }
+        key={categoryId || "root"} // Add this key to force remount
       />
+
       <div className="container">
         <div className="row">
           <LeftSlidebar
@@ -129,6 +139,7 @@ export default function ShopPage() {
             onCategoryFilterChange={handleSidebarCategoryFilterChange}
             onAvailabilityFilterChange={handleAvailabilityFilterChange}
             onPriceChange={handlePriceRangeFilterChange}
+            resetTrigger={!categoryId && !subcategoryId}
           />
           <Toolbar
             selectedCategoryAndChildrenIds={selectedCategoryIds}
