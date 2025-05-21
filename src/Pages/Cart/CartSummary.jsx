@@ -1,34 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import paymentimg from "../../assets/images/icons/safepayment.png";
 import { Link } from "react-router-dom";
+import { useCart } from "../../Context/CartContext";
 
 export default function CartSummary({
-  subtotal = 0, // Default value set to 0
+  subtotal = 0,
   discount = 0,
+  tax = 0,
   shipping = 0,
+  total = 0, // ✅ total من الـ API
   setDiscount,
   country,
   btnName = "",
+  isPreview = false,
 }) {
-  const [taxAmount, setTaxAmount] = useState(0);
-  const discountPercentage = (discount / subtotal) * 100;
+  const discountPercentage = subtotal ? (discount / subtotal) * 100 : 0;
+  const { showShippingAndTax } = useCart();
 
   const removeDiscount = () => {
     setDiscount(0);
     localStorage.setItem("cartDiscount", "0");
   };
-
-  useEffect(() => {
-    if (country === "Jordan") {
-      const newTaxAmount = (subtotal * 0.1).toFixed(2);
-      setTaxAmount(parseFloat(newTaxAmount));
-    } else {
-      setTaxAmount(0);
-    }
-  }, [country, subtotal]);
-
-  // ✅ حساب المجموع الإجمالي هنا باستخدام subtotal المستلم
-  const total = subtotal - discount + taxAmount + shipping; // إضافة الشحن إلى الإجمالي
 
   return (
     <div className="cart-info sidebar-sticky">
@@ -42,38 +34,43 @@ export default function CartSummary({
           </span>
         </div>
 
-        <div className="row g-0 border-bottom py-2">
-          <span className="col-6 col-sm-6 cart-subtotal-title">
-            <strong>Coupon Discount</strong>
-          </span>
-          <span className="col-6 col-sm-6 cart-subtotal-title cart-subtotal text-end">
-            <span className="money">-${discount.toFixed(2)}</span>
-          </span>
-        </div>
-
-        {/* عرض الضريبة هنا */}
-        <div className="row g-0 border-bottom py-2">
-          <span className="col-6 col-sm-6 cart-subtotal-title">
-            <strong>Tax</strong>
-          </span>
-          <span className="col-6 col-sm-6 cart-subtotal-title cart-subtotal text-end">
-            <span className="money">${taxAmount.toFixed(2)}</span>
-          </span>
-        </div>
-
-        <div className="row g-0 border-bottom py-2">
-          <span className="col-6 col-sm-6 cart-subtotal-title">
-            <strong>Shipping</strong>
-          </span>
-          <span className="col-6 col-sm-6 cart-subtotal-title cart-subtotal text-end">
-            <span className="money">
-              {shipping === 0 ? "Free shipping" : `$${shipping.toFixed(2)}`}
+        {discount > 0 && (
+          <div className="row g-0 border-bottom py-2">
+            <span className="col-6 col-sm-6 cart-subtotal-title">
+              <strong>Coupon Discount</strong>
             </span>
-          </span>
-        </div>
+            <span className="col-6 col-sm-6 cart-subtotal-title cart-subtotal text-end">
+              <span className="money">-${discount.toFixed(2)}</span>
+            </span>
+          </div>
+        )}
+
+        {showShippingAndTax && (
+          <>
+            <div className="row g-0 border-bottom py-2">
+              <span className="col-6 col-sm-6 cart-subtotal-title">
+                <strong>Tax</strong>
+              </span>
+              <span className="col-6 col-sm-6 cart-subtotal-title cart-subtotal text-end">
+                <span className="money">${tax.toFixed(2)}</span>
+              </span>
+            </div>
+
+            <div className="row g-0 border-bottom py-2">
+              <span className="col-6 col-sm-6 cart-subtotal-title">
+                <strong>Shipping</strong>
+              </span>
+              <span className="col-6 col-sm-6 cart-subtotal-title cart-subtotal text-end">
+                <span className="money">
+                  {shipping === 0 ? "Free shipping" : `$${shipping.toFixed(2)}`}
+                </span>
+              </span>
+            </div>
+          </>
+        )}
 
         <div className="row g-0 pt-2">
-          {discountPercentage > 0 ? (
+          {discountPercentage > 0 && (
             <div className="small text-muted">
               <span>Price Before Discount: ${subtotal.toFixed(2)}</span>
               <br />
@@ -84,14 +81,13 @@ export default function CartSummary({
                 Remove Discount
               </button>
             </div>
-          ) : null}
+          )}
 
           <span className="col-6 col-sm-6 cart-subtotal-title fs-6">
             <strong>Total</strong>
           </span>
           <span className="col-6 col-sm-6 cart-subtotal-title fs-5 cart-subtotal text-end text-primary">
-            <b className="money">${total.toFixed(2)}</b>{" "}
-            {/* ✅ استخدام total المحسوب */}
+            <b className="money">${total.toFixed(2)}</b>
           </span>
         </div>
 
@@ -99,10 +95,10 @@ export default function CartSummary({
           Shipping &amp; taxes calculated at checkout
         </p>
 
-        <p className="cart-shipping fst-normal freeShipclaim">
-          <i className="me-2 align-middle fa-solid fa-truck  "></i>
+        {/* <p className="cart-shipping fst-normal freeShipclaim">
+          <i className="me-2 align-middle fa-solid fa-truck"></i>
           <b>FREE SHIPPING</b> ELIGIBLE
-        </p>
+        </p> */}
 
         <div className="customCheckbox cart-tearm">
           <input type="checkbox" id="cart-tearm" />

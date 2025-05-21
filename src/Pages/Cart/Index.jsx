@@ -5,14 +5,27 @@ import CartForms from "./CartForms";
 import CartSummary from "./CartSummary";
 import ProductItem from "../../Components/ProductItem";
 import { baseUrl } from "../API/ApiConfig";
+import { useCart } from "../../Context/CartContext";
 
 export default function Index() {
-  const [discount, setDiscount] = useState(0); // Check this initial value
+  const [discount, setDiscount] = useState(0);
   const [couponApplied, setCouponApplied] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [cartId, setCartId] = useState(null);
 
-  console.log("Discount state in Index (initial):", discount); // Debugging log
+  // استيراد subtotal و shipping و tax و total مع setSubtotal, setShipping, setTax, setTotal من Context
+  const {
+    subtotal,
+    setSubtotal,
+    shipping,
+    setShipping,
+    tax,
+    setTax,
+    total,
+    setTotal,
+    showShippingAndTax,
+    setShowShippingAndTax,
+  } = useCart();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -26,7 +39,13 @@ export default function Index() {
         })
         .then((data) => {
           setCartId(data.cart_id);
-          setDiscount(data.discount_amount || 0); // <-- Set discount from API
+
+          setDiscount(data.discount_amount || 0);
+          setSubtotal(data.sub_total || 0);
+          setShipping(data.shipping_fee_incl_tax || 0);
+          setTax(data.tax_amount || 0);
+          setTotal(data.grand_total || 0);
+
           const items = data.items.map((item) => ({
             id: item.product_id,
             cart_item_id: item.cart_item_id,
@@ -41,20 +60,12 @@ export default function Index() {
           console.error("Error fetching cart:", error);
         });
     }
-  }, []);
+  }, [setSubtotal, setShipping, setTax, setTotal]);
 
-  const calculateTotal = () => {
-    const subtotal = cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-    const discountAmount = discount;
-    const totalAfterDiscount = subtotal - discountAmount;
-
-    return { subtotal, discountAmount, totalAfterDiscount };
-  };
-
-  const { subtotal, discountAmount, totalAfterDiscount } = calculateTotal();
+  useEffect(() => {
+    setShowShippingAndTax(false);
+    return () => setShowShippingAndTax(true);
+  }, [setShowShippingAndTax]);
 
   return (
     <div>
@@ -75,11 +86,13 @@ export default function Index() {
           <div className="col-lg-4">
             <CartSummary
               subtotal={subtotal}
-              discount={discountAmount}
-              tax={0} // Adjust as necessary
-              shipping={0} // Adjust as necessary
+              discount={discount}
+              tax={tax}
+              shipping={shipping}
+              total={total}
               setDiscount={setDiscount}
               btnName={"Proceed To Checkout"}
+              isPreview={true}
             />
           </div>
         </div>

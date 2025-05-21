@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Button from "../../Components/common/Button"; // Adjust the import path as necessary
+import Button from "../../Components/common/Button";
 import useCountriesData from "../Hooks/useCountriesData";
 import { baseUrl } from "../API/ApiConfig";
 
@@ -9,6 +9,10 @@ export default function Checkout({ country, setCountry }) {
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selectedCountryData, setSelectedCountryData] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [cartId, setCartId] = useState(null);
+  const [isApproving, setIsApproving] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -29,7 +33,116 @@ export default function Checkout({ country, setCountry }) {
     couponCode: "",
   });
 
-  // Generic handleChange for all inputs
+  // Fetch cart ID when component mounts
+  useEffect(() => {
+    const fetchCartId = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch(`${baseUrl}/api/carts/customer`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.ok) {
+          const cartData = await res.json();
+          setCartId(cartData.id || cartData.cart_id);
+        } else if (res.status === 404) {
+          // Create new cart if doesn't exist
+          const createRes = await fetch(`${baseUrl}/api/carts`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({}),
+          });
+
+          if (createRes.ok) {
+            const newCart = await createRes.json();
+            setCartId(newCart.id || newCart.cart_id);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch cart ID", err);
+      }
+    };
+
+    fetchCartId();
+  }, []);
+
+  // Handle selecting a saved address
+  const handleSelectSavedAddress = (addr) => {
+    setSelectedSavedAddressId(addr.id);
+    setIsCollapsed(false);
+    setIsEditing(false);
+
+    setFormData((prev) => ({
+      ...prev,
+      fullName: addr.full_name,
+      phoneNumber: addr.phone_number,
+      addressOne: addr.address_1,
+      addressTwo: addr.address_2 || "",
+      postCode: addr.postcode || "",
+      country: addr.countries?.country_code || "",
+      city: addr.city?.name || "",
+      deliveryMethod: "",
+    }));
+
+    setCountry(addr.countries?.country_code || "");
+  };
+
+  // When country changes in the form
+  useEffect(() => {
+    if (formData.country) {
+      const countryData = countries.find(
+        (c) => c.country_code === formData.country
+      );
+      setSelectedCountryData(countryData);
+      setFormData((prev) => ({ ...prev, city: "", deliveryMethod: "" }));
+    }
+  }, [formData.country, countries]);
+
+  // When saved address changes
+  useEffect(() => {
+    if (selectedSavedAddressId && countries.length > 0) {
+      const addr = savedAddresses.find((a) => a.id === selectedSavedAddressId);
+      if (addr) {
+        const countryCode = addr.countries?.country_code;
+        const countryData = countries.find(
+          (c) => c.country_code === countryCode
+        );
+        setSelectedCountryData(countryData);
+
+        const cityName = addr.city?.name || "";
+        if (cityName && countryData?.Cities?.some((c) => c.name === cityName)) {
+          setFormData((prev) => ({ ...prev, city: cityName }));
+        }
+      }
+    }
+  }, [selectedSavedAddressId, countries, savedAddresses]);
+
+  // Fetch saved addresses
+  useEffect(() => {
+    const fetchSavedAddresses = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      try {
+        const res = await fetch(`${baseUrl}/api/addresses`, {
+          method: "get",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setSavedAddresses(
+          data.data || data.items || data.addresses || data || []
+        );
+      } catch (err) {
+        console.error("Failed to fetch saved addresses", err);
+      }
+    };
+    fetchSavedAddresses();
+  }, []);
+
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
     setFormData((prev) => ({
@@ -38,41 +151,48 @@ export default function Checkout({ country, setCountry }) {
     }));
   };
 
-  useEffect(() => {
-    const fetchSavedAddresses = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      try {
-        const res = await fetch(`${baseUrl}/api/addresses`, {
-          method: "get",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  const validateForm = () => {
+    const errors = {};
 
-        const data = await res.json();
-        const addresses = data.data || data.items || data.addresses || data;
-        setSavedAddresses(addresses || []);
-      } catch (err) {
-        console.error("Failed to fetch saved addresses", err);
-      }
-    };
-
-    fetchSavedAddresses();
-  }, []);
-
-  useEffect(() => {
-    if (formData.country) {
-      const countryData = countries.find(
-        (c) => c.country_code === formData.country
-      );
-      setSelectedCountryData(countryData);
-      // Reset city when country changes
-      setFormData((prev) => ({ ...prev, city: "" }));
+    if (!formData.fullName.trim()) {
+      errors.fullName = "Full Name is required.";
+    } else if (!/^[A-Za-z][A-Za-z0-9\s]*$/.test(formData.fullName)) {
+      errors.fullName =
+        "Full Name must start with a letter and contain only letters, numbers, and spaces.";
     }
-  }, [formData.country, countries]);
 
-  // Handle Save button click: update country in parent component
+    if (!formData.phoneNumber.trim()) {
+      errors.phoneNumber = "Phone Number is required.";
+    } else if (!/^\+\d+$/.test(formData.phoneNumber)) {
+      errors.phoneNumber =
+        "Phone Number must start with '+' and contain digits only.";
+    }
+
+    if (!formData.addressOne.trim()) {
+      errors.addressOne = "Address is required.";
+    }
+
+    if (!formData.postCode.trim()) {
+      errors.postCode = "Postcode is required.";
+    } else if (!/^\d+$/.test(formData.postCode)) {
+      errors.postCode = "Postcode must contain only numbers.";
+    }
+
+    if (!formData.country) {
+      errors.country = "Country is required.";
+    }
+
+    if (!formData.city) {
+      errors.city = "City is required.";
+    }
+
+    if (!formData.deliveryMethod) {
+      errors.deliveryMethod = "Shipping method is required.";
+    }
+
+    return errors;
+  };
+
   const handleSaveCountry = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -81,30 +201,12 @@ export default function Checkout({ country, setCountry }) {
       return;
     }
 
-    // If a saved address is selected, use it directly
-    if (selectedSavedAddressId) {
-      try {
-        const response = await fetch(`${baseUrl}/api/use-saved-address`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ address_id: selectedSavedAddressId }),
-        });
-
-        if (!response.ok) throw new Error("Failed to use saved address.");
-        const result = await response.json();
-        alert("Saved address used successfully!");
-        return;
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Failed to use the saved address.");
-        return;
-      }
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
-
-    // Otherwise, use the form data
+    setErrors({});
     const selectedCountry = countries.find(
       (c) => c.country_code === formData.country
     );
@@ -117,16 +219,6 @@ export default function Checkout({ country, setCountry }) {
       return;
     }
 
-    const payload = {
-      full_name: formData.fullName,
-      phone_number: formData.phoneNumber,
-      address_1: formData.addressOne,
-      address_2: formData.addressTwo,
-      postcode: formData.postCode,
-      country_id: selectedCountry.id,
-      city_id: selectedCity.id,
-    };
-
     try {
       const response = await fetch(`${baseUrl}/api/addresses`, {
         method: "POST",
@@ -134,41 +226,192 @@ export default function Checkout({ country, setCountry }) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          full_name: formData.fullName,
+          phone_number: formData.phoneNumber,
+          address_1: formData.addressOne,
+          address_2: formData.addressTwo,
+          postcode: formData.postCode,
+          country_id: selectedCountry.id,
+          city_id: selectedCity.id,
+        }),
       });
 
-      if (!response.ok)
-        throw new Error("Something went wrong while sending data.");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const message =
+          errorData?.message || "Something went wrong while sending data.";
+        alert(message);
+        return;
+      }
 
-      const result = await response.json();
-      console.log("Success:", result);
       alert("Address saved successfully!");
+
+      setFormData({
+        fullName: "",
+        phoneNumber: "",
+        addressOne: "",
+        addressTwo: "",
+        postCode: "",
+        country: "",
+        city: "",
+        deliveryMethod: "",
+      });
+
+      // Update saved addresses
+      const res = await fetch(`${baseUrl}/api/addresses`, {
+        method: "get",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setSavedAddresses(
+        data.data || data.items || data.addresses || data || []
+      );
+
+      setIsEditing(false);
+      setSelectedSavedAddressId(null);
     } catch (error) {
       console.error("Error:", error);
       alert("Failed to submit the data.");
     }
   };
 
+  const handleApproveAddress = async () => {
+    if (!formData.deliveryMethod) {
+      alert("Please select a shipping method first");
+      return;
+    }
+
+    if (!selectedSavedAddressId || !cartId) {
+      alert("Missing required information");
+      return;
+    }
+
+    setIsApproving(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("User not authenticated");
+        return;
+      }
+
+      // 1. Update shipping address
+      const addressResponse = await fetch(
+        `${baseUrl}/api/carts/${cartId}/shipping-address/${selectedSavedAddressId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!addressResponse.ok) {
+        throw new Error("Failed to update shipping address");
+      }
+
+      // 2. Update shipping method
+      const selectedMethod =
+        selectedCountryData?.ShippingZone?.[0]?.zone_methods?.find(
+          (method) => method.method.name === formData.deliveryMethod
+        );
+
+      if (!selectedMethod) {
+        throw new Error("Selected shipping method not found");
+      }
+
+      const methodResponse = await fetch(
+        `${baseUrl}/api/carts/${cartId}/shipping-method/${selectedMethod.shipping_zone_method_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!methodResponse.ok) {
+        throw new Error("Failed to update shipping method");
+      }
+
+      alert("Shipping address and method approved successfully!");
+    } catch (error) {
+      console.error("Error approving address:", error);
+      alert(error.message || "Failed to approve address");
+    } finally {
+      setIsApproving(false);
+    }
+  };
+
   const calculateShippingCost = () => {
     if (!formData.country || !formData.deliveryMethod) return 0;
-
     const selectedMethod =
       selectedCountryData?.ShippingZone?.[0]?.zone_methods?.find(
         (method) => method.method.name === formData.deliveryMethod
       );
-
     return selectedMethod?.cost || 0;
   };
-  // Optional example tax calculation based on country
-  const taxRate = 0.16;
-  const calculateTax = () => {
-    if (formData.country === "JO") {
-      const subtotal = 100; // Replace with your actual subtotal
-      const shippingCost = calculateShippingCost();
-      const taxAmount = (subtotal + shippingCost) * taxRate;
-      return taxAmount;
+
+  const handleDeleteAddress = async (id) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("User not authenticated");
+      return;
     }
-    return 0;
+
+    if (!window.confirm("Are you sure you want to delete this address?"))
+      return;
+
+    try {
+      const response = await fetch(`${baseUrl}/api/addresses/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to delete address.");
+
+      alert("Address deleted successfully.");
+
+      if (selectedSavedAddressId === id) {
+        setSelectedSavedAddressId(null);
+        setFormData({
+          fullName: "",
+          phoneNumber: "",
+          addressOne: "",
+          addressTwo: "",
+          postCode: "",
+          country: "",
+          city: "",
+          savingAddress: false,
+          deliveryMethod: "",
+          cardName: "",
+          cardType: "",
+          cardNumber: "",
+          cvv: "",
+          expDate: "",
+          comment: "",
+          couponCode: "",
+        });
+      }
+
+      const res = await fetch(`${baseUrl}/api/addresses`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      setSavedAddresses(
+        data.data || data.items || data.addresses || data || []
+      );
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      alert("Failed to delete address.");
+    }
   };
 
   if (loading) return <p>Loading...</p>;
@@ -176,103 +419,106 @@ export default function Checkout({ country, setCountry }) {
 
   return (
     <div className="container">
-      <form
-        className="checkout-form"
-        method="post"
-        action="#"
-        onSubmit={handleSaveCountry} // Save country on form submit
-      >
+      <form className="checkout-form" onSubmit={handleSaveCountry}>
         <div className="row">
           <div className="col-lg-6 col-md-6 col-sm-12">
-            <div
-              className={`block mb-3 payment-methods mb-4 ${
-                savedAddresses.length === 0 ? "d-none" : ""
-              }`}
-            >
-              <div className="block-content">
-                <div className="main-title-check mb-3">Saved Address</div>
-                <div className="payment-accordion">
-                  <div className="accordion" id="accordionExample">
-                    <div className="accordion-item card mb-4">
-                      <div className="card-header" id="headingFour">
-                        <button
-                          className="card-link d-flex align-items-center justify-content-between collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseFourr"
-                          aria-expanded={isCollapsed ? "true" : "false"}
-                          aria-controls="collapseFourr"
-                          onClick={() => setIsCollapsed(!isCollapsed)}
+            {savedAddresses.length > 0 && (
+              <div className="block mb-3 payment-methods mb-4">
+                <div className="block-content">
+                  <div className="main-title-check mb-3">Saved Address</div>
+                  <div className="payment-accordion">
+                    <div className="accordion" id="accordionExample">
+                      <div className="accordion-item card mb-4">
+                        <div className="card-header" id="headingFour">
+                          <button
+                            className="card-link d-flex align-items-center justify-content-between collapsed"
+                            type="button"
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                          >
+                            {selectedSavedAddressId ? (
+                              <div className="w-100">
+                                <div className="d-flex justify-content-between w-100 align-items-center">
+                                  <div>
+                                    <strong className="me-2">
+                                      {savedAddresses.find(
+                                        (addr) =>
+                                          addr.id === selectedSavedAddressId
+                                      )?.full_name || "Name"}
+                                    </strong>
+                                  </div>
+
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-danger border-0"
+                                    style={{
+                                      fontSize: "14px",
+                                      padding: "2px 6px",
+                                    }}
+                                    title="إلغاء اختيار العنوان"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedSavedAddressId(null);
+                                      setIsCollapsed(false);
+                                      setIsEditing(false);
+                                      setFormData({
+                                        fullName: "",
+                                        phoneNumber: "",
+                                        addressOne: "",
+                                        addressTwo: "",
+                                        postCode: "",
+                                        country: "",
+                                        city: "",
+                                        savingAddress: false,
+                                        deliveryMethod: "",
+                                        cardName: "",
+                                        cardType: "",
+                                        cardNumber: "",
+                                        cvv: "",
+                                        expDate: "",
+                                        comment: "",
+                                        couponCode: "",
+                                      });
+                                      setCountry("");
+                                      setSelectedCountryData(null);
+                                    }}
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+
+                                <div className="text-start w-100">
+                                  <small className="d-block">
+                                    {savedAddresses.find(
+                                      (addr) =>
+                                        addr.id === selectedSavedAddressId
+                                    )?.address_1 || "Address 1"}
+                                  </small>
+                                  <small className="d-block">
+                                    {savedAddresses.find(
+                                      (addr) =>
+                                        addr.id === selectedSavedAddressId
+                                    )?.city?.name || "City"}
+                                    ,{" "}
+                                    {savedAddresses.find(
+                                      (addr) =>
+                                        addr.id === selectedSavedAddressId
+                                    )?.countries?.name || "Country"}
+                                  </small>
+                                </div>
+                              </div>
+                            ) : (
+                              "Select a saved address"
+                            )}
+
+                            <i className="fa-solid fa-bars"></i>
+                          </button>
+                        </div>
+                        <div
+                          className={`accordion-collapse collapse ${
+                            isCollapsed ? "show" : ""
+                          }`}
                         >
-                          {selectedSavedAddressId ? (
-                            <div className="w-100">
-                              <div className="d-flex justify-content-between w-100">
-                                <div>
-                                  <strong className="me-2">
-                                    {savedAddresses.find(
-                                      (addr) =>
-                                        addr.id === selectedSavedAddressId
-                                    )?.full_name || "Name"}
-                                  </strong>
-                                </div>
-                                <div>
-                                  <small className="text-muted">
-                                    {savedAddresses.find(
-                                      (addr) =>
-                                        addr.id === selectedSavedAddressId
-                                    )?.delivery_method?.method?.name ||
-                                      "No shipping method"}
-                                  </small>
-                                </div>
-                              </div>
-                              <div className="text-start w-100">
-                                <small className="d-block">
-                                  {savedAddresses.find(
-                                    (addr) => addr.id === selectedSavedAddressId
-                                  )?.address_1 || "Address 1"}
-                                </small>
-                                <small className="d-block">
-                                  {savedAddresses.find(
-                                    (addr) => addr.id === selectedSavedAddressId
-                                  )?.city?.name || "City"}{" "}
-                                  ,
-                                  {savedAddresses.find(
-                                    (addr) => addr.id === selectedSavedAddressId
-                                  )?.country?.name || "Country"}
-                                </small>
-                                {savedAddresses.find(
-                                  (addr) => addr.id === selectedSavedAddressId
-                                )?.delivery_method?.cost && (
-                                  <small className="text-success d-block">
-                                    Cost:{" "}
-                                    {savedAddresses.find(
-                                      (addr) =>
-                                        addr.id === selectedSavedAddressId
-                                    )?.delivery_method?.cost || 0}{" "}
-                                    {savedAddresses.find(
-                                      (addr) =>
-                                        addr.id === selectedSavedAddressId
-                                    )?.delivery_method?.currency || "JOD"}
-                                  </small>
-                                )}
-                              </div>
-                            </div>
-                          ) : (
-                            "Select a saved address"
-                          )}
-                          <i className="fa-solid fa-bars"></i>
-                        </button>
-                      </div>
-                      <div
-                        className={`accordion-collapse collapse ${
-                          isCollapsed ? "show" : ""
-                        }`}
-                        id="collapseFourr"
-                        aria-labelledby="headingFour"
-                        data-bs-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          {savedAddresses?.length > 0 ? (
+                          <div className="card-body">
                             <div className="saved-addresses-list">
                               {savedAddresses.map((addr) => (
                                 <div
@@ -283,32 +529,21 @@ export default function Checkout({ country, setCountry }) {
                                       : "bg-light"
                                   }`}
                                   style={{ cursor: "pointer" }}
-                                  onClick={() => {
-                                    setSelectedSavedAddressId(addr.id);
-                                    setIsCollapsed(false);
-                                    // Update form data with selected address
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      fullName: addr.full_name,
-                                      phoneNumber: addr.phone_number,
-                                      addressOne: addr.address_1,
-                                      addressTwo: addr.address_2 || "",
-                                      postCode: addr.postcode || "",
-                                      country: addr.country?.country_code || "",
-                                      city: addr.city?.name || addr.city || "",
-                                      deliveryMethod:
-                                        addr.delivery_method?.method?.name ||
-                                        "",
-                                    }));
-                                  }}
+                                  onClick={() => handleSelectSavedAddress(addr)}
                                 >
-                                  <div className="d-flex justify-content-between">
+                                  <div className="d-flex justify-content-between align-items-start">
                                     <strong>{addr.full_name}</strong>
-                                    {addr.delivery_method?.method?.name && (
-                                      <span className="badge bg-secondary">
-                                        {addr.delivery_method.method.name}
-                                      </span>
-                                    )}
+
+                                    <button
+                                      type="button"
+                                      className="btn btn-sm btn-danger"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteAddress(addr.id);
+                                      }}
+                                    >
+                                      Delete
+                                    </button>
                                   </div>
                                   <div className="mt-1">
                                     <small className="d-block">
@@ -316,35 +551,29 @@ export default function Checkout({ country, setCountry }) {
                                       {addr.address_2 && `, ${addr.address_2}`}
                                     </small>
                                     <small className="d-block">
-                                      {addr.city?.name || addr.city},{" "}
-                                      {addr.country?.name || addr.country}
+                                      {addr.city?.name || "No city"},
+                                      {addr.countries?.name || "No country"}
                                     </small>
-                                    {addr.delivery_method?.cost && (
-                                      <small className="text-success d-block">
-                                        Shipping Cost:{" "}
-                                        {addr.delivery_method.cost}{" "}
-                                        {addr.delivery_method.currency || "JOD"}
-                                      </small>
-                                    )}
                                   </div>
                                 </div>
                               ))}
                             </div>
-                          ) : (
-                            <div>No saved addresses found.</div>
-                          )}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Shipping Address */}
             <div className="block mb-3 shipping-address mb-4">
               <div className="block-content">
-                <div className="main-title-check mb-3">Add New Address</div>
+                <div className="main-title-check mb-3">
+                  {selectedSavedAddressId
+                    ? "Address Details"
+                    : "Add New Address"}
+                </div>
                 <fieldset>
                   <div className="row">
                     <div className="form-group col-12 col-sm-6">
@@ -354,12 +583,14 @@ export default function Checkout({ country, setCountry }) {
                       <input
                         name="fullName"
                         value={formData.fullName}
-                        id="fullName"
-                        type="text"
+                        onChange={handleChange}
                         required
                         className="form-control"
-                        onChange={handleChange}
+                        readOnly={!!selectedSavedAddressId && !isEditing}
                       />
+                      {errors.fullName && (
+                        <small className="text-danger">{errors.fullName}</small>
+                      )}
                     </div>
 
                     <div className="form-group col-12 col-sm-6">
@@ -369,13 +600,16 @@ export default function Checkout({ country, setCountry }) {
                       <input
                         name="phoneNumber"
                         value={formData.phoneNumber}
-                        id="phoneNumber"
-                        type="tel"
-                        required
-                        pattern="^\+?[1-9]\d{9,14}$"
-                        className="form-control"
                         onChange={handleChange}
+                        required
+                        className="form-control"
+                        readOnly={!!selectedSavedAddressId && !isEditing}
                       />
+                      {errors.phoneNumber && (
+                        <small className="text-danger">
+                          {errors.phoneNumber}
+                        </small>
+                      )}
                     </div>
                   </div>
 
@@ -387,23 +621,26 @@ export default function Checkout({ country, setCountry }) {
                       <input
                         name="addressOne"
                         value={formData.addressOne}
-                        id="address-1"
-                        type="text"
-                        required
-                        placeholder="Street address"
-                        className="form-control"
                         onChange={handleChange}
+                        required
+                        className="form-control"
+                        readOnly={!!selectedSavedAddressId && !isEditing}
                       />
+                      {errors.addressOne && (
+                        <small className="text-danger">
+                          {errors.addressOne}
+                        </small>
+                      )}
                     </div>
+
                     <div className="form-group col-12">
                       <input
                         name="addressTwo"
                         value={formData.addressTwo}
-                        id="address-2"
-                        type="text"
-                        placeholder="Apartment, suite, unit etc. (optional)"
-                        className="form-control"
                         onChange={handleChange}
+                        className="form-control"
+                        placeholder="Apartment, suite, unit etc. (optional)"
+                        readOnly={!!selectedSavedAddressId && !isEditing}
                       />
                     </div>
                   </div>
@@ -416,11 +653,13 @@ export default function Checkout({ country, setCountry }) {
                       <input
                         name="postCode"
                         value={formData.postCode}
-                        id="postcode"
-                        type="text"
-                        className="form-control"
                         onChange={handleChange}
+                        className="form-control"
+                        readOnly={!!selectedSavedAddressId && !isEditing}
                       />
+                      {errors.postCode && (
+                        <small className="text-danger">{errors.postCode}</small>
+                      )}
                     </div>
 
                     <div className="form-group col-12 col-sm-6">
@@ -428,11 +667,12 @@ export default function Checkout({ country, setCountry }) {
                         Country <span className="required">*</span>
                       </label>
                       <select
-                        className="form-control"
-                        id="address_country1"
                         name="country"
                         value={formData.country}
                         onChange={handleChange}
+                        className="form-control"
+                        required
+                        disabled={!!selectedSavedAddressId && !isEditing}
                       >
                         <option value="">Select a Country</option>
                         {countries.map((countryItem) => (
@@ -444,6 +684,9 @@ export default function Checkout({ country, setCountry }) {
                           </option>
                         ))}
                       </select>
+                      {errors.country && (
+                        <small className="text-danger">{errors.country}</small>
+                      )}
                     </div>
                   </div>
 
@@ -453,11 +696,10 @@ export default function Checkout({ country, setCountry }) {
                         Shipping Method <span className="required">*</span>
                       </label>
                       <select
-                        id="address_State"
                         name="deliveryMethod"
                         value={formData.deliveryMethod}
-                        className="form-control"
                         onChange={handleChange}
+                        className="form-control"
                         required
                       >
                         <option value="">Select Shipping Method</option>
@@ -467,13 +709,17 @@ export default function Checkout({ country, setCountry }) {
                             <option
                               key={method.shipping_zone_method_id}
                               value={method.method.name}
-                              data-cost={method.cost}
                             >
                               {method.method.name} - {method.cost}{" "}
                               {selectedCountryData?.currency?.code || "JOD"}
                             </option>
                           ))}
                       </select>
+                      {errors.deliveryMethod && (
+                        <small className="text-danger">
+                          {errors.deliveryMethod}
+                        </small>
+                      )}
                     </div>
 
                     <div className="form-group col-12 col-sm-6">
@@ -481,11 +727,12 @@ export default function Checkout({ country, setCountry }) {
                         Town / City <span className="required">*</span>
                       </label>
                       <select
-                        id="address_province"
                         name="city"
                         value={formData.city}
-                        className="form-control"
                         onChange={handleChange}
+                        className="form-control"
+                        required
+                        disabled={!!selectedSavedAddressId && !isEditing}
                       >
                         <option value="">Select a City</option>
                         {selectedCountryData?.Cities?.map((city) => (
@@ -494,32 +741,66 @@ export default function Checkout({ country, setCountry }) {
                           </option>
                         ))}
                       </select>
+                      {errors.city && (
+                        <small className="text-danger">{errors.city}</small>
+                      )}
                     </div>
                   </div>
 
-                  <div className="row">
-                    <div className="form-group col-md-12">
-                      <div className="checkout-tearm customCheckbox">
-                        <input
-                          id="checkout_tearm"
-                          name="savingAddress"
-                          type="checkbox"
-                          checked={formData.savingAddress}
-                          onChange={handleChange}
-                        />
-                        <label htmlFor="checkout_tearm">
-                          Save address to my account
-                        </label>
+                  {!selectedSavedAddressId && (
+                    <div className="row">
+                      <div className="form-group col-md-12">
+                        <div className="checkout-tearm customCheckbox">
+                          <input
+                            id="checkout_tearm"
+                            name="savingAddress"
+                            type="checkbox"
+                            checked={formData.savingAddress}
+                            onChange={handleChange}
+                          />
+                          <label htmlFor="checkout_tearm">
+                            Save address to my account
+                          </label>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </fieldset>
-              </div>
 
-              <Button className="mt-2" label="Save" type="submit" primary />
+                {selectedSavedAddressId ? (
+                  <div className="d-flex gap-2 mt-2">
+                    <Button
+                      label={isEditing ? "Save Address" : "Edit Address"}
+                      type={isEditing ? "submit" : "button"}
+                      primary={isEditing}
+                      outline={!isEditing}
+                      onClick={(e) => {
+                        if (!isEditing) {
+                          e.preventDefault();
+                          setIsEditing(true);
+                        }
+                      }}
+                    />
+                    <Button
+                      label={isApproving ? "Approving..." : "Approve"}
+                      type="button"
+                      primary
+                      disabled={!formData.deliveryMethod || isApproving}
+                      onClick={handleApproveAddress}
+                    />
+                  </div>
+                ) : (
+                  <Button
+                    className="mt-2"
+                    label="Save Address"
+                    type="submit"
+                    btn-secondary
+                  />
+                )}
+              </div>
             </div>
-            {/* End Shipping Address */}
           </div>
+          {/* End Shipping Method  */}
 
           {/*  */}
           <div className="col-lg-6 col-md-6 col-sm-12">
