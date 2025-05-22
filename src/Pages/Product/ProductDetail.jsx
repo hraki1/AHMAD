@@ -10,7 +10,7 @@ import { AddToCart } from "../API/AddToCart";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
-
+import { useCart } from "../../Context/CartContext";
 const SOCIAL_ICONS = [
   { icon: "twitter", title: "Twitter" },
   { icon: "pinterest-p", title: "Pinterest" },
@@ -35,6 +35,7 @@ const ProductDetail = () => {
   console.log("Product in component:", product);
   const navigate = useNavigate();
   const location = useLocation();
+  const { updateCart } = useCart(); // أضف هذا السطر
 
   const { addToWishlist } = useWishlist();
   const isInStock =
@@ -111,6 +112,7 @@ const ProductDetail = () => {
 
     if (result.success) {
       toast.success(result.message);
+      await updateCart(); // أضف هذا السطر لتحديث حالة العربة
     } else {
       toast.error(result.message || "Failed to add item.");
     }

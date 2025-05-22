@@ -8,12 +8,11 @@ import { baseUrl } from "../API/ApiConfig";
 import { useCart } from "../../Context/CartContext";
 
 export default function Index() {
-  const [discount, setDiscount] = useState(0);
-  const [couponApplied, setCouponApplied] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [cartId, setCartId] = useState(null);
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponMessage, setCouponMessage] = useState(""); // حالة لرسالة الكوبون
 
-  // استيراد subtotal و shipping و tax و total مع setSubtotal, setShipping, setTax, setTotal من Context
   const {
     subtotal,
     setSubtotal,
@@ -22,9 +21,11 @@ export default function Index() {
     tax,
     setTax,
     total,
+    discount,
     setTotal,
     showShippingAndTax,
     setShowShippingAndTax,
+    updateCart,
   } = useCart();
 
   useEffect(() => {
@@ -39,8 +40,6 @@ export default function Index() {
         })
         .then((data) => {
           setCartId(data.cart_id);
-
-          setDiscount(data.discount_amount || 0);
           setSubtotal(data.sub_total || 0);
           setShipping(data.shipping_fee_incl_tax || 0);
           setTax(data.tax_amount || 0);
@@ -85,14 +84,11 @@ export default function Index() {
           </div>
           <div className="col-lg-4">
             <CartSummary
-              subtotal={subtotal}
-              discount={discount}
-              tax={tax}
-              shipping={shipping}
-              total={total}
-              setDiscount={setDiscount}
               btnName={"Proceed To Checkout"}
               isPreview={true}
+              setCouponApplied={setCouponApplied}
+              setCouponMessage={setCouponMessage}
+              useGrandTotal={false}
             />
           </div>
         </div>
@@ -100,9 +96,12 @@ export default function Index() {
         <div className="row">
           <div className="col-12">
             <CartForms
-              setDiscount={setDiscount}
-              setCouponApplied={setCouponApplied}
               cartId={cartId}
+              setCouponApplied={setCouponApplied}
+              setTotal={setTotal}
+              couponApplied={couponApplied}
+              message={couponMessage}
+              setMessage={setCouponMessage}
             />
           </div>
         </div>

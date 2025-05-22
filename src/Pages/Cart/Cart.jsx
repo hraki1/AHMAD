@@ -1,58 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { baseUrl } from "../API/ApiConfig";
+import { useCart } from "../../Context/CartContext";
 
 export default function Cart({
-  cartItems,
-  setCartItems,
-  setCartId,
-  cartId,
   btnName,
+  showRemoveIcon = true,
+  showPlus = true,
+  showMinus = true,
+  checkoutLink = "/CheckOut",
 }) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isCartIdLoaded, setIsCartIdLoaded] = useState(false);
+  const { cartId, cartItems, updateCart, isCartLoading } = useCart();
 
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    if (!token) {
-      setError("Please login to view your cart");
-      setLoading(false);
-      return;
-    }
-
-    fetch(`${baseUrl}/api/carts/customer`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch cart");
-        return res.json();
-      })
-      .then((data) => {
-        setCartId(data.cart_id);
-        setIsCartIdLoaded(true);
-        const items = data.items.map((item) => ({
-          id: item.product_id,
-          cart_item_id: item.cart_item_id,
-          name: item.product_name || `Product ${item.product_id}`,
-          price: item.product_price || 0,
-          quantity: item.qty || 1,
-          image: item.image || "default-image.jpg",
-        }));
-        setCartItems(items);
-      })
-      .catch((err) => {
-        setError(err.message);
-        toast.error(err.message);
-      })
-      .finally(() => setLoading(false));
-  }, [token, setCartId]);
-
   const updateQuantity = async (cart_item_id, newQty) => {
-    if (!token || !cartId || !isCartIdLoaded) {
+    if (!token || !cartId || isCartLoading) {
       toast.error("Cart data is loading, please wait...");
       return;
     }
@@ -75,12 +40,7 @@ export default function Cart({
         throw new Error(errorData.message || "Failed to update cart item");
       }
 
-      const updatedItems = cartItems.map((item) =>
-        item.cart_item_id === cart_item_id
-          ? { ...item, quantity: newQty }
-          : item
-      );
-      setCartItems(updatedItems);
+      await updateCart();
       toast.success("Cart updated");
     } catch (err) {
       toast.error(err.message);
@@ -88,7 +48,7 @@ export default function Cart({
   };
 
   const removeItem = async (cart_item_id) => {
-    if (!cartId || !cart_item_id || !isCartIdLoaded) {
+    if (!cartId || !cart_item_id || isCartLoading) {
       toast.error("Cart data is loading, please wait...");
       return;
     }
@@ -104,17 +64,14 @@ export default function Cart({
         throw new Error(errData.message || "Failed to remove item");
       }
 
-      setCartItems((items) =>
-        items.filter((item) => item.cart_item_id !== cart_item_id)
-      );
+      await updateCart();
       toast.success("Item removed");
     } catch (err) {
       toast.error(err.message);
     }
   };
 
-  if (loading) return <div>Loading cart...</div>;
-  if (error) return <div className="alert alert-danger">{error}</div>;
+  if (isCartLoading) return <div>Loading cart...</div>;
   if (cartItems.length === 0)
     return (
       <div className="empty-cart text-center py-5">
@@ -124,11 +81,6 @@ export default function Cart({
         </Link>
       </div>
     );
-
-  const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
 
   return (
     <div className="container py-4">
@@ -146,15 +98,18 @@ export default function Cart({
           {cartItems.map(({ cart_item_id, image, name, price, quantity }) => (
             <tr key={cart_item_id}>
               <td className="text-center">
-                <button
-                  className="btn btn-link text-danger"
-                  onClick={() =>
-                    window.confirm(`Remove ${name}`) && removeItem(cart_item_id)
-                  }
-                  disabled={!isCartIdLoaded}
-                >
-                  <i className="fa-solid fa-xmark"></i>
-                </button>
+                {showRemoveIcon && (
+                  <button
+                    className="btn btn-link text-danger"
+                    onClick={() =>
+                      window.confirm(`Remove ${name}`) &&
+                      removeItem(cart_item_id)
+                    }
+                    disabled={isCartLoading}
+                  >
+                    <i className="fa-solid fa-xmark"></i>
+                  </button>
+                )}
               </td>
               <td>
                 <img
@@ -167,27 +122,31 @@ export default function Cart({
               <td>{name}</td>
               <td className="text-center">${price.toFixed(2)}</td>
               <td className="text-center">
-                <button
-                  onClick={() =>
-                    quantity > 1
-                      ? updateQuantity(cart_item_id, quantity - 1)
-                      : toast.info(
-                          "Minimum quantity is 1. Click remove to delete item."
-                        )
-                  }
-                  className="btn btn-outline-secondary"
-                  disabled={!isCartIdLoaded}
-                >
-                  <i className="fa-solid fa-minus"></i>
-                </button>
+                {showPlus && (
+                  <button
+                    onClick={() =>
+                      quantity > 1
+                        ? updateQuantity(cart_item_id, quantity - 1)
+                        : toast.info(
+                            "Minimum quantity is 1. Click remove to delete item."
+                          )
+                    }
+                    className="btn btn-outline-secondary"
+                    disabled={isCartLoading}
+                  >
+                    <i className="fa-solid fa-minus"></i>
+                  </button>
+                )}
                 <span className="mx-2">{quantity}</span>
-                <button
-                  onClick={() => updateQuantity(cart_item_id, quantity + 1)}
-                  className="btn btn-outline-secondary"
-                  disabled={!isCartIdLoaded}
-                >
-                  <i className="fa-solid fa-plus"></i>
-                </button>
+                {showMinus && (
+                  <button
+                    onClick={() => updateQuantity(cart_item_id, quantity + 1)}
+                    className="btn btn-outline-secondary"
+                    disabled={isCartLoading}
+                  >
+                    <i className="fa-solid fa-plus"></i>
+                  </button>
+                )}
               </td>
               <td className="text-center fw-bold">
                 ${(price * quantity).toFixed(2)}
@@ -202,9 +161,9 @@ export default function Cart({
           Continue shopping
         </Link>
         <Link
-          to="/CheckOut"
+          to={checkoutLink}
           className="btn btn-primary"
-          disabled={!isCartIdLoaded}
+          disabled={isCartLoading}
         >
           {btnName}
         </Link>

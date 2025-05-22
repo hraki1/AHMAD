@@ -7,6 +7,7 @@ import PageHeader from "../../Components/layout/Header/PageHeader";
 import Button from "../../Components/common/Button";
 import { useLocation } from "react-router-dom";
 import { baseUrl } from "../API/ApiConfig";
+import { useCart } from "../../Context/CartContext";
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -14,7 +15,7 @@ const Index = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const redirectPath = params.get("redirect") || "/";
-
+  const { updateCart } = useCart();
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -46,7 +47,6 @@ const Index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
     try {
@@ -66,19 +66,16 @@ const Index = () => {
       if (response.ok && data.token) {
         localStorage.setItem("token", data.token);
 
-        // save id
         if (data.user && data.user.id) {
           localStorage.setItem("userId", data.user.id);
-        } else {
-          console.log("User ID is not present in the response");
         }
 
-        // ✅ SAVE EMAIL IF CLICK Remember Me
         if (formInput.rememberPass) {
           localStorage.setItem("rememberedEmail", formInput.email);
         } else {
           localStorage.removeItem("rememberedEmail");
         }
+        await updateCart();
 
         navigate(redirectPath);
       } else {

@@ -10371,3 +10371,12 @@ textarea:-ms-input-placeholder {
   line-height: 1.7;
   letter-spacing: 0;
 }
+
+/* .marg-btm-big {
+  margin-top: -800px;
+}
+@media (max-width: 991px) {
+  .marg-btm-big {
+    margin-top: 0 !important;
+  }
+} */

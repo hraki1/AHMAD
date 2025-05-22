@@ -40,18 +40,18 @@ export default function Index() {
     }
   }, []);
 
-  const calculateTotal = () => {
-    const subtotal = cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-    const discountAmount = discount;
-    const totalAfterDiscount = subtotal - discountAmount;
+  // const calculateTotal = () => {
+  //   const subtotal = cartItems.reduce(
+  //     (total, item) => total + item.price * item.quantity,
+  //     0
+  //   );
+  //   const discountAmount = discount;
+  //   const totalAfterDiscount = subtotal - discountAmount;
 
-    return { subtotal, discountAmount, totalAfterDiscount };
-  };
+  //   return { subtotal, discountAmount, totalAfterDiscount };
+  // };
 
-  const { subtotal, discountAmount, totalAfterDiscount } = calculateTotal();
+  // const { subtotal, discountAmount, totalAfterDiscount } = calculateTotal();
 
   return (
     <div>
@@ -68,18 +68,23 @@ export default function Index() {
               setCartId={setCartId}
               cartId={cartId}
               btnName={"Payemnt"}
+              showRemoveIcon={false}
+              showPlus={false}
+              showMinus={false}
+              checkoutLink="/Payment"
             />
           </div>
-          <div className="col-lg-4">
+          {/* <div className="col-lg-4 marg-btm-big">
             <CartSummary
               subtotal={subtotal}
               discount={discountAmount}
-              tax={0} // Adjust as necessary
-              shipping={0} // Adjust as necessary
+              tax={0}
+              shipping={0}
               setDiscount={setDiscount}
               btnName={"Payemnt"}
+              useGrandTotal={true}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

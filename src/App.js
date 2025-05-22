@@ -25,6 +25,7 @@ import ForgetPass from "./Pages/LogIn/ForgetPass.jsx";
 import ResetPassword from "./Pages/LogIn/ResetPassword.jsx";
 import ScrollToTop from "./Components/common/ScrollToTop.jsx";
 import Category from "./Pages/ShopGrid/Category.jsx";
+import Payment from "./Pages/CheckOut/Payment.jsx";
 function App() {
   return (
     <Router>
@@ -53,6 +54,7 @@ function App() {
           <Route path="/Brands" element={<Brands />} />
           <Route path="/ForgetPass" element={<ForgetPass />} />
           <Route path="/ResetPassword" element={<ResetPassword />} />
+          <Route path="/Payment" element={<Payment />} />
         </Routes>
 
         <Footer />

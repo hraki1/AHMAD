@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import { baseUrl } from "../API/ApiConfig";
+import { useCart } from "../../Context/CartContext";
 
-const CartForms = ({ cartId, setDiscount, setCouponApplied }) => {
+const CartForms = ({
+  cartId,
+  setCouponApplied,
+  setTotal,
+  couponApplied: couponAppliedProp,
+  message, // ✅ استقبال message كـ prop
+  setMessage, // ✅ استقبال setMessage كـ prop
+}) => {
   const [couponCode, setCouponCode] = useState("");
-  const [message, setMessage] = useState("");
+  const { updateCart } = useCart();
 
   const handleCouponApplied = async (e) => {
     e.preventDefault();
+
+    if (couponAppliedProp) {
+      return;
+    }
 
     if (!couponCode.trim()) {
       setMessage("Please enter a coupon code.");
@@ -21,7 +33,6 @@ const CartForms = ({ cartId, setDiscount, setCouponApplied }) => {
     try {
       const token = localStorage.getItem("token");
 
-      // 1. تطبيق الكوبون
       const response = await fetch(`${baseUrl}/api/coupons/apply`, {
         method: "POST",
         headers: {
@@ -38,31 +49,16 @@ const CartForms = ({ cartId, setDiscount, setCouponApplied }) => {
 
       if (response.ok) {
         setMessage(data.message || "Coupon applied successfully.");
-
-        // 2. جلب بيانات السلة المحدثة بعد تطبيق الكوبون
-        const cartResponse = await fetch(`${baseUrl}/api/carts/customer`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (cartResponse.ok) {
-          const cartData = await cartResponse.json();
-          console.log("Updated cart data:", cartData);
-
-          // 3. تحديث قيمة الخصم من استجابة السلة
-          setDiscount(cartData.discount_amount);
-          setCouponApplied(true);
-        } else {
-          throw new Error("Failed to fetch updated cart data");
-        }
+        setCouponApplied(true);
+        await updateCart();
+        setCouponCode("");
       } else {
         setMessage(data.message || "Invalid coupon code.");
-        setDiscount(0);
         setCouponApplied(false);
       }
     } catch (error) {
       console.error("Error applying coupon:", error);
       setMessage("Failed to apply coupon. Please try again.");
-      setDiscount(0);
       setCouponApplied(false);
     }
   };
@@ -104,18 +100,28 @@ const CartForms = ({ cartId, setDiscount, setCouponApplied }) => {
                       placeholder="e.g., DISCOUNT"
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
+                      disabled={couponAppliedProp}
                     />
                     <input
                       type="submit"
                       className="btn text-nowrap mt-3"
                       value="Apply Coupon"
-                      disabled={!cartId || !couponCode.trim()}
+                      disabled={
+                        !cartId || !couponCode.trim() || couponAppliedProp
+                      }
                     />
                   </div>
                 </div>
                 {/* Message Feedback */}
                 {message && (
-                  <div className="alert alert-info mt-2" role="alert">
+                  <div
+                    className={`alert ${
+                      message === "Coupon applied successfully."
+                        ? "alert-success"
+                        : "alert-info"
+                    } mt-2`}
+                    role="alert"
+                  >
                     {message}
                   </div>
                 )}

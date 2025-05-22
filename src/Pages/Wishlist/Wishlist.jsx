@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { AddToCart } from "../API/AddToCart";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useCart } from "../../Context/CartContext"; // Import useCart
 
 const Wishlist = () => {
   const { wishlistItems, removeFromWishlist } = useWishlist();
@@ -19,6 +20,8 @@ const Wishlist = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { addToWishlist } = useWishlist();
+  const { updateCart } = useCart(); // Get updateCart function from context
+
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
     const isInStock = product?.inventory === "In Stock";
@@ -54,7 +57,7 @@ const Wishlist = () => {
         message: "Product ID is missing",
         error: true,
       });
-      toast.error("Product ID is missing"); // إضافة رسالة خطأ
+      toast.error("Product ID is missing");
       return;
     }
 
@@ -66,7 +69,7 @@ const Wishlist = () => {
         message: "You should Sign In",
         error: true,
       });
-      toast.error("You should Sign In"); // إضافة رسالة خطأ
+      toast.error("You should Sign In");
       navigate(`/LogIn?redirect=${location.pathname}`);
       return;
     }
@@ -78,7 +81,6 @@ const Wishlist = () => {
       error: null,
     });
 
-    // قم بتمرير الكمية (1) إلى دالة AddToCart
     const result = await AddToCart(productId, 1, product.name);
 
     setAddToCartStatus({
@@ -89,9 +91,10 @@ const Wishlist = () => {
     });
 
     if (result.success) {
-      toast.success(result.message); // إظهار رسالة نجاح
+      toast.success(result.message);
+      await updateCart(); // Update cart state after adding
     } else {
-      toast.error(result.message || "Failed to add item."); // إظهار رسالة خطأ
+      toast.error(result.message || "Failed to add item.");
     }
   };
   const handleQuickView = (product, e) => {
@@ -170,7 +173,7 @@ const Wishlist = () => {
                   </td>
                   <td className="product-price text-center">
                     <span className="amount fw-500">
-                      ${product.price.toFixed(2)}
+                      ${product.price?.toFixed(2)}
                     </span>
                   </td>
                   <td className="product-stock text-center">

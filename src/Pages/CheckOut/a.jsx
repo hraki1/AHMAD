@@ -3,7 +3,7 @@ import Button from "../../Components/common/Button";
 import useCountriesData from "../Hooks/useCountriesData";
 import { baseUrl } from "../API/ApiConfig";
 import CartSummary from "../Cart/CartSummary";
-import { useCart } from "../../Context/CartContext";
+
 export default function Checkout({ country, setCountry }) {
   const { countries, loading, error } = useCountriesData();
   const [savedAddresses, setSavedAddresses] = useState([]);
@@ -29,6 +29,43 @@ export default function Checkout({ country, setCountry }) {
     couponCode: "",
   });
 
+  // Fetch cart ID when component mounts
+  useEffect(() => {
+    const fetchCartId = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch(`${baseUrl}/api/carts/customer`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.ok) {
+          const cartData = await res.json();
+          setCartId(cartData.id || cartData.cart_id);
+        } else if (res.status === 404) {
+          const createRes = await fetch(`${baseUrl}/api/carts`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({}),
+          });
+
+          if (createRes.ok) {
+            const newCart = await createRes.json();
+            setCartId(newCart.id || newCart.cart_id);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch cart ID", err);
+      }
+    };
+
+    fetchCartId();
+  }, []);
+
   // Handle selecting a saved address
   const handleSelectSavedAddress = (addr) => {
     setSelectedSavedAddressId(addr.id);
@@ -49,7 +86,7 @@ export default function Checkout({ country, setCountry }) {
 
     setCountry(addr.countries?.country_code || "");
   };
-  const { updateCart } = useCart();
+
   // When country changes in the form
   useEffect(() => {
     if (formData.country) {
@@ -295,72 +332,7 @@ export default function Checkout({ country, setCountry }) {
         throw new Error("Failed to update shipping method");
       }
 
-      // Only create new address if in edit mode AND form data has changed
-      if (isEditing) {
-        const selectedAddress = savedAddresses.find(
-          (addr) => addr.id === selectedSavedAddressId
-        );
-
-        // Check if any field has changed
-        const hasChanges =
-          formData.fullName !== selectedAddress.full_name ||
-          formData.phoneNumber !== selectedAddress.phone_number ||
-          formData.addressOne !== selectedAddress.address_1 ||
-          formData.addressTwo !== (selectedAddress.address_2 || "") ||
-          formData.postCode !== (selectedAddress.postcode || "") ||
-          formData.country !== selectedAddress.countries?.country_code ||
-          formData.city !== selectedAddress.city?.name;
-
-        if (hasChanges) {
-          const newAddressResponse = await fetch(`${baseUrl}/api/addresses`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              full_name: formData.fullName,
-              phone_number: formData.phoneNumber,
-              address_1: formData.addressOne,
-              address_2: formData.addressTwo,
-              postcode: formData.postCode,
-              country_id: selectedCountryData.id,
-              city_id: selectedCountryData.Cities.find(
-                (city) => city.name === formData.city
-              )?.id,
-            }),
-          });
-
-          if (!newAddressResponse.ok) {
-            throw new Error("Failed to save new address");
-          }
-
-          // Refresh addresses list
-          const res = await fetch(`${baseUrl}/api/addresses`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await res.json();
-          setSavedAddresses(
-            data.data || data.items || data.addresses || data || []
-          );
-
-          alert("New address created successfully!");
-        }
-      }
-
       alert("Shipping address and method approved successfully!");
-      await updateCart();
-      setFormData({
-        fullName: "",
-        phoneNumber: "",
-        addressOne: "",
-        addressTwo: "",
-        postCode: "",
-        country: "",
-        city: "",
-        deliveryMethod: "",
-      });
-      setIsEditing(false);
     } catch (error) {
       console.error("Error approving address:", error);
       alert(error.message || "Failed to approve address");
@@ -368,23 +340,16 @@ export default function Checkout({ country, setCountry }) {
       setIsApproving(false);
     }
   };
-  // دالة لجلب العناوين المحفوظة
-  const fetchSavedAddresses = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    try {
-      const res = await fetch(`${baseUrl}/api/addresses`, {
-        method: "get",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setSavedAddresses(
-        data.data || data.items || data.addresses || data || []
+
+  const calculateShippingCost = () => {
+    if (!formData.country || !formData.deliveryMethod) return 0;
+    const selectedMethod =
+      selectedCountryData?.ShippingZone?.[0]?.zone_methods?.find(
+        (method) => method.method.name === formData.deliveryMethod
       );
-    } catch (err) {
-      console.error("Failed to fetch saved addresses", err);
-    }
+    return selectedMethod?.cost || 0;
   };
+
   const handleDeleteAddress = async (id) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -472,6 +437,19 @@ export default function Checkout({ country, setCountry }) {
         });
     }
   }, []);
+
+  const calculateTotal = () => {
+    const subtotal = cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    const discountAmount = discount;
+    const totalAfterDiscount = subtotal - discountAmount;
+
+    return { subtotal, discountAmount, totalAfterDiscount };
+  };
+
+  const { subtotal, discountAmount, totalAfterDiscount } = calculateTotal();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -861,12 +839,13 @@ export default function Checkout({ country, setCountry }) {
           </div>
           <div className="col-lg-4 marg-btm-big">
             <CartSummary
+              subtotal={subtotal}
+              discount={discountAmount}
               tax={0}
               shipping={0}
               setDiscount={setDiscount}
               btnName={"Payemnt"}
               useGrandTotal={true}
-              checkoutLink="/Payment"
             />
           </div>
           {/* End Shipping Method  */}
