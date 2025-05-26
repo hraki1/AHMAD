@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { baseUrl } from "../API/ApiConfig";
-const BASE_URL = `${baseUrl}/api/products`;
+const BASE_URL = `${baseUrl}/api/products/by-url`;
 
-const useFetchOneProduct = (urlKey, productId) => {
+const useFetchOneProduct = (urlKey) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,7 +10,7 @@ const useFetchOneProduct = (urlKey, productId) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const finalId = urlKey || productId;
+        const finalId = urlKey;
 
         if (!finalId) throw new Error("No product ID provided");
 
@@ -98,7 +98,7 @@ const useFetchOneProduct = (urlKey, productId) => {
     };
 
     fetchProduct();
-  }, [urlKey, productId]);
+  }, [urlKey]);
 
   return { product, loading, error };
 };

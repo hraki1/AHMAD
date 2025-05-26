@@ -13,6 +13,7 @@ export default function CartSummary({
   setCouponMessage,
   useGrandTotal = false,
   checkoutLink = "/CheckOut",
+  onPlaceOrder,
 }) {
   const {
     subtotal,
@@ -60,7 +61,6 @@ export default function CartSummary({
     }
   };
 
-  // تحديد القيمة التي سيتم عرضها بناءً على useGrandTotal
   const totalAmountToShow = useGrandTotal ? grandTotal : subtotalWithDiscount;
 
   return (
@@ -144,9 +144,7 @@ export default function CartSummary({
           <button
             type="button"
             className="btn btn-lg btn-success my-4 w-100"
-            onClick={() => {
-              console.log("✅ Order Placed");
-            }}
+            onClick={onPlaceOrder}
           >
             Place Order
           </button>

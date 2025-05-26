@@ -43,10 +43,10 @@ const HeaderCart = ({
 }) => (
   <div className="header-cart iconset" title="Cart">
     <Link
-      to="#"
-      className="header-cart btn-minicart clr-none"
-      data-bs-toggle="offcanvas"
-      data-bs-target="#minicart-drawer"
+      to="/Cart"
+      // className="header-cart btn-minicart clr-none"
+      // data-bs-toggle="offcanvas"
+      // data-bs-target="#minicart-drawer"
     >
       <i
         className="fa-solid fa-cart-shopping fa-xl"

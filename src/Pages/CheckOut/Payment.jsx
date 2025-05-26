@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
-import paymentimg from "../../assets/images/icons/safepayment.png";
 import CartSummary from "../Cart/CartSummary";
+import { useCart } from "../../Context/CartContext";
 
 export default function Payment() {
   const [formData, setFormData] = useState({
@@ -22,12 +22,75 @@ export default function Payment() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-  const [discount, setDiscount] = useState(0);
 
-  const handleSubmit = (e) => {
+  const [discount, setDiscount] = useState(0);
+  const { cartId, updateCart } = useCart();
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    // هنا تقدر ترسل البيانات لـ API أو تكمل الخطوات
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must be logged in to place an order.");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    const paymentMethodApiMap = {
+      card: "stripe",
+      paypal: "paypal",
+      cod: "cash_on_delivery",
+    };
+
+    const selectedPaymentMethod = paymentMethodApiMap[formData.paymentMethod];
+
+    // build payload
+    const payload = {
+      cartId: cartId,
+      paymentMethod: selectedPaymentMethod,
+    };
+
+    // Add payment-specific data
+    if (formData.paymentMethod === "card") {
+      payload.cardDetails = {
+        name: formData.cardName,
+        type: formData.cardType,
+        number: formData.cardNumber,
+        cvv: formData.cvv,
+        expDate: formData.expDate,
+      };
+    } else if (formData.paymentMethod === "paypal") {
+      payload.paypalEmail = formData.paypalEmail;
+    }
+
+    try {
+      const response = await fetch("https://api.sareh-nomow.xyz/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to place order");
+      }
+
+      console.log("Order placed successfully:", data);
+      alert("Order placed successfully!");
+      await updateCart();
+    } catch (error) {
+      console.error("Order submission failed:", error.message);
+      alert("Error placing order: " + error.message);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -167,6 +230,7 @@ export default function Payment() {
                 btnName={"Place Order"}
                 useGrandTotal={true}
                 mode="payment"
+                onPlaceOrder={handleSubmit}
               />
             </div>
           </div>

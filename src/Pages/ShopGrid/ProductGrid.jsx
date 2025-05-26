@@ -3,6 +3,7 @@ import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../Hooks/useFetchCategories";
 import { Link, useSearchParams } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
+import ProductItem from "./ProductItem";
 
 const ProductGrid = ({
   selectedCategoryAndChildrenIds: propCategoryAndChildrenIds = null,
@@ -257,15 +258,8 @@ const ProductGrid = ({
     return sortedProducts.slice(0, productsToShow);
   }, [sortedProducts, productsToShow]);
 
+  console.log(products);
   // دالة لعرض النجوم حسب تقييم المنتج
-  const renderStars = (reviews) =>
-    Array.from({ length: 5 }, (_, i) => (
-      <i
-        key={i}
-        className={`fas fa-star`}
-        style={{ color: i < reviews ? "gold" : "gray" }}
-      />
-    ));
 
   if (subcategoriesLoading || loading) return <p>Loading products...</p>;
   if (error) return <p>Error loading products: {error}</p>;
@@ -275,81 +269,11 @@ const ProductGrid = ({
     <div className="grid-products grid-view-items">
       <div className={`row col-row product-options ${gridClass}`}>
         {displayedProducts.map((product) => (
-          <div className="item col-item" key={product.id}>
-            <div className="product-box">
-              <div className="product-image">
-                <Link
-                  to={`/product/${product.url_key || product.id}`}
-                  className="product-img rounded-3"
-                >
-                  <img
-                    className="blur-up lazyload"
-                    src={product.imageUrl}
-                    alt={product.name}
-                    width="625"
-                    height="808"
-                  />
-                </Link>
-                <div className="product-labels">
-                  <span className="lbl on-sale">Sale</span>
-                </div>
-                <div className="button-set style1">
-                  <Link
-                    to={`/product/${product.url_key || product.id}`}
-                    className="btn-icon quickview"
-                  >
-                    <i className="fa-solid fa-eye"></i>
-                    <span className="text">Quick View</span>
-                  </Link>
-                  <Link
-                    href="#"
-                    className="btn-icon wishlist"
-                    onClick={(e) => handleAddToWishlist(e, product)}
-                  >
-                    <i className="fa-solid fa-heart"></i>
-                    <span className="text">Add To Wishlist</span>
-                  </Link>
-                  {/* <Link href="compare-style2.html" className="btn-icon compare">
-                    <i className="fa-solid fa-code-compare"></i>
-                    <span className="text">Add to Compare</span>
-                  </Link> */}
-                </div>
-              </div>
-
-              <div className="product-details">
-                <div className="product-name">
-                  <Link to={`/product/${product.url_key}`}>{product.name}</Link>
-                </div>
-                <div className="product-price">
-                  <span className="price old-price">{product.oldPrice}</span>
-                  <span className="price">{product.newPrice}</span>
-                </div>
-                <div className="product-review">
-                  {renderStars(product.reviews)}
-                </div>
-                <ul className="variants-clr swatches">
-                  {product.colors.map((color, i) => (
-                    <li
-                      key={i}
-                      className="swatch medium radius"
-                      onClick={() =>
-                        handleColorChange(product.id, color.imgSrc)
-                      }
-                    >
-                      <span className="swatchLbl" title={color.title}>
-                        <img
-                          src={color.imgSrc}
-                          alt={color.title}
-                          width="625"
-                          height="808"
-                        />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
+          <ProductItem
+            product={product}
+            onAddToWishList={handleAddToWishlist}
+            handleColorChange={handleColorChange}
+          />
         ))}
       </div>
     </div>

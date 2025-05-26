@@ -12,6 +12,8 @@ const formatProduct = (product) => {
   return {
     id: product.product_id,
     name: product.description?.name || "Name not found",
+    url_key: product.description.url_key,
+
     price: product.price || 0,
     old_price: product.old_price || 0,
     primaryImg: mainImage?.origin_image || "",
@@ -34,8 +36,6 @@ const formatProduct = (product) => {
         title: "Quick Shop",
         text: "Quick Shop",
       },
-
-      url_key: product.description?.url_key || `product-${product.id}`,
 
       quickView: {
         href: "#quickview-modal",

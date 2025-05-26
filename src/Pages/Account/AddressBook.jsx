@@ -3,7 +3,7 @@ import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../API/ApiConfig";
 const AddressBook = () => {
-  const [addresses, setAddresses] = useState([]); // ✅ القيمة الابتدائية مصفوفة فارغة
+  const [addresses, setAddresses] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,7 +17,6 @@ const AddressBook = () => {
         });
 
         const data = await response.json();
-        console.log("Fetched address data:", data);
 
         setAddresses(data);
       } catch (error) {
