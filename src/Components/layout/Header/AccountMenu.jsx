@@ -1,14 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../Context/CartContext"; // استيراد useCart
+import { useContext } from "react";
+import { AuthContext } from "../../../Context/AuthContext";
 
 const AccountLinks = () => {
+  const ctx = useContext(AuthContext);
   const navigate = useNavigate();
   const { updateCart } = useCart(); // الحصول على دالة updateCart من السياق
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    ctx.logout();
     updateCart(); // تحديث حالة العربة
     navigate("/LogIn");
     window.location.reload(); // إعادة تحميل الصفحة لتحديث كل الحالات

@@ -26,8 +26,9 @@ import ResetPassword from "./Pages/LogIn/ResetPassword.jsx";
 import ScrollToTop from "./Components/common/ScrollToTop.jsx";
 import Category from "./Pages/ShopGrid/Category.jsx";
 import Payment from "./Pages/CheckOut/Payment.jsx";
+import { AuthProvider } from "./Context/AuthContext.js";
 function App() {
-  return (
+  let routes = (
     <Router>
       <ScrollToTop />
       <div className="App">
@@ -62,6 +63,8 @@ function App() {
       </div>
     </Router>
   );
+
+  return <AuthProvider>{routes}</AuthProvider>;
 }
 
 export default App;

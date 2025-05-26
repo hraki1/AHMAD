@@ -3,6 +3,8 @@ import englishFlag from "../../../assets/images/flag/english.png";
 import arabicFlag from "../../../assets/images/flag/arabic.png";
 import frenchFlag from "../../../assets/images/flag/french.png";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../../Context/AuthContext";
 
 const flags = {
   english: { img: englishFlag, label: "English" },
@@ -21,6 +23,10 @@ const TopHeader = () => {
 
   const toggleOpen = () => setOpen((prev) => !prev);
 
+  const ctx = useContext(AuthContext);
+
+  console.log(ctx);
+
   return (
     <div className="top-header">
       <div className="container">
@@ -29,6 +35,9 @@ const TopHeader = () => {
           <div className="col-6 col-md-3 col-lg-4 text-left">
             <i className="fa-solid fa-phone"></i>
             <a href="tel:+962779523688">(+962) 779 523 688</a>
+            {ctx.isLoggedIn && (
+              <h1>Auth Test if you see it thta's mean you are authenticat</h1>
+            )}
           </div>
 
           {/* Middle */}
