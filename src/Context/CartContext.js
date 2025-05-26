@@ -215,7 +215,7 @@ export function CartProvider({ children }) {
     } finally {
       setIsLoading(false);
     }
-  }, [cartId, fetchCartData]);
+  }, [cartId, fetchCartData, fetchWithAuth]);
 
   return (
     <CartContext.Provider

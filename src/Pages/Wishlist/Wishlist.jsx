@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { AddToCart } from "../API/AddToCart";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useCart } from "../../Context/CartContext"; // Import useCart
+import { useCart } from "../../Context/CartContext";
 
 const Wishlist = () => {
   const { wishlistItems, removeFromWishlist } = useWishlist();

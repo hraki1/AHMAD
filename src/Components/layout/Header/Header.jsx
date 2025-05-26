@@ -187,7 +187,7 @@ const Header = () => {
                   title="Blog"
                   links={[
                     { to: "/ShopGrid", label: "ShopGrid" },
-                    { to: "/Product", label: "Product" },
+                    // { to: "/Product", label: "Product" },
                     { to: "/Collection", label: "Collection" },
                     { to: "/Wishlist", label: "Wishlist" },
                   ]}

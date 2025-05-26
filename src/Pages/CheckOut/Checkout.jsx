@@ -496,7 +496,7 @@ export default function Checkout({ country, setCountry }) {
                           >
                             {selectedSavedAddressId ? (
                               <div className="w-100">
-                                <div className="d-flex justify-content-between w-100 align-items-center">
+                                <div className="d-flex justify-content-left w-100 align-items-center">
                                   <div>
                                     <strong className="me-2">
                                       {savedAddresses.find(
@@ -508,12 +508,8 @@ export default function Checkout({ country, setCountry }) {
 
                                   <button
                                     type="button"
-                                    className="btn btn-sm btn-outline-danger border-0"
-                                    style={{
-                                      fontSize: "14px",
-                                      padding: "2px 6px",
-                                    }}
-                                    title="إلغاء اختيار العنوان"
+                                    className="btn-sm btn-outline-danger border-0 btn-addrs"
+                                    title="Cancle Select"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       setSelectedSavedAddressId(null);

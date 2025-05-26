@@ -1,15 +1,21 @@
-import { Home } from "lucide-react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import useFetchCategoryandSub from "../Header/useFetchCategoryandSub"; // عدّل المسار حسب مشروعك
 
 const MobileNav = ({ isMenuOpen, toggleMenu }) => {
   const [dropdowns, setDropdowns] = useState({
     home: false,
     homeSub: false,
     shop: false,
-    blog: false,
     pages: false,
+    blog: false,
+    // سنستخدم مفاتيح إضافية للـcategories لاحقًا
   });
+
+  // إضافة حالة مخصصة لفتح/إغلاق كل تصنيف فرعي في Shop
+  const [openCats, setOpenCats] = useState({});
+
+  const { categories, loading, error } = useFetchCategoryandSub();
 
   const toggleDropdown = (key, e) => {
     e.preventDefault();
@@ -17,6 +23,16 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
     setDropdowns((prev) => ({
       ...prev,
       [key]: !prev[key],
+    }));
+  };
+
+  // فتح/إغلاق التصنيفات الفرعية
+  const toggleCatDropdown = (catId, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenCats((prev) => ({
+      ...prev,
+      [catId]: !prev[catId],
     }));
   };
 
@@ -53,7 +69,6 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
                     style={{ cursor: "pointer" }}
                   ></i>
                 </div>
-
                 {dropdowns.homeSub && (
                   <ul className="lvl-3 d-block" id="home-sub-dropdown">
                     <li>
@@ -68,7 +83,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
           )}
         </li>
 
-        {/* SHOP */}
+        {/* SHOP - CATEGORIES */}
         <li className="lvl1 parent megamenu">
           <Link to="#" onClick={(e) => e.preventDefault()}>
             Shop{" "}
@@ -80,22 +95,57 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
           </Link>
           {dropdowns.shop && (
             <ul className="lvl-2 d-block" id="shop-dropdown">
-              <li>
-                <Link to="/Collection" className="site-nav">
-                  Collection
-                </Link>
-              </li>
-              <li>
-                <Link to="/ShopGrid" className="site-nav">
-                  Wishlist
-                </Link>
-              </li>
-              <li>
-                <Link to="/Wishlist" className="site-nav">
-                  Wishlist
-                </Link>
-              </li>
-              <li></li>
+              {loading && <li>Loading...</li>}
+              {error && <li>حدث خطأ أثناء تحميل التصنيفات</li>}
+              {!loading &&
+                !error &&
+                categories.length > 0 &&
+                categories
+                  .filter(
+                    (cat) => cat.parentId === null || cat.parentId === undefined
+                  )
+                  .map((mainCat) => {
+                    // أبناء التصنيف
+                    const subCategories = categories.filter(
+                      (subCat) => subCat.parentId === mainCat.id
+                    );
+                    return (
+                      <li key={mainCat.id}>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <Link
+                            to={`/ShopGrid?category=${mainCat.id}`}
+                            className="site-nav"
+                            onClick={toggleMenu}
+                          >
+                            {mainCat.title}
+                          </Link>
+                          {subCategories.length > 0 && (
+                            <i
+                              className="icon fa-solid fa-bars"
+                              onClick={(e) => toggleCatDropdown(mainCat.id, e)}
+                              style={{ cursor: "pointer" }}
+                            ></i>
+                          )}
+                        </div>
+                        {/* أبناء التصنيف */}
+                        {subCategories.length > 0 && openCats[mainCat.id] && (
+                          <ul className="lvl-3 d-block ms-3">
+                            {subCategories.map((subCat) => (
+                              <li key={subCat.id}>
+                                <Link
+                                  to={`/ShopGrid?category=${mainCat.id}&subcategory=${subCat.id}`}
+                                  className="site-nav"
+                                  onClick={toggleMenu}
+                                >
+                                  {subCat.title}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
+                    );
+                  })}
             </ul>
           )}
         </li>
@@ -113,32 +163,32 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
           {dropdowns.pages && (
             <ul className="lvl-2 d-block" id="pages-dropdown">
               <li>
-                <Link to="/AboutUs" className="site-nav">
+                <Link to="/AboutUs" className="site-nav" onClick={toggleMenu}>
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/ContactUs" className="site-nav">
+                <Link to="/ContactUs" className="site-nav" onClick={toggleMenu}>
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link to="/MYAccount" className="site-nav">
+                <Link to="/MYAccount" className="site-nav" onClick={toggleMenu}>
                   My Account
                 </Link>
               </li>
               <li>
-                <Link to="/Portfolio" className="site-nav">
+                <Link to="/Portfolio" className="site-nav" onClick={toggleMenu}>
                   Portfolio Page
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="site-nav">
+                <Link to="/faq" className="site-nav" onClick={toggleMenu}>
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link to="/CMS" className="site-nav">
+                <Link to="/CMS" className="site-nav" onClick={toggleMenu}>
                   CMS Page
                 </Link>
               </li>
@@ -159,22 +209,21 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
           {dropdowns.blog && (
             <ul className="lvl-2 d-block" id="blog-dropdown">
               <li>
-                <Link to="/ShopGrid" className="site-nav">
+                <Link to="/ShopGrid" className="site-nav" onClick={toggleMenu}>
                   ShopGrid
                 </Link>
               </li>
               <li>
-                <Link to="/Product" className="site-nav">
-                  Product
-                </Link>
-              </li>
-              <li>
-                <Link to="/Collection" className="site-nav">
+                <Link
+                  to="/Collection"
+                  className="site-nav"
+                  onClick={toggleMenu}
+                >
                   Collection
                 </Link>
               </li>
               <li>
-                <Link to="/Wishlist" className="site-nav">
+                <Link to="/Wishlist" className="site-nav" onClick={toggleMenu}>
                   Wishlist
                 </Link>
               </li>
@@ -187,17 +236,29 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
           <div className="mobile-links">
             <ul className="list-inline d-inline-flex flex-column w-100">
               <li className="mb-3 pt-1 mt-3">
-                <Link to="/LogIn" className="d-flex align-items-center">
+                <Link
+                  to="/LogIn"
+                  className="d-flex align-items-center"
+                  onClick={toggleMenu}
+                >
                   <i className="fa-solid fa-right-to-bracket me-1"></i> Sign In
                 </Link>
               </li>
               <li className="mb-3 pt-1">
-                <Link to="/SignUp" className="d-flex align-items-center">
+                <Link
+                  to="/SignUp"
+                  className="d-flex align-items-center"
+                  onClick={toggleMenu}
+                >
                   <i className="fa-solid fa-user me-1"></i> Register
                 </Link>
               </li>
               <li className="pt-1">
-                <Link to="/MYAccount" className="d-flex align-items-center">
+                <Link
+                  to="/MYAccount"
+                  className="d-flex align-items-center"
+                  onClick={toggleMenu}
+                >
                   <i className="fa-solid fa-address-card me-1"></i> My Account
                 </Link>
               </li>
