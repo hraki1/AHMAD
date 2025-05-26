@@ -8,6 +8,8 @@ import Button from "../../Components/common/Button";
 import { useLocation } from "react-router-dom";
 import { baseUrl } from "../API/ApiConfig";
 import { useCart } from "../../Context/CartContext";
+import { useContext } from "react";
+import { AuthContext } from "../../Context/AuthContext";
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,6 +21,8 @@ const Index = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  const ctx = useContext(AuthContext);
 
   const [formInput, setFormInput] = useState({
     email: "",
@@ -63,11 +67,15 @@ const Index = () => {
 
       const data = await response.json();
 
+      console.log(data);
+
       if (response.ok && data.token) {
         localStorage.setItem("token", data.token);
-
+        const expirationTime = Date.now() + 24 * 60 * 60 * 1000; // 24 ساعة بالميلي ثانية
+        localStorage.setItem("expiration", expirationTime.toString());
         if (data.user && data.user.id) {
           localStorage.setItem("userId", data.user.id);
+          ctx.login(data.token, data.user.id);
         }
 
         if (formInput.rememberPass) {
