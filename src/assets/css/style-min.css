@@ -10384,3 +10384,18 @@ textarea:-ms-input-placeholder {
   font-size: 16px;
   padding: 2px 4px;
 }
+
+
+.btn-one-hover-shipp:hover{
+  background-color: #e96f84 !important;
+  opacity: 0.8;
+  transform: scale(1.08);
+ 
+}
+.btn-tow-hover-shipp{
+    background-color: #2f415d !important;
+  opacity: 0.8;
+  border: none !important;
+  transform: scale(1.08) !important;
+
+}

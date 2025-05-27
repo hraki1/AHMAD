@@ -9,7 +9,26 @@ import { baseUrl } from "../Pages/API/ApiConfig";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const CartContext = createContext();
+export const CartContext = createContext({
+  cartCount: 0,
+  isLoading: false,
+  updateCart: () => {},
+  cartId: null,
+  discount: 0,
+  subtotal: 0,
+  shipping: 0,
+  tax: 0,
+  total: 0,
+  cartItems: [],
+  showShippingAndTax: true,
+  setShowShippingAndTax: () => {},
+  addItem: () => {},
+  removeItem: () => {},
+  subtotalWithDiscount: 0,
+  applyCoupon: () => {},
+  removeCoupon: () => {},
+});
+
 
 export function CartProvider({ children }) {
   const [cartSummary, setCartSummary] = useState({
@@ -28,7 +47,8 @@ export function CartProvider({ children }) {
   const [showShippingAndTax, setShowShippingAndTax] = useState(true);
 
   const getToken = () => localStorage.getItem("token");
-  async function fetchWithAuth(url, options = {}) {
+
+  const fetchWithAuth = useCallback(async (url, options = {}) => {
     const token = getToken();
     if (!token) throw new Error("Please login");
 
@@ -48,7 +68,7 @@ export function CartProvider({ children }) {
       throw new Error(errorData.message || "Request failed");
     }
     return response.json();
-  }
+  }, []);
 
   const updateCartState = useCallback((data) => {
     setCartId(data.cart_id || null);
@@ -107,7 +127,7 @@ export function CartProvider({ children }) {
     } finally {
       setIsLoading(false);
     }
-  }, [resetCartState, updateCartState]);
+  }, [resetCartState, updateCartState, fetchWithAuth]);
 
   useEffect(() => {
     fetchCartData();
@@ -143,7 +163,7 @@ export function CartProvider({ children }) {
         setIsLoading(false);
       }
     },
-    [cartId, fetchCartData]
+    [cartId, fetchCartData, fetchWithAuth]
   );
 
   const removeItem = useCallback(
@@ -167,7 +187,7 @@ export function CartProvider({ children }) {
         setIsLoading(false);
       }
     },
-    [cartId, fetchCartData]
+    [cartId, fetchCartData, fetchWithAuth]
   );
 
   const applyCoupon = useCallback(
@@ -193,7 +213,7 @@ export function CartProvider({ children }) {
         setIsLoading(false);
       }
     },
-    [cartId, fetchCartData]
+    [cartId, fetchCartData, fetchWithAuth]
   );
 
   const removeCoupon = useCallback(async () => {

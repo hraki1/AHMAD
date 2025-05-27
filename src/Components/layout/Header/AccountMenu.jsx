@@ -1,33 +1,41 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../../../Context/CartContext"; // استيراد useCart
+import { useCart } from "../../../Context/CartContext";
 import { useContext } from "react";
 import { AuthContext } from "../../../Context/AuthContext";
 
 const AccountLinks = () => {
-  const ctx = useContext(AuthContext);
   const navigate = useNavigate();
-  const { updateCart } = useCart(); // الحصول على دالة updateCart من السياق
+  const { updateCart } = useCart();
+
+  const checkAuth = useContext(AuthContext);
 
   const handleLogout = () => {
-    ctx.logout();
-    updateCart(); // تحديث حالة العربة
+    checkAuth.logout();
+    updateCart();
     navigate("/LogIn");
-    window.location.reload(); // إعادة تحميل الصفحة لتحديث كل الحالات
   };
 
-  const links = [
-    { href: "/LogIn", icon: "fa-right-to-bracket", label: "LogIn" },
-    { href: "/SignUp", icon: "fa-user", label: "SignUp" },
+  const linkSign = [
     { href: "/MYAccount", icon: "fa-address-card", label: "My Account" },
     { href: "/Wishlist", icon: "fa-heart", label: "Wishlist" },
-    { onClick: handleLogout, icon: "fa-right-from-bracket", label: "Sign Out" },
+    {
+      onClick: handleLogout,
+      icon: "fa-right-from-bracket",
+      label: "Sign Out",
+    },
+  ];
+
+  const linkOut = [
+    { href: "/LogIn", icon: "fa-right-to-bracket", label: "LogIn" },
+    { href: "/SignUp", icon: "fa-user", label: "SignUp" },
+    { href: "/Wishlist", icon: "fa-heart", label: "Wishlist" },
   ];
 
   return (
     <div className="customer-links">
       <ul className="m-0">
-        {links.map((link, index) => (
+        {(checkAuth.isAuthenticated ? linkSign : linkOut).map((link, index) => (
           <li key={index}>
             {link.onClick ? (
               <button
@@ -51,15 +59,22 @@ const AccountLinks = () => {
   );
 };
 
-const AccountMenu = () => (
-  <div className="account-parent iconset">
-    <div className="account-link" title="Account">
-      <i className="fa-solid fa-user fa-xl" />
+const AccountMenu = () => {
+  const checkAuth = useContext(AuthContext);
+  return (
+    <div className="account-parent iconset">
+      <div className="account-link" title="Account">
+        {checkAuth.isAuthenticated ? (
+          <i className="fa-solid fa-user fa-xl" />
+        ) : (
+          <i class="fa-solid fa-right-to-bracket fa-xl"></i>
+        )}
+      </div>
+      <div id="accountBox">
+        <AccountLinks />
+      </div>
     </div>
-    <div id="accountBox">
-      <AccountLinks />
-    </div>
-  </div>
-);
+  );
+};
 
 export default AccountMenu;

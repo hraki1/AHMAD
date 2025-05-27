@@ -7,7 +7,7 @@ import renderTime from "./renderTime";
 import Countdown from "react-countdown";
 import useFetchOneProduct from "../Hooks/useFetchOneProduct";
 import { AddToCart } from "../API/AddToCart";
-import { toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 import { useCart } from "../../Context/CartContext";
@@ -102,7 +102,12 @@ const ProductDetail = () => {
 
     setAddToCartStatus({ loading: true, message: "", error: null });
 
-    const result = await AddToCart(productId, quantity, product.name);
+    let result;
+    try {
+      result = await AddToCart(productId, quantity, product.name);
+    } catch (arr) {
+      toast.error("Add item failed!");
+    }
 
     setAddToCartStatus({
       loading: false,
@@ -311,6 +316,7 @@ const ProductDetail = () => {
 
   return (
     <div className="container">
+      <Toaster />
       <div className="product-single">
         <div className="row">
           {/* Product Images */}
@@ -453,16 +459,6 @@ const ProductDetail = () => {
                       "Add To Cart"
                     )}
                   </button>
-
-                  {addToCartStatus.message && (
-                    <div
-                      className={`mt-2 alert ${
-                        addToCartStatus.error ? "alert-danger" : "alert-success"
-                      }`}
-                    >
-                      {addToCartStatus.message}
-                    </div>
-                  )}
                 </div>
               </div>
 

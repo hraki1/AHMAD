@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { baseUrl } from "../API/ApiConfig";
 import { useCart } from "../../Context/CartContext";
+import { AuthContext } from "../../Context/AuthContext";
 
 const CartForms = ({
   cartId,
@@ -12,6 +13,10 @@ const CartForms = ({
 }) => {
   const [couponCode, setCouponCode] = useState("");
   const { updateCart } = useCart();
+
+  const { user } = useContext(AuthContext);
+
+  console.log(user);
 
   const handleCouponApplied = async (e) => {
     e.preventDefault();

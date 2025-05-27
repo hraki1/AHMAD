@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import imgprofile from "../../assets/images/users/user-img3.jpg";
 import AccountInfo from "./AccountInfo";
 import AddressBook from "./AddressBook";
@@ -7,14 +7,13 @@ import OrdersTracking from "./OrdersTracking";
 import Wishlist from "./Wishlist";
 import SavedCards from "./SavedCards";
 import SecuritySettings from "./SecuritySettings";
+import { AuthContext } from "../../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../Context/CartContext";
+import Spinner from "../../Components/UI/SpinnerLoading";
 
 const DashboardSidebar = () => {
   const [activeTab, setActiveTab] = useState("info");
-
-  const userInfo = {
-    name: "Ahmad Otoum",
-    email: "info@example.com",
-  };
 
   const tabs = [
     { id: "info", label: "Account Info" },
@@ -27,11 +26,22 @@ const DashboardSidebar = () => {
   ];
 
   const handleTabClick = (id) => {
-    console.log(`Tab clicked: ${id}`); // Display the tab being clicked
     setActiveTab(id);
   };
 
-  console.log(`Current active tab: ${activeTab}`); // Log the current active tab
+  const { logout } = useContext(AuthContext);
+  const dataAuth = useContext(AuthContext);
+  const { updateCart } = useCart();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dataAuth.logout();
+    updateCart();
+    navigate("/LogIn");
+  };
+
+  if (dataAuth.isLoading) return <Spinner />;
+  if (!dataAuth.user) return <div>User not found or not authenticated</div>;
 
   return (
     <div className="container">
@@ -41,18 +51,29 @@ const DashboardSidebar = () => {
           <div className="dashboard-sidebar bg-block">
             <div className="profile-top text-center mb-4 px-3">
               <div className="profile-image mb-3">
-                <img
-                  className="rounded-circle blur-up"
-                  data-src={imgprofile}
-                  src={imgprofile}
-                  alt="user"
-                  width="130"
-                  loading="lazy"
-                />
+                {dataAuth.user.avatar ? (
+                  <img
+                    className="rounded-circle blur-up"
+                    src={dataAuth.user.avatar}
+                    alt="user"
+                    width="130"
+                    loading="lazy"
+                  />
+                ) : (
+                  <img
+                    className="rounded-circle blur-up"
+                    src={imgprofile}
+                    alt="user"
+                    width="130"
+                    loading="lazy"
+                  />
+                )}
               </div>
               <div className="profile-detail">
-                <div className="Sub-Name-acc mb-1">{userInfo.name}</div>
-                <p className="email-name">{userInfo.email}</p>
+                <div className="Sub-Name-acc mb-1">
+                  {dataAuth.user.full_name}
+                </div>
+                <p className="email-name">{dataAuth.user.email}</p>
               </div>
             </div>
 
@@ -71,10 +92,7 @@ const DashboardSidebar = () => {
                   </li>
                 ))}
                 <li className="nav-item">
-                  <button
-                    onClick={() => console.log("Logging out")}
-                    className="nav-link"
-                  >
+                  <button onClick={handleLogout} className="nav-link">
                     Log Out
                   </button>
                 </li>
@@ -87,7 +105,10 @@ const DashboardSidebar = () => {
         <div className="col-12 col-sm-12 col-md-12 col-lg-9">
           <div className="dashboard-content bg-block p-4">
             {activeTab === "info" && (
-              <AccountInfo name={userInfo.name} email={userInfo.email} />
+              <AccountInfo
+                name={dataAuth.user.full_name}
+                email={dataAuth.user.email}
+              />
             )}
             {activeTab === "AddressBook" && <AddressBook />}
             {activeTab === "orders" && <Orders />}

@@ -13,17 +13,19 @@ export const AuthContext = createContext({
   login: () => {},
   logout: () => {},
   isLoading: true,
+  user: {},
 });
 
-// مزود السياق (المكون الرئيسي)
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const login = (newToken, newUserId) => {
+  const login = (newToken, newUserId, user) => {
     setToken(newToken);
     setUserId(newUserId);
+    setUser(user);
     localStorage.setItem("token", newToken);
     localStorage.setItem("userId", newUserId);
   };
@@ -35,7 +37,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("userId");
   };
 
-  // تحقق من صلاحية التوكن عند أول تحميل للتطبيق
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUserId = localStorage.getItem("userId");
@@ -50,7 +51,6 @@ export const AuthProvider = ({ children }) => {
           },
         });
 
-        // فحص هل الرد HTML بدل JSON (لمنع الخطأ SyntaxError)
         const contentType = res.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
           throw new Error("Server did not return JSON");
@@ -59,8 +59,7 @@ export const AuthProvider = ({ children }) => {
         const data = await res.json();
 
         if (res.ok && data.valid) {
-          // لو الرد فيه valid = true، نسجل الدخول
-          login(storedToken, data.user.id.toString());
+          login(storedToken, data.user.id.toString(), data.user);
         } else {
           logout();
         }
@@ -88,6 +87,8 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         isLoading,
+        user,
+        setUser,
       }}
     >
       {children}

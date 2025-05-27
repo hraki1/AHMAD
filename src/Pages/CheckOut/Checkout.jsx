@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "../../Components/common/Button";
 import useCountriesData from "../Hooks/useCountriesData";
 import { baseUrl } from "../API/ApiConfig";
 import CartSummary from "../Cart/CartSummary";
 import { useCart } from "../../Context/CartContext";
+import { AuthContext } from "../../Context/AuthContext";
+import Spinner from "../../Components/UI/SpinnerLoading";
+import toast, { Toaster } from "react-hot-toast";
+
 export default function Checkout({ country, setCountry }) {
+  const { user, isLoading: authIsLoading } = useContext(AuthContext);
+
+  const userInformation = { ...user };
+
+  console.log(userInformation?.full_name);
+
   const { countries, loading, error } = useCountriesData();
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState(null);
@@ -18,8 +28,8 @@ export default function Checkout({ country, setCountry }) {
   const [cartItems, setCartItems] = useState([]);
 
   const [formData, setFormData] = useState({
-    fullName: "",
-    phoneNumber: "",
+    fullName: userInformation?.full_name ?? "",
+    phoneNumber: userInformation?.phone_number ?? "",
     addressOne: "",
     addressTwo: "",
     postCode: "",
@@ -155,7 +165,7 @@ export default function Checkout({ country, setCountry }) {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("User not authenticated");
+       toast.error("User not authenticated");
       return;
     }
 
@@ -173,7 +183,7 @@ export default function Checkout({ country, setCountry }) {
     );
 
     if (!selectedCountry || !selectedCity) {
-      alert("Please select a valid country and city.");
+       toast.error("Please select a valid country and city.");
       return;
     }
 
@@ -199,11 +209,11 @@ export default function Checkout({ country, setCountry }) {
         const errorData = await response.json().catch(() => ({}));
         const message =
           errorData?.message || "Something went wrong while sending data.";
-        alert(message);
+         toast.error(message);
         return;
       }
 
-      alert("Address saved successfully!");
+       toast.success("Address saved successfully!");
 
       setFormData({
         fullName: "",
@@ -230,18 +240,18 @@ export default function Checkout({ country, setCountry }) {
       setSelectedSavedAddressId(null);
     } catch (error) {
       console.error("Error:", error);
-      alert("Failed to submit the data.");
+       toast.error("Failed to submit the data.");
     }
   };
 
   const handleApproveAddress = async () => {
     if (!formData.deliveryMethod) {
-      alert("Please select a shipping method first");
+       toast.error("Please select a shipping method first");
       return;
     }
 
     if (!selectedSavedAddressId || !cartId) {
-      alert("Missing required information");
+       toast.success("Missing required information");
       return;
     }
 
@@ -250,7 +260,7 @@ export default function Checkout({ country, setCountry }) {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("User not authenticated");
+         toast.error("User not authenticated");
         return;
       }
 
@@ -344,11 +354,11 @@ export default function Checkout({ country, setCountry }) {
             data.data || data.items || data.addresses || data || []
           );
 
-          alert("New address created successfully!");
+          toast.success("New address created successfully!");
         }
       }
 
-      alert("Shipping address and method approved successfully!");
+       toast.success("Shipping address and method approved successfully!");
       await updateCart();
       setFormData({
         fullName: "",
@@ -363,7 +373,7 @@ export default function Checkout({ country, setCountry }) {
       setIsEditing(false);
     } catch (error) {
       console.error("Error approving address:", error);
-      alert(error.message || "Failed to approve address");
+       toast.error(error.message || "Failed to approve address");
     } finally {
       setIsApproving(false);
     }
@@ -383,64 +393,6 @@ export default function Checkout({ country, setCountry }) {
       );
     } catch (err) {
       console.error("Failed to fetch saved addresses", err);
-    }
-  };
-  const handleDeleteAddress = async (id) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("User not authenticated");
-      return;
-    }
-
-    if (!window.confirm("Are you sure you want to delete this address?"))
-      return;
-
-    try {
-      const response = await fetch(`${baseUrl}/api/addresses/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) throw new Error("Failed to delete address.");
-
-      alert("Address deleted successfully.");
-
-      if (selectedSavedAddressId === id) {
-        setSelectedSavedAddressId(null);
-        setFormData({
-          fullName: "",
-          phoneNumber: "",
-          addressOne: "",
-          addressTwo: "",
-          postCode: "",
-          country: "",
-          city: "",
-          savingAddress: false,
-          deliveryMethod: "",
-          cardName: "",
-          cardType: "",
-          cardNumber: "",
-          cvv: "",
-          expDate: "",
-          comment: "",
-          couponCode: "",
-        });
-      }
-
-      const res = await fetch(`${baseUrl}/api/addresses`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-      setSavedAddresses(
-        data.data || data.items || data.addresses || data || []
-      );
-    } catch (error) {
-      console.error("Error deleting address:", error);
-      alert("Failed to delete address.");
     }
   };
 
@@ -473,11 +425,17 @@ export default function Checkout({ country, setCountry }) {
     }
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading || authIsLoading)
+    return (
+      <div className="h">
+        <Spinner />
+      </div>
+    );
   if (error) return <p>{error}</p>;
 
   return (
     <div className="container">
+      <Toaster />
       <form className="checkout-form" onSubmit={handleSaveCountry}>
         <div className="row">
           <div className="col-lg-8 col-md-8 col-sm-12">
@@ -589,7 +547,7 @@ export default function Checkout({ country, setCountry }) {
                                   <div className="d-flex justify-content-between align-items-start">
                                     <strong>{addr.full_name}</strong>
 
-                                    <button
+                                    {/* <button
                                       type="button"
                                       className="btn btn-sm btn-danger"
                                       onClick={(e) => {
@@ -598,7 +556,7 @@ export default function Checkout({ country, setCountry }) {
                                       }}
                                     >
                                       Delete
-                                    </button>
+                                    </button> */}
                                   </div>
                                   <div className="mt-1">
                                     <small className="d-block">
