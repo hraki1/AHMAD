@@ -11,6 +11,8 @@ import toast, { Toaster } from "react-hot-toast";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 import { useCart } from "../../Context/CartContext";
+import Spinner from "../../Components/UI/SpinnerLoading";
+import Modal from "../../Components/UI/Modal";
 const SOCIAL_ICONS = [
   { icon: "twitter", title: "Twitter" },
   { icon: "pinterest-p", title: "Pinterest" },
@@ -63,6 +65,19 @@ const ProductDetail = () => {
     alert(`${product.name} added to wishlist!`);
   };
 
+  const [openModal, setOpenModal] = useState(false);
+
+  const toggleModal = () => setOpenModal((prev) => !prev);
+
+  const viewLoginPage = () => {
+    setAddToCartStatus({
+      loading: false,
+      message: "You should Sign In",
+      error: true,
+    });
+    navigate(`/LogIn?redirect=${location.pathname}`);
+  };
+
   const handleAddToCart = async () => {
     if (loading) {
       toast.info("Please wait while product data is loading");
@@ -91,12 +106,7 @@ const ProductDetail = () => {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      setAddToCartStatus({
-        loading: false,
-        message: "You should Sign In",
-        error: true,
-      });
-      navigate(`/LogIn?redirect=${location.pathname}`);
+      toggleModal();
       return;
     }
 
@@ -178,7 +188,7 @@ const ProductDetail = () => {
     }
   }, [productImages, activeImage, handleThumbnailClick]);
 
-  if (loading) return <div className="loading-spinner">Loading...</div>;
+  if (loading) return <Spinner />;
   if (error)
     return (
       <div className="error-alert">
@@ -317,6 +327,27 @@ const ProductDetail = () => {
   return (
     <div className="container">
       <Toaster />
+      <Modal open={openModal}>
+        <div className="p-4 text-center">
+          <h2 className="fw-bold text-white h1">You Should Login</h2>
+
+          <div className="d-flex justify-content-center gap-3 mt-4">
+            <button
+              onClick={viewLoginPage}
+              className="btn btn-secondary px-4 btn-one-hover-shipp"
+            >
+              Login
+            </button>
+
+            <button
+              onClick={toggleModal}
+              className="btn btn-primary px-4 btn-tow-hover-shipp"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
       <div className="product-single">
         <div className="row">
           {/* Product Images */}
@@ -464,7 +495,7 @@ const ProductDetail = () => {
 
               <p className="infolinks d-flex-center">
                 {!product ? (
-                  <div className="text-muted">Loading...</div>
+                  <Spinner />
                 ) : (
                   <Link
                     to="#"

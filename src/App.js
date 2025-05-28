@@ -27,48 +27,82 @@ import ScrollToTop from "./Components/common/ScrollToTop.jsx";
 import Category from "./Pages/ShopGrid/Category.jsx";
 import Payment from "./Pages/CheckOut/Payment.jsx";
 import NotFound from "./Pages/NotFound/NotFound.jsx";
-
 import { AuthContext } from "./Context/AuthContext.js";
 
 function App() {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, isLoading } = useContext(AuthContext);
 
-  let routes = (
-    <Router>
-      <ScrollToTop />
-      <div className="App">
-        <TopHeader />
-        <Header />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/AboutUs" element={<AboutUsPage />} />
-          <Route path="/Cart" element={<CartPage />} />
-          <Route path="/CheckOut" element={<CheckOut />} />
-          <Route path="/CMS" element={<Cms />} />
-          <Route path="/Collection" element={<Collection />} />
-          <Route path="/ContactUs" element={<Contact />} />
-          <Route path="/FAQ" element={<FAQ />} />
-          <Route path="/MYAccount" element={<Account />} />
-          <Route path="/Portfolio" element={<Portfolio />} />
-          <Route path="/Product/:url_key" element={<Product />} />
-          <Route path="/ShopGrid" element={<ShopGrid />} />
-          <Route path="/Category" element={<Category />} />
-          <Route path="/Wishlist" element={<Wishlist />} />
-          <Route path="/SignUp" element={<Sign />} />
-          <Route path="/LogIn" element={<Login />} />
-          <Route path="/Verify" element={<Verify />} />
-          <Route path="/Brands" element={<Brands />} />
-          <Route path="/ForgetPass" element={<ForgetPass />} />
-          <Route path="/ResetPassword" element={<ResetPassword />} />
-          <Route path="/Payment" element={<Payment />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+  let routes;
 
-        <Footer />
-        <ScrollTop />
-      </div>
-    </Router>
-  );
+  if (isAuthenticated) {
+    routes = (
+      <Router>
+        <ScrollToTop />
+        <div className="App">
+          <TopHeader />
+          <Header />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/AboutUs" element={<AboutUsPage />} />
+            <Route path="/Cart" element={<CartPage />} />
+            <Route path="/CheckOut" element={<CheckOut />} />
+            <Route path="/CMS" element={<Cms />} />
+            <Route path="/Collection" element={<Collection />} />
+            <Route path="/ContactUs" element={<Contact />} />
+            <Route path="/FAQ" element={<FAQ />} />
+            <Route path="/MYAccount" element={<Account />} />
+            <Route path="/Portfolio" element={<Portfolio />} />
+            <Route path="/Product/:url_key" element={<Product />} />
+            <Route path="/ShopGrid" element={<ShopGrid />} />
+            <Route path="/Category" element={<Category />} />
+            <Route path="/Wishlist" element={<Wishlist />} />
+            <Route path="/SignUp" element={<Sign />} />
+            <Route path="/LogIn" element={<Login />} />
+            <Route path="/Verify" element={<Verify />} />
+            <Route path="/Brands" element={<Brands />} />
+            <Route path="/ForgetPass" element={<ForgetPass />} />
+            <Route path="/ResetPassword" element={<ResetPassword />} />
+            <Route path="/Payment" element={<Payment />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+
+          <Footer />
+          <ScrollTop />
+        </div>
+      </Router>
+    );
+  } else if (!isAuthenticated && !isLoading) {
+    routes = (
+      <Router>
+        <ScrollToTop />
+        <div className="App">
+          <TopHeader />
+          <Header />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/AboutUs" element={<AboutUsPage />} />
+            <Route path="/Cart" element={<CartPage />} />
+            <Route path="/CMS" element={<Cms />} />
+            <Route path="/Collection" element={<Collection />} />
+            <Route path="/ContactUs" element={<Contact />} />
+            <Route path="/FAQ" element={<FAQ />} />
+            <Route path="/Portfolio" element={<Portfolio />} />
+            <Route path="/Product/:url_key" element={<Product />} />
+            <Route path="/ShopGrid" element={<ShopGrid />} />
+            <Route path="/Category" element={<Category />} />
+            <Route path="/Wishlist" element={<Wishlist />} />
+            <Route path="/SignUp" element={<Sign />} />
+            <Route path="/LogIn" element={<Login />} />
+            <Route path="/Brands" element={<Brands />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+
+          <Footer />
+          <ScrollTop />
+        </div>
+      </Router>
+    );
+  }
 
   return <>{routes}</>;
 }
