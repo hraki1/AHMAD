@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import MiniCart from "../../../Pages/Cart/MiniCart";
 import logoSarah from "../../../assets/images/2.png";
@@ -7,6 +7,7 @@ import imageCart1 from "../../../assets/images/products/product1-120x170.jpg";
 import imageCart2 from "../../../assets/images/products/product2-120x170.jpg";
 import MobileMenu from "../Mobile/MobileMenu";
 import useFetchCategoryandSub from "./useFetchCategoryandSub";
+import { CartContext } from "../../../Context/CartContext";
 
 const NavItem = ({ title, links }) => {
   const isSingleLink = links.length === 1;
@@ -40,28 +41,32 @@ const HeaderCart = ({
   handleQuantityChange,
   handleRemove,
   handleClose,
-}) => (
-  <div className="header-cart iconset" title="Cart">
-    <Link
-      to="/Cart"
-      // className="header-cart btn-minicart clr-none"
-      // data-bs-toggle="offcanvas"
-      // data-bs-target="#minicart-drawer"
-    >
-      <i
-        className="fa-solid fa-cart-shopping fa-xl"
-        style={{ color: "#000000" }}
+}) => {
+  const { cartCount } = useContext(CartContext);
+
+  return (
+    <div className="header-cart iconset" title="Cart">
+      <Link
+        to="/Cart"
+        // className="header-cart btn-minicart clr-none"
+        // data-bs-toggle="offcanvas"
+        // data-bs-target="#minicart-drawer"
+      >
+        <i
+          className="fa-solid fa-cart-shopping fa-xl"
+          style={{ color: "#000000" }}
+        />
+        <span className="cart-count">{cartCount}</span>
+      </Link>
+      <MiniCart
+        items={cartItems}
+        onQuantityChange={handleQuantityChange}
+        onRemove={handleRemove}
+        onClose={handleClose}
       />
-      <span className="cart-count">{cartItems.length}</span>
-    </Link>
-    <MiniCart
-      items={cartItems}
-      onQuantityChange={handleQuantityChange}
-      onRemove={handleRemove}
-      onClose={handleClose}
-    />
-  </div>
-);
+    </div>
+  );
+};
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -175,7 +180,6 @@ const Header = () => {
                   links={[
                     { to: "/AboutUs", label: "About Us" },
                     { to: "/ContactUs", label: "Contact Us" },
-                    { to: "/MYAccount", label: "My Account" },
                     { to: "/Portfolio", label: "Portfolio Page" },
                     { to: "/FAQ", label: "FAQs Page" },
                     { to: "/CMS", label: "CMS Page" },
