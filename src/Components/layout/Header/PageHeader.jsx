@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function PageHeader({ title, middleBreadcrumb }) {
   return (
@@ -8,9 +9,9 @@ export default function PageHeader({ title, middleBreadcrumb }) {
           <div className="col-12 col-sm-12 col-md-12 col-lg-12 d-flex justify-content-between align-items-center">
             <div className="main-title-pages">{title}</div>
             <div className="breadcrumbs">
-              <a href="index.html" title="Back to the home page">
+              <Link to={"/"} title="Back to the home page">
                 Home
-              </a>
+              </Link>
               {middleBreadcrumb && (
                 <>
                   <i className="fa-solid fa-angle-right me-2 ms-2"></i>

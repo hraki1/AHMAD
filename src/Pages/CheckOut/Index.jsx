@@ -4,6 +4,8 @@ import Checkout from "./Checkout";
 import Cart from "../Cart/Cart";
 import CartSummary from "../Cart/CartSummary";
 import { baseUrl } from "../API/ApiConfig";
+import CheckoutItems from "./CheckoutItems";
+import AddressFiledCheckout from "./AddressFiledCheckout";
 export default function Index() {
   const [discount, setDiscount] = useState(0); // Check this initial value
   const [couponApplied, setCouponApplied] = useState(false);
@@ -56,11 +58,14 @@ export default function Index() {
   return (
     <div>
       <PageHeader title="Checkout" />
-      <Checkout country={country || "Jordan"} setCountry={setCountry} />
+      <AddressFiledCheckout
+        country={country || "Jordan"}
+        setCountry={setCountry}
+      />
       <div className="container">
         <div className="row">
           <div className="col-12 col-sm-12 col-md-12 col-lg-8 main-col">
-            <Cart
+            <CheckoutItems
               cartItems={cartItems}
               setCartItems={setCartItems}
               discount={discount}
