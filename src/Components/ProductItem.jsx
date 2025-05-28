@@ -59,7 +59,7 @@ export default function ProductItem() {
             {products.map((product, index) => (
               <div
                 key={index}
-                className="col-md-3 col-sm-6 col-12"
+                className="col-md-3 col-sm-6 col-12 mb-5"
                 style={{ position: "relative" }}
               >
                 <div className="product-box">

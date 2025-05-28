@@ -221,7 +221,7 @@ const Wishlist = () => {
                             addToCartStatus.error
                               ? "alert-danger"
                               : "alert-success"
-                          } wishlist-alert-style`} //  class name
+                          } wishlist-alert-style`}
                         >
                           {addToCartStatus.message}
                         </div>

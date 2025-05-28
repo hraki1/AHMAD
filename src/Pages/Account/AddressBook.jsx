@@ -7,8 +7,7 @@ import Spinner from "../../Components/UI/SpinnerLoading";
 const AddressBook = () => {
   const [addresses, setAddresses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const navigate = useNavigate();
+  const [editingAddressId, setEditingAddressId] = useState(null);
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -22,7 +21,6 @@ const AddressBook = () => {
         });
 
         const data = await response.json();
-
         setAddresses(data);
         setIsLoading(false);
       } catch (error) {
@@ -35,8 +33,12 @@ const AddressBook = () => {
     fetchAddresses();
   }, []);
 
-  const handleEdit = (addressId) => {
-    navigate(`/edit-address/${addressId}`);
+  const handleStartEditing = (addressId) => {
+    setEditingAddressId(addressId);
+  };
+
+  const handleStopEditing = () => {
+    setEditingAddressId(null);
   };
 
   if (isLoading) {
@@ -54,12 +56,15 @@ const AddressBook = () => {
       {Array.isArray(addresses) && addresses.length === 0 ? (
         <p className="text-gray-500">No addresses found.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {addresses.map((address) => (
             <Address
               address={address}
-              onEdit={handleEdit}
               setAddresses={setAddresses}
+              key={address.id}
+              isEditing={editingAddressId === address.id}
+              onStartEditing={handleStartEditing}
+              onStopEditing={handleStopEditing}
             />
           ))}
         </div>
