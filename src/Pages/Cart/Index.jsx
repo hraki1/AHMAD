@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import Cart from "./Cart";
 import CartForms from "./CartForms";
@@ -6,12 +6,15 @@ import CartSummary from "./CartSummary";
 import ProductItem from "../../Components/ProductItem";
 import { baseUrl } from "../API/ApiConfig";
 import { useCart } from "../../Context/CartContext";
+import { AuthContext } from "../../Context/AuthContext";
 
 export default function Index() {
   const [cartItems, setCartItems] = useState([]);
   const [cartId, setCartId] = useState(null);
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponMessage, setCouponMessage] = useState(""); // حالة لرسالة الكوبون
+
+  const { isAuthenticated } = useContext(AuthContext);
 
   const {
     subtotal,
@@ -66,6 +69,29 @@ export default function Index() {
     return () => setShowShippingAndTax(true);
   }, [setShowShippingAndTax]);
 
+  if (!isAuthenticated) {
+    return (
+      <div>
+        <PageHeader title="Shopping Cart" />
+        <div className="container">
+          <div className="row">
+            <div className="col-12  main-col">
+              <Cart
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+                discount={discount}
+                couponApplied={couponApplied}
+                setCartId={setCartId}
+                cartId={cartId}
+                btnName={"Proceed To Checkout"}
+              />
+            </div>
+          </div>
+        </div>
+        <ProductItem />
+      </div>
+    );
+  }
   return (
     <div>
       <PageHeader title="Shopping Cart" />

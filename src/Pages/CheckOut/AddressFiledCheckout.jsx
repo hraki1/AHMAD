@@ -8,7 +8,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import toast, { Toaster } from "react-hot-toast";
 
-export default function Checkout({ country, setCountry }) {
+export default function AddressFiledCheckout({ country, setCountry }) {
   const { user, isLoading: authIsLoading } = useContext(AuthContext);
 
   const userInformation = { ...user };
@@ -18,9 +18,12 @@ export default function Checkout({ country, setCountry }) {
   const { countries, loading, error } = useCountriesData();
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState(null);
+  const [selectedSavedAddress, setSelectedSavedAddress] = useState(null);
+  const [isEditedAddress, setIsEditiedAddress] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selectedCountryData, setSelectedCountryData] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
+  const [showConfirmAddress, setShowConfirmAddress] = useState(true);
   const [errors, setErrors] = useState({});
   const [cartId, setCartId] = useState(null);
   const [isApproving, setIsApproving] = useState(false);
@@ -39,11 +42,15 @@ export default function Checkout({ country, setCountry }) {
     couponCode: "",
   });
 
+  console.log(selectedSavedAddressId);
+
   // Handle selecting a saved address
   const handleSelectSavedAddress = (addr) => {
     setSelectedSavedAddressId(addr.id);
+    setSelectedSavedAddress(addr);
     setIsCollapsed(false);
     setIsEditing(false);
+    setShowConfirmAddress(false);
 
     setFormData((prev) => ({
       ...prev,
@@ -54,7 +61,6 @@ export default function Checkout({ country, setCountry }) {
       postCode: addr.postcode || "",
       country: addr.countries?.country_code || "",
       city: addr.city?.name || "",
-      deliveryMethod: "",
     }));
 
     setCountry(addr.countries?.country_code || "");
@@ -67,7 +73,7 @@ export default function Checkout({ country, setCountry }) {
         (c) => c.country_code === formData.country
       );
       setSelectedCountryData(countryData);
-      setFormData((prev) => ({ ...prev, city: "", deliveryMethod: "" }));
+      setFormData((prev) => ({ ...prev, city: "" }));
     }
   }, [formData.country, countries]);
 
@@ -154,14 +160,10 @@ export default function Checkout({ country, setCountry }) {
       errors.city = "City is required.";
     }
 
-    if (!formData.deliveryMethod) {
-      errors.deliveryMethod = "Shipping method is required.";
-    }
-
     return errors;
   };
 
-  const handleSaveCountry = async (e) => {
+  const handleSaveForm = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) {
@@ -213,18 +215,14 @@ export default function Checkout({ country, setCountry }) {
         return;
       }
 
-      toast.success("Address saved successfully!");
+      const resAddress = await response.json();
+      console.log(resAddress);
+      setSelectedSavedAddressId(resAddress.id);
+      setSelectedSavedAddress(resAddress);
+      setShowConfirmAddress(false);
+      setIsEditing(false);
 
-      setFormData({
-        fullName: "",
-        phoneNumber: "",
-        addressOne: "",
-        addressTwo: "",
-        postCode: "",
-        country: "",
-        city: "",
-        deliveryMethod: "",
-      });
+      toast.success("Address saved successfully!");
 
       // Update saved addresses
       const res = await fetch(`${baseUrl}/api/addresses`, {
@@ -235,149 +233,12 @@ export default function Checkout({ country, setCountry }) {
       setSavedAddresses(
         data.data || data.items || data.addresses || data || []
       );
-
-      setIsEditing(false);
-      setSelectedSavedAddressId(null);
     } catch (error) {
       console.error("Error:", error);
       toast.error("Failed to submit the data.");
     }
   };
 
-  const handleApproveAddress = async () => {
-    if (!formData.deliveryMethod) {
-      toast.error("Please select a shipping method first");
-      return;
-    }
-
-    if (!selectedSavedAddressId || !cartId) {
-      toast.success("Missing required information");
-      return;
-    }
-
-    setIsApproving(true);
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("User not authenticated");
-        return;
-      }
-
-      // 1. Update shipping address
-      const addressResponse = await fetch(
-        `${baseUrl}/api/carts/${cartId}/shipping-address/${selectedSavedAddressId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!addressResponse.ok) {
-        throw new Error("Failed to update shipping address");
-      }
-
-      // 2. Update shipping method
-      const selectedMethod =
-        selectedCountryData?.ShippingZone?.[0]?.zone_methods?.find(
-          (method) => method.method.name === formData.deliveryMethod
-        );
-
-      if (!selectedMethod) {
-        throw new Error("Selected shipping method not found");
-      }
-
-      const methodResponse = await fetch(
-        `${baseUrl}/api/carts/${cartId}/shipping-method/${selectedMethod.shipping_zone_method_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!methodResponse.ok) {
-        throw new Error("Failed to update shipping method");
-      }
-
-      // Only create new address if in edit mode AND form data has changed
-      if (isEditing) {
-        const selectedAddress = savedAddresses.find(
-          (addr) => addr.id === selectedSavedAddressId
-        );
-
-        // Check if any field has changed
-        const hasChanges =
-          formData.fullName !== selectedAddress.full_name ||
-          formData.phoneNumber !== selectedAddress.phone_number ||
-          formData.addressOne !== selectedAddress.address_1 ||
-          formData.addressTwo !== (selectedAddress.address_2 || "") ||
-          formData.postCode !== (selectedAddress.postcode || "") ||
-          formData.country !== selectedAddress.countries?.country_code ||
-          formData.city !== selectedAddress.city?.name;
-
-        if (hasChanges) {
-          const newAddressResponse = await fetch(`${baseUrl}/api/addresses`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              full_name: formData.fullName,
-              phone_number: formData.phoneNumber,
-              address_1: formData.addressOne,
-              address_2: formData.addressTwo,
-              postcode: formData.postCode,
-              country_id: selectedCountryData.id,
-              city_id: selectedCountryData.Cities.find(
-                (city) => city.name === formData.city
-              )?.id,
-            }),
-          });
-
-          if (!newAddressResponse.ok) {
-            throw new Error("Failed to save new address");
-          }
-
-          // Refresh addresses list
-          const res = await fetch(`${baseUrl}/api/addresses`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await res.json();
-          setSavedAddresses(
-            data.data || data.items || data.addresses || data || []
-          );
-
-          toast.success("New address created successfully!");
-        }
-      }
-
-      toast.success("Shipping address and method approved successfully!");
-      await updateCart();
-      setFormData({
-        fullName: "",
-        phoneNumber: "",
-        addressOne: "",
-        addressTwo: "",
-        postCode: "",
-        country: "",
-        city: "",
-        deliveryMethod: "",
-      });
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error approving address:", error);
-      toast.error(error.message || "Failed to approve address");
-    } finally {
-      setIsApproving(false);
-    }
-  };
   // دالة لجلب العناوين المحفوظة
   const fetchSavedAddresses = async () => {
     const token = localStorage.getItem("token");
@@ -425,6 +286,42 @@ export default function Checkout({ country, setCountry }) {
     }
   }, []);
 
+  function cancelSelectHandler(e) {
+    e.stopPropagation();
+    setSelectedSavedAddressId(null);
+    setSelectedSavedAddress(null);
+    setIsEditing(true);
+    setShowConfirmAddress(true);
+    setIsCollapsed(false);
+    setFormData({
+      fullName: "",
+      phoneNumber: "",
+      addressOne: "",
+      addressTwo: "",
+      postCode: "",
+      country: "",
+      city: "",
+      savingAddress: false,
+      cardName: "",
+      cardType: "",
+      cardNumber: "",
+      cvv: "",
+      expDate: "",
+      comment: "",
+      couponCode: "",
+    });
+    setCountry("");
+    setSelectedCountryData(null);
+  }
+
+  function enableEditHandler() {
+    setIsEditing(true);
+    setShowConfirmAddress(false);
+  }
+  function cancelEditHandler() {
+    setIsEditing(false);
+  }
+
   if (loading || authIsLoading)
     return (
       <div className="h">
@@ -436,7 +333,7 @@ export default function Checkout({ country, setCountry }) {
   return (
     <div className="container">
       <Toaster />
-      <form className="checkout-form" onSubmit={handleSaveCountry}>
+      <form className="checkout-form" onSubmit={handleSaveForm}>
         <div className="row">
           <div className="col-lg-8 col-md-8 col-sm-12">
             {savedAddresses.length > 0 && (
@@ -464,39 +361,14 @@ export default function Checkout({ country, setCountry }) {
                                     </strong>
                                   </div>
 
-                                  <button
+                                  <div
                                     type="button"
-                                    className="btn-sm btn-outline-danger border-0 btn-addrs"
-                                    title="Cancle Select"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setSelectedSavedAddressId(null);
-                                      setIsCollapsed(false);
-                                      setIsEditing(false);
-                                      setFormData({
-                                        fullName: "",
-                                        phoneNumber: "",
-                                        addressOne: "",
-                                        addressTwo: "",
-                                        postCode: "",
-                                        country: "",
-                                        city: "",
-                                        savingAddress: false,
-                                        deliveryMethod: "",
-                                        cardName: "",
-                                        cardType: "",
-                                        cardNumber: "",
-                                        cvv: "",
-                                        expDate: "",
-                                        comment: "",
-                                        couponCode: "",
-                                      });
-                                      setCountry("");
-                                      setSelectedCountryData(null);
-                                    }}
+                                    className="btn-sm btn-outline-danger  border-0 btn-addrs"
+                                    title="Cancel Select"
+                                    onClick={(e) => cancelSelectHandler(e)}
                                   >
                                     ✕
-                                  </button>
+                                  </div>
                                 </div>
 
                                 <div className="text-start w-100">
@@ -546,17 +418,6 @@ export default function Checkout({ country, setCountry }) {
                                 >
                                   <div className="d-flex justify-content-between align-items-start">
                                     <strong>{addr.full_name}</strong>
-
-                                    {/* <button
-                                      type="button"
-                                      className="btn btn-sm btn-danger"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDeleteAddress(addr.id);
-                                      }}
-                                    >
-                                      Delete
-                                    </button> */}
                                   </div>
                                   <div className="mt-1">
                                     <small className="d-block">
@@ -599,7 +460,7 @@ export default function Checkout({ country, setCountry }) {
                         onChange={handleChange}
                         required
                         className="form-control"
-                        readOnly={!!selectedSavedAddressId && !isEditing}
+                        readOnly={!isEditing}
                       />
                       {errors.fullName && (
                         <small className="text-danger">{errors.fullName}</small>
@@ -616,7 +477,7 @@ export default function Checkout({ country, setCountry }) {
                         onChange={handleChange}
                         required
                         className="form-control"
-                        readOnly={!!selectedSavedAddressId && !isEditing}
+                        readOnly={!isEditing}
                       />
                       {errors.phoneNumber && (
                         <small className="text-danger">
@@ -637,7 +498,7 @@ export default function Checkout({ country, setCountry }) {
                         onChange={handleChange}
                         required
                         className="form-control"
-                        readOnly={!!selectedSavedAddressId && !isEditing}
+                        readOnly={!isEditing}
                       />
                       {errors.addressOne && (
                         <small className="text-danger">
@@ -653,7 +514,7 @@ export default function Checkout({ country, setCountry }) {
                         onChange={handleChange}
                         className="form-control"
                         placeholder="Apartment, suite, unit etc. (optional)"
-                        readOnly={!!selectedSavedAddressId && !isEditing}
+                        readOnly={!isEditing}
                       />
                     </div>
                   </div>
@@ -668,7 +529,7 @@ export default function Checkout({ country, setCountry }) {
                         value={formData.postCode}
                         onChange={handleChange}
                         className="form-control"
-                        readOnly={!!selectedSavedAddressId && !isEditing}
+                        readOnly={!isEditing}
                       />
                       {errors.postCode && (
                         <small className="text-danger">{errors.postCode}</small>
@@ -685,7 +546,7 @@ export default function Checkout({ country, setCountry }) {
                         onChange={handleChange}
                         className="form-control"
                         required
-                        disabled={!!selectedSavedAddressId && !isEditing}
+                        disabled={!isEditing}
                       >
                         <option value="">Select a Country</option>
                         {countries.map((countryItem) => (
@@ -704,38 +565,7 @@ export default function Checkout({ country, setCountry }) {
                   </div>
 
                   <div className="row">
-                    <div className="form-group col-12 col-sm-6">
-                      <label htmlFor="address_State" className="form-label">
-                        Shipping Method <span className="required">*</span>
-                      </label>
-                      <select
-                        name="deliveryMethod"
-                        value={formData.deliveryMethod}
-                        onChange={handleChange}
-                        className="form-control"
-                        required
-                      >
-                        <option value="">Select Shipping Method</option>
-                        {selectedCountryData?.ShippingZone?.[0]?.zone_methods
-                          ?.filter((method) => method.is_enabled)
-                          .map((method) => (
-                            <option
-                              key={method.shipping_zone_method_id}
-                              value={method.method.name}
-                            >
-                              {method.method.name} - {method.cost}{" "}
-                              {selectedCountryData?.currency?.code || "JOD"}
-                            </option>
-                          ))}
-                      </select>
-                      {errors.deliveryMethod && (
-                        <small className="text-danger">
-                          {errors.deliveryMethod}
-                        </small>
-                      )}
-                    </div>
-
-                    <div className="form-group col-12 col-sm-6">
+                    <div className="form-group col-12 col-sm-12">
                       <label htmlFor="address_province" className="form-label">
                         Town / City <span className="required">*</span>
                       </label>
@@ -745,7 +575,7 @@ export default function Checkout({ country, setCountry }) {
                         onChange={handleChange}
                         className="form-control"
                         required
-                        disabled={!!selectedSavedAddressId && !isEditing}
+                        disabled={!isEditing}
                       >
                         <option value="">Select a City</option>
                         {selectedCountryData?.Cities?.map((city) => (
@@ -760,56 +590,61 @@ export default function Checkout({ country, setCountry }) {
                     </div>
                   </div>
 
-                  {!selectedSavedAddressId && (
-                    <div className="row">
-                      <div className="form-group col-md-12">
-                        <div className="checkout-tearm customCheckbox">
-                          <input
-                            id="checkout_tearm"
-                            name="savingAddress"
-                            type="checkbox"
-                            checked={formData.savingAddress}
-                            onChange={handleChange}
-                          />
-                          <label htmlFor="checkout_tearm">
-                            Save address to my account
-                          </label>
-                        </div>
+                  {selectedSavedAddress && (
+                    <div className="form-group col-md-12">
+                      <div className="checkout-tearm customCheckbox">
+                        <input
+                          id="checkout_tearm"
+                          name="savingAddress"
+                          type="checkbox"
+                          checked={formData.savingAddress}
+                          onChange={handleChange}
+                        />
+                        <label htmlFor="checkout_tearm">
+                          Save address to my account
+                        </label>
                       </div>
                     </div>
                   )}
                 </fieldset>
 
-                {selectedSavedAddressId ? (
-                  <div className="d-flex gap-2 mt-2">
+                <div className="d-flex gap-2 mt-2">
+                  {selectedSavedAddress && !isEditing && (
                     <Button
-                      label={isEditing ? "Save Address" : "Edit Address"}
-                      type={isEditing ? "submit" : "button"}
+                      label={"Edit Address"}
+                      type={"button"}
                       primary={isEditing}
                       outline={!isEditing}
-                      onClick={(e) => {
-                        if (!isEditing) {
-                          e.preventDefault();
-                          setIsEditing(true);
-                        }
-                      }}
+                      onClick={enableEditHandler}
                     />
+                  )}
+
+                  {selectedSavedAddress && isEditing && (
                     <Button
-                      label={isApproving ? "Approving..." : "Approve"}
-                      type="button"
-                      primary
-                      disabled={!formData.deliveryMethod || isApproving}
-                      onClick={handleApproveAddress}
+                      label={"Save"}
+                      type={"submit"}
+                      primary={isEditing}
+                      outline={!isEditing}
                     />
-                  </div>
-                ) : (
-                  <Button
-                    className="mt-2"
-                    label="Save Address"
-                    type="submit"
-                    btn-secondary
-                  />
-                )}
+                  )}
+                  {selectedSavedAddress && isEditing && (
+                    <Button
+                      label={"Cancel Edit"}
+                      type={"button"}
+                      primary={isEditing}
+                      outline={!isEditing}
+                      onClick={cancelEditHandler}
+                    />
+                  )}
+                  {showConfirmAddress && (
+                    <Button
+                      className=""
+                      label="Confirm Address"
+                      type="submit"
+                      btn-secondary
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -823,8 +658,6 @@ export default function Checkout({ country, setCountry }) {
               checkoutLink="/Payment"
             />
           </div>
-          {/* End Shipping Method  */}
-          {/*  */}
         </div>
       </form>
     </div>

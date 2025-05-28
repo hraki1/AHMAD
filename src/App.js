@@ -62,6 +62,7 @@ function App() {
             <Route path="/Brands" element={<Brands />} />
             <Route path="/ForgetPass" element={<ForgetPass />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/ResetPassword" element={<ResetPassword />} />
             <Route path="/Payment" element={<Payment />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

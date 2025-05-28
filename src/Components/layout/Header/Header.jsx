@@ -184,7 +184,6 @@ const Header = () => {
                     { to: "/FAQ", label: "FAQs Page" },
                     { to: "/CMS", label: "CMS Page" },
                     { to: "/Cart", label: "Cart" },
-                    { to: "/CheckOut", label: "CheckOut" },
                   ]}
                 />
                 <NavItem
