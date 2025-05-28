@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TopHeader from "./Components/layout/Header/TopHeader";
 import Header from "./Components/layout/Header/Header";
@@ -26,8 +26,13 @@ import ResetPassword from "./Pages/LogIn/ResetPassword.jsx";
 import ScrollToTop from "./Components/common/ScrollToTop.jsx";
 import Category from "./Pages/ShopGrid/Category.jsx";
 import Payment from "./Pages/CheckOut/Payment.jsx";
-import { AuthProvider } from "./Context/AuthContext.js";
+import NotFound from "./Pages/NotFound/NotFound.jsx";
+
+import { AuthContext } from "./Context/AuthContext.js";
+
 function App() {
+  const { isAuthenticated } = useContext(AuthContext);
+
   let routes = (
     <Router>
       <ScrollToTop />
@@ -56,6 +61,7 @@ function App() {
           <Route path="/ForgetPass" element={<ForgetPass />} />
           <Route path="/ResetPassword" element={<ResetPassword />} />
           <Route path="/Payment" element={<Payment />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
 
         <Footer />
@@ -64,7 +70,7 @@ function App() {
     </Router>
   );
 
-  return <AuthProvider>{routes}</AuthProvider>;
+  return <>{routes}</>;
 }
 
 export default App;
