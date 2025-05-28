@@ -145,7 +145,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
                     Home
                   </Link>
                   <i
-                    className="icon fa-solid fa-bars "
+                    className="icon fa-solid fa-bars me-2"
                     onClick={(e) => toggleDropdown("homeSub", e)}
                     style={{ cursor: "pointer" }}
                   ></i>
