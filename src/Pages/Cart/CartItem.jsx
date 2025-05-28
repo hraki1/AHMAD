@@ -85,7 +85,7 @@ export default function CartItem({
         </td>
         <td>{name}</td>
         <td className="text-center">${price.toFixed(2)}</td>
-        <td className="text-center">
+        <td className="text-center min-plu-cart">
           <button
             onClick={onMinusHandler}
             className="btn btn-outline-secondary"

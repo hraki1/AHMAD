@@ -1,13 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import { baseUrl } from "../API/ApiConfig";
 import toast, { Toaster } from "react-hot-toast";
-
 import Modal from "../../Components/UI/Modal";
 
-export default function Address({ address, onEdit, setAddresses }) {
+export default function Address({
+  address,
+  setAddresses,
+  isEditing,
+  onStartEditing,
+  onStopEditing,
+}) {
   const [modalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    full_name: address?.full_name || "",
+    phone_number: address?.phone_number || "",
+    address_1: address?.address_1 || "",
+    address_2: address?.address_2 || "",
+    postcode: address?.postcode || "",
+    is_default: address?.is_default || false,
+  });
+  useEffect(() => {
+    setFormData({
+      full_name: address?.full_name || "",
+      phone_number: address?.phone_number || "",
+      address_1: address?.address_1 || "",
+      address_2: address?.address_2 || "",
+      postcode: address?.postcode || "",
+      is_default: address?.is_default || false,
+    });
+  }, [address]); // يتم تشغيل هذا التأثير عند تغير prop address
+
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+    const newValue =
+      type === "select-one" && name === "is_default" ? value === "true" : value;
+
+    setFormData({ ...formData, [name]: newValue });
+  };
 
   function toggleShowModal() {
     setModalOpen((prev) => !prev);
@@ -48,12 +81,69 @@ export default function Address({ address, onEdit, setAddresses }) {
 
       const data = await response.json();
       toggleShowModal();
-
       setAddresses(data);
     } catch (error) {
       console.error("Error fetching addresses:", error);
       setAddresses([]);
       toggleShowModal();
+    }
+  };
+
+  const handleEditAddress = async (addressId) => {
+    if (isEditing) {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("User not authenticated");
+        return;
+      }
+
+      setIsLoading(true);
+
+      try {
+        const responseEdit = await fetch(
+          `${baseUrl}/api/addresses/${addressId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+          }
+        );
+
+        if (responseEdit.ok) {
+          const updatedAddress = await responseEdit.json();
+
+          setFormData((prev) => ({
+            ...prev,
+            ...updatedAddress,
+          }));
+
+          if (setAddresses) {
+            setAddresses((prev) =>
+              prev.map((addr) =>
+                addr.id === addressId ? updatedAddress : addr
+              )
+            );
+          }
+
+          toast.success("Address updated successfully");
+          setError("");
+          onStopEditing();
+        } else {
+          setError("Error Editing Data. Check Your Input.");
+          toast.error("Failed to update address");
+        }
+      } catch (error) {
+        console.error("Error updating address:", error);
+        setError("Error Connecting to Server.");
+        toast.error("Error updating address");
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      onStartEditing(addressId);
     }
   };
 
@@ -86,16 +176,28 @@ export default function Address({ address, onEdit, setAddresses }) {
           </div>
         </div>
       </Modal>
+
       <div className="bg-white shadow-md rounded-xl p-4 border border-gray-200 relative mb-5">
         <div className="data-addesss">
           <div className="row ">
             <div className="col-md-12 mb-4 d-flex justify-content-between align-items-center">
               <p className="mb-0">
-                <strong>Name:</strong> {address.full_name}
+                <strong>Name:</strong>
+                {isEditing ? (
+                  <input
+                    className="form-control"
+                    name="full_name"
+                    value={formData.full_name}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  address?.full_name
+                )}
               </p>
               <button
                 onClick={toggleShowModal}
                 className="btn btn-outline-danger btn-sm"
+                disabled={isEditing}
               >
                 <i className="fas fa-trash-alt me-2"></i> Delete
               </button>
@@ -104,32 +206,92 @@ export default function Address({ address, onEdit, setAddresses }) {
             <div className="row">
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Phone:</strong> {address.phone_number}
+                  <strong>Phone:</strong>
+                  {isEditing ? (
+                    <input
+                      className="form-control"
+                      name="phone_number"
+                      value={formData.phone_number}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    address.phone_number
+                  )}
                 </p>
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Country:</strong> {address.countries?.name}
+                  <strong>Address One:</strong>
+                  {isEditing ? (
+                    <input
+                      className="form-control"
+                      name="address_1"
+                      value={formData.address_1}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    address?.address_1
+                  )}
                 </p>
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>City:</strong> {address.city?.name}
+                  <strong>Address Tow:</strong>
+                  {isEditing ? (
+                    <input
+                      className="form-control"
+                      name="address_2"
+                      value={formData.address_2}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    address?.address_2
+                  )}
                 </p>
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Address One:</strong> {address.address_1}
+                  <strong>postcode:</strong>
+                  {isEditing ? (
+                    <input
+                      className="form-control"
+                      name="postcode"
+                      value={formData.postcode}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    address?.postcode
+                  )}
                 </p>
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Address Tow:</strong> {address.address_2}
+                  <strong>Country:</strong> {address.countries.name}
                 </p>
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>postcode:</strong> {address.postcode}
+                  <strong>City:</strong> {address.city.name}
+                </p>
+              </div>
+              <div className="col-md-4 mb-4">
+                <p>
+                  <strong>Default Address:</strong>
+                  {isEditing ? (
+                    <select
+                      className="form-select"
+                      name="is_default"
+                      value={formData.is_default}
+                      onChange={handleChange}
+                    >
+                      <option value={true}>Yes</option>
+                      <option value={false}>No</option>
+                    </select>
+                  ) : address.is_default ? (
+                    "Yes"
+                  ) : (
+                    "No"
+                  )}
                 </p>
               </div>
               <div className="col-md-4 mb-4">
@@ -141,10 +303,11 @@ export default function Address({ address, onEdit, setAddresses }) {
           </div>
         </div>
         <button
-          onClick={() => onEdit(address.id)}
+          onClick={() => handleEditAddress(address.id)}
           className="absolute top-3 right-3 text-blue-600 hover:text-blue-800"
+          disabled={isLoading}
         >
-          <FaEdit size={18} />
+          {isLoading ? "Saving..." : isEditing ? "Save" : <FaEdit size={18} />}
         </button>
       </div>
     </div>

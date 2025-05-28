@@ -61,6 +61,7 @@ function App() {
             <Route path="/Verify" element={<Verify />} />
             <Route path="/Brands" element={<Brands />} />
             <Route path="/ForgetPass" element={<ForgetPass />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/ResetPassword" element={<ResetPassword />} />
             <Route path="/Payment" element={<Payment />} />
             <Route path="*" element={<NotFound />} />
@@ -94,6 +95,8 @@ function App() {
             <Route path="/SignUp" element={<Sign />} />
             <Route path="/LogIn" element={<Login />} />
             <Route path="/Brands" element={<Brands />} />
+            <Route path="/ForgetPass" element={<ForgetPass />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
 

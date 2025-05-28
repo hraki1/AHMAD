@@ -8,13 +8,12 @@ import imageCart2 from "../../../assets/images/products/product2-120x170.jpg";
 import MobileMenu from "../Mobile/MobileMenu";
 import useFetchCategoryandSub from "./useFetchCategoryandSub";
 import { CartContext } from "../../../Context/CartContext";
+import { useWishlist } from "../../../Context/WishlistContext";
 
 const NavItem = ({ title, links }) => {
-  const isSingleLink = links.length === 1;
-
   return (
     <li className="dropdown head-drop-down">
-      {isSingleLink ? (
+      {links.length === 1 ? (
         <Link to={links[0].to} className="site-nav">
           {title} <i className="fa-solid fa-angle-down ms-1" />
         </Link>
@@ -71,6 +70,7 @@ const HeaderCart = ({
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { categories, loading, error } = useFetchCategoryandSub();
+  const { wishlistItems } = useWishlist();
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -217,7 +217,7 @@ const Header = () => {
                   className="fas fa-heart fa-xl"
                   style={{ color: "#000000" }}
                 />
-                <span className="wishlist-count">0</span>
+                <span className="wishlist-count">{wishlistItems.length}</span>
               </Link>
             </div>
             <HeaderCart

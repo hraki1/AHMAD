@@ -1,6 +1,89 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import useFetchCategoryandSub from "../Header/useFetchCategoryandSub"; // عدّل المسار حسب مشروعك
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import useFetchCategoryandSub from "../Header/useFetchCategoryandSub"; // Adjust the path as needed
+import { AuthContext } from "../../../Context/AuthContext";
+import { useCart } from "../../../Context/CartContext";
+
+const AccountLinksMobile = ({ toggleMenu }) => {
+  const navigate = useNavigate();
+  const { updateCart } = useCart();
+  const { isAuthenticated, logout } = useContext(AuthContext);
+
+  const handleLogoutMobile = () => {
+    logout();
+    updateCart();
+    navigate("/LogIn");
+    if (toggleMenu) {
+      toggleMenu();
+    }
+  };
+
+  return (
+    <>
+      {isAuthenticated ? (
+        <>
+          <li className="mb-3 pt-1 mt-3">
+            <Link
+              to="/MYAccount"
+              className="d-flex align-items-center"
+              onClick={toggleMenu}
+            >
+              <i className="fa-solid fa-address-card me-1"></i> My Account
+            </Link>
+          </li>
+          <li className="mb-3 pt-1">
+            <Link
+              to="/Wishlist"
+              className="d-flex align-items-center"
+              onClick={toggleMenu}
+            >
+              <i className="fa-solid fa-heart me-1"></i> Wishlist
+            </Link>
+          </li>
+          <li className="pt-1">
+            <button
+              onClick={handleLogoutMobile}
+              className="d-flex align-items-center btn-link p-0 text-start"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <i className="fa-solid fa-right-from-bracket me-1"></i> Sign Out
+            </button>
+          </li>
+        </>
+      ) : (
+        <>
+          <li className="mb-3 pt-1 mt-3">
+            <Link
+              to="/LogIn"
+              className="d-flex align-items-center"
+              onClick={toggleMenu}
+            >
+              <i className="fa-solid fa-right-to-bracket me-1"></i> Sign In
+            </Link>
+          </li>
+          <li className="mb-3 pt-1">
+            <Link
+              to="/SignUp"
+              className="d-flex align-items-center"
+              onClick={toggleMenu}
+            >
+              <i className="fa-solid fa-user me-1"></i> Register
+            </Link>
+          </li>
+          <li className="pt-1">
+            <Link
+              to="/Wishlist"
+              className="d-flex align-items-center"
+              onClick={toggleMenu}
+            >
+              <i className="fa-solid fa-heart me-1"></i> Wishlist
+            </Link>
+          </li>
+        </>
+      )}
+    </>
+  );
+};
 
 const MobileNav = ({ isMenuOpen, toggleMenu }) => {
   const [dropdowns, setDropdowns] = useState({
@@ -9,10 +92,8 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
     shop: false,
     pages: false,
     blog: false,
-    // سنستخدم مفاتيح إضافية للـcategories لاحقًا
   });
 
-  // إضافة حالة مخصصة لفتح/إغلاق كل تصنيف فرعي في Shop
   const [openCats, setOpenCats] = useState({});
 
   const { categories, loading, error } = useFetchCategoryandSub();
@@ -26,7 +107,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
     }));
   };
 
-  // فتح/إغلاق التصنيفات الفرعية
+  // Open/close subcategories
   const toggleCatDropdown = (catId, e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -60,11 +141,11 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
             <ul className="lvl-2 d-block" id="home-dropdown">
               <li>
                 <div className="d-flex justify-content-between align-items-center">
-                  <Link to="/" className="site-nav">
+                  <Link to="/" className="site-nav" onClick={toggleMenu}>
                     Home
                   </Link>
                   <i
-                    className="icon fa-solid fa-bars"
+                    className="icon fa-solid fa-bars me-2"
                     onClick={(e) => toggleDropdown("homeSub", e)}
                     style={{ cursor: "pointer" }}
                   ></i>
@@ -72,7 +153,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
                 {dropdowns.homeSub && (
                   <ul className="lvl-3 d-block" id="home-sub-dropdown">
                     <li>
-                      <Link to="/" className="site-nav">
+                      <Link to="/" className="site-nav" onClick={toggleMenu}>
                         Home 1
                       </Link>
                     </li>
@@ -86,7 +167,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
         {/* SHOP - CATEGORIES */}
         <li className="lvl1 parent megamenu">
           <Link to="#" onClick={(e) => e.preventDefault()}>
-            Shop{" "}
+            Categories{" "}
             <i
               className="icon fa-solid fa-bars"
               onClick={(e) => toggleDropdown("shop", e)}
@@ -96,7 +177,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
           {dropdowns.shop && (
             <ul className="lvl-2 d-block" id="shop-dropdown">
               {loading && <li>Loading...</li>}
-              {error && <li>حدث خطأ أثناء تحميل التصنيفات</li>}
+              {error && <li>Error When Get Data</li>}
               {!loading &&
                 !error &&
                 categories.length > 0 &&
@@ -105,7 +186,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
                     (cat) => cat.parentId === null || cat.parentId === undefined
                   )
                   .map((mainCat) => {
-                    // أبناء التصنيف
+                    // Sub Category
                     const subCategories = categories.filter(
                       (subCat) => subCat.parentId === mainCat.id
                     );
@@ -121,13 +202,13 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
                           </Link>
                           {subCategories.length > 0 && (
                             <i
-                              className="icon fa-solid fa-bars"
+                              className="icon fa-solid fa-bars me-2"
                               onClick={(e) => toggleCatDropdown(mainCat.id, e)}
                               style={{ cursor: "pointer" }}
                             ></i>
                           )}
                         </div>
-                        {/* أبناء التصنيف */}
+                        {/* Sub Category */}
                         {subCategories.length > 0 && openCats[mainCat.id] && (
                           <ul className="lvl-3 d-block ms-3">
                             {subCategories.map((subCat) => (
@@ -170,11 +251,6 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
               <li>
                 <Link to="/ContactUs" className="site-nav" onClick={toggleMenu}>
                   Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/MYAccount" className="site-nav" onClick={toggleMenu}>
-                  My Account
                 </Link>
               </li>
               <li>
@@ -232,36 +308,11 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
         </li>
 
         {/* Bottom Section */}
+
         <li className="mobile-menu-bottom">
           <div className="mobile-links">
             <ul className="list-inline d-inline-flex flex-column w-100">
-              <li className="mb-3 pt-1 mt-3">
-                <Link
-                  to="/LogIn"
-                  className="d-flex align-items-center"
-                  onClick={toggleMenu}
-                >
-                  <i className="fa-solid fa-right-to-bracket me-1"></i> Sign In
-                </Link>
-              </li>
-              <li className="mb-3 pt-1">
-                <Link
-                  to="/SignUp"
-                  className="d-flex align-items-center"
-                  onClick={toggleMenu}
-                >
-                  <i className="fa-solid fa-user me-1"></i> Register
-                </Link>
-              </li>
-              <li className="pt-1">
-                <Link
-                  to="/MYAccount"
-                  className="d-flex align-items-center"
-                  onClick={toggleMenu}
-                >
-                  <i className="fa-solid fa-address-card me-1"></i> My Account
-                </Link>
-              </li>
+              <AccountLinksMobile toggleMenu={toggleMenu} />
               <li className="Main-title-mobile">Need Help?</li>
               <li className="mb-3 pt-1">
                 <a

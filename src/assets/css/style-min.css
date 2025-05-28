@@ -10385,17 +10385,22 @@ textarea:-ms-input-placeholder {
   padding: 2px 4px;
 }
 
-
-.btn-one-hover-shipp:hover{
+.btn-one-hover-shipp:hover {
   background-color: #e96f84 !important;
   opacity: 0.8;
   transform: scale(1.08);
- 
 }
-.btn-tow-hover-shipp{
-    background-color: #2f415d !important;
+.btn-tow-hover-shipp {
+  background-color: #2f415d !important;
   opacity: 0.8;
   border: none !important;
   transform: scale(1.08) !important;
+}
 
+@media (max-width: 654px) {
+  .min-plu-cart {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+  }
 }

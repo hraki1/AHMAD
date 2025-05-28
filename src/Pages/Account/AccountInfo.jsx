@@ -4,7 +4,7 @@ import imgTow from "../../assets/images/icons/homework.png";
 import imgThree from "../../assets/images/icons/order.png";
 import { AuthContext } from "../../Context/AuthContext";
 import { Link } from "react-router-dom";
-
+import { baseUrl } from "../API/ApiConfig";
 const AccountInfo = () => {
   const dataAuth = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
@@ -38,7 +38,7 @@ const AccountInfo = () => {
       };
       try {
         const response = await fetch(
-          `https://api.sareh-nomow.xyz/api/user/profile/${dataAuth.userId}`,
+          `${baseUrl}/api/user/profile/${dataAuth.userId}`,
           {
             method: "PUT",
             headers: {
@@ -51,7 +51,6 @@ const AccountInfo = () => {
         if (response.ok) {
           const updatedUser = await response.json();
           dataAuth.setUser(updatedUser);
-          console.log("User info updated successfully.");
           setError("");
         } else {
           setError("Error Editing Data. Check Your Input.");
