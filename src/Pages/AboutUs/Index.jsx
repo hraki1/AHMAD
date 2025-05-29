@@ -6,10 +6,12 @@ import CounterSection from "./CounterSection";
 import TeamMember from "./TeamMember";
 import ServiceSection from "../../Components/ServiceSection";
 import Video from "./Video";
+import { useTranslation } from "react-i18next";
 export default function Index() {
+  const { t } = useTranslation();
   return (
     <div>
-      <PageHeader title="About Us" middleBreadcrumb="Pages" />
+      <PageHeader title={t("AboutUs")} middleBreadcrumb="Pages" />
       <KindServices />
       <CounterSection counterData={counterData} />
       <TeamMember />

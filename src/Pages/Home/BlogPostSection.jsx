@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import Button from "../../Components/common/Button";
 import { blogPosts } from "./data";
 import { Link } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 export default function BlogPostSection() {
   const settings = {
     slidesToShow: 3,
@@ -21,7 +21,7 @@ export default function BlogPostSection() {
       { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
-
+  const { t } = useTranslation();
   return (
     <section className="section home-blog-post">
       <div className="container">
@@ -64,7 +64,7 @@ export default function BlogPostSection() {
                   <p className="content">{post.description}</p>
 
                   <Button
-                    label="Read more"
+                    label={t("Read_more")}
                     href="/home"
                     primary={false} /* .btn-primary if need it make it true */
                     size="sm" /*   */

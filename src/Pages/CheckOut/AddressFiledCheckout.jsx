@@ -7,10 +7,10 @@ import { useCart } from "../../Context/CartContext";
 import { AuthContext } from "../../Context/AuthContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import toast, { Toaster } from "react-hot-toast";
-
+import { useTranslation } from "react-i18next";
 export default function AddressFiledCheckout({ country, setCountry }) {
   const { user, isLoading: authIsLoading } = useContext(AuthContext);
-
+  const { t } = useTranslation();
   const userInformation = { ...user };
 
   console.log(userInformation?.full_name);
@@ -611,7 +611,7 @@ export default function AddressFiledCheckout({ country, setCountry }) {
                 <div className="d-flex gap-2 mt-2">
                   {selectedSavedAddress && !isEditing && (
                     <Button
-                      label={"Edit Address"}
+                      label={t("Edit Address")}
                       type={"button"}
                       primary={isEditing}
                       outline={!isEditing}
@@ -621,7 +621,7 @@ export default function AddressFiledCheckout({ country, setCountry }) {
 
                   {selectedSavedAddress && isEditing && (
                     <Button
-                      label={"Save"}
+                      label={t("Save")}
                       type={"submit"}
                       primary={isEditing}
                       outline={!isEditing}
@@ -629,7 +629,7 @@ export default function AddressFiledCheckout({ country, setCountry }) {
                   )}
                   {selectedSavedAddress && isEditing && (
                     <Button
-                      label={"Cancel Edit"}
+                      label={t("Cancel Edit")}
                       type={"button"}
                       primary={isEditing}
                       outline={!isEditing}
@@ -639,7 +639,7 @@ export default function AddressFiledCheckout({ country, setCountry }) {
                   {showConfirmAddress && (
                     <Button
                       className=""
-                      label="Confirm Address"
+                      label={t("Confirm Address")}
                       type="submit"
                       btn-secondary
                     />

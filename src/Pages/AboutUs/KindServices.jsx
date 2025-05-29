@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import aboutImage from "../../assets/images/about/about4.jpg"; // استيراد الصورة
 import { accordionItems } from "./data";
-
+import { useTranslation } from "react-i18next";
 export default function KindServices() {
   const [activeAccordion, setActiveAccordion] = useState(null);
 
   const toggleAccordion = (index) => {
     setActiveAccordion(activeAccordion === index ? null : index);
   };
+  const { t } = useTranslation();
+  const accordionItems = t("accordionItems", { returnObjects: true }).map(
+    (item, index) => ({
+      id: index + 1,
+      ...item,
+    })
+  );
 
   return (
     <div>
@@ -28,16 +35,9 @@ export default function KindServices() {
             <div className="col-12 col-sm-12 col-md-6">
               <div className="about-details faqs-style faqs-style2 px-50">
                 <div className="main-title-abousUs">
-                  We Provide Continuous & Kind Service for Customers
+                  {t("kindServiceTitle")}
                 </div>
-                <div className="desc-content-about">
-                  There are many variations of passages of Lorem Ipsum
-                  available, but the majority have suffered alteration in some
-                  form, by injected humour, or randomised words which don't look
-                  even slightly believable. If you are going to use a passage of
-                  Lorem Ipsum, you need to be sure there isn't anything
-                  embarrassing hidden in the middle of text..
-                </div>
+                <div className="desc-content-about">{t("kindServiceDesc")}</div>
                 <div className="accordion" id="accordionFaq">
                   {accordionItems.map(({ id, title, content }) => (
                     <div className="accordion-item" key={id}>

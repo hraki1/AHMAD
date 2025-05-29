@@ -2,12 +2,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import Button from "./common/Button";
 import { fetchAllProducts } from "../utils/fetchAllProducts";
 import { Link } from "react-router-dom";
-
-const ProductSlider = ({
-  showTabs = true,
-  subtitle = "Special Offers",
-  title = "Browse the huge variety of our best seller",
-}) => {
+import { useTranslation } from "react-i18next";
+const ProductSlider = ({ showTabs = true, subtitle, title }) => {
   const [productsData, setProductsData] = useState({
     bestsellers: [],
     newarrivals: [],
@@ -15,7 +11,11 @@ const ProductSlider = ({
   });
   const [activeTab, setActiveTab] = useState("bestsellers");
   const [loading, setLoading] = useState(true);
-
+  const { t } = useTranslation();
+  const defaultSubtitle = t("Special_Offers");
+  const defaulttitle = t("Browse_the_huge_variety_of_our_best_seller");
+  subtitle = defaultSubtitle || subtitle;
+  title = defaulttitle || title;
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true); // بدء التحميل
@@ -154,7 +154,7 @@ const ProductSlider = ({
                   </div>
                   <div className="view-collection text-center mt-4 mt-md-5">
                     <Button
-                      label="View Collection"
+                      label={t("view_collection")}
                       to="/ShopGrid"
                       primary={false}
                     />

@@ -7,12 +7,12 @@ import { useCart } from "../../Context/CartContext";
 import { AuthContext } from "../../Context/AuthContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import toast, { Toaster } from "react-hot-toast";
-
+import { useTranslation } from "react-i18next";
 export default function Checkout({ country, setCountry }) {
   const { user, isLoading: authIsLoading } = useContext(AuthContext);
 
   const userInformation = { ...user };
-
+  const { t } = useTranslation();
   console.log(userInformation?.full_name);
 
   const { countries, loading, error } = useCountriesData();
@@ -783,7 +783,7 @@ export default function Checkout({ country, setCountry }) {
                 {selectedSavedAddressId ? (
                   <div className="d-flex gap-2 mt-2">
                     <Button
-                      label={isEditing ? "Save Address" : "Edit Address"}
+                      label={isEditing ? t("Save_address") : t("Edit_address")}
                       type={isEditing ? "submit" : "button"}
                       primary={isEditing}
                       outline={!isEditing}
@@ -795,7 +795,7 @@ export default function Checkout({ country, setCountry }) {
                       }}
                     />
                     <Button
-                      label={isApproving ? "Approving..." : "Approve"}
+                      label={isApproving ? t("Approving") : t("Approve")}
                       type="button"
                       primary
                       disabled={!formData.deliveryMethod || isApproving}
@@ -805,7 +805,7 @@ export default function Checkout({ country, setCountry }) {
                 ) : (
                   <Button
                     className="mt-2"
-                    label="Save Address"
+                    label={t("Save_address")}
                     type="submit"
                     btn-secondary
                   />

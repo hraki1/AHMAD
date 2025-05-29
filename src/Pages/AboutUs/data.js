@@ -4,26 +4,6 @@ import teamImage2 from "../../assets/images/about/about-team2.jpg";
 import teamImage3 from "../../assets/images/about/about-team3.jpg";
 
 // Kind Services
-export const accordionItems = [
-  {
-    id: 1,
-    title: "Customer Service",
-    content:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.",
-  },
-  {
-    id: 2,
-    title: "Online Consultation",
-    content:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.",
-  },
-  {
-    id: 3,
-    title: "Sales Management",
-    content:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.",
-  },
-];
 
 // Services Section
 export const counterData = [

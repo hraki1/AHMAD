@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import PopularCategories from "../../Components/PopularCategories";
-import { categoriesData } from "../Home/data";
 import Toolbar from "./Toolbar";
 import LeftSlidebar from "./leftSlidebar";
 import useFetchCategories from "../Hooks/useFetchCategories";
@@ -114,7 +113,6 @@ export default function ShopPage() {
       )}
 
       <PopularCategories
-        data={categoriesData}
         heading={categoryId ? "Subcategories" : "All Menu"}
         italic=""
         selectedCategoryId={selectedCategoryIds?.[0] || null}
@@ -124,12 +122,12 @@ export default function ShopPage() {
         onBackToAll={backToAll}
         resetHierarchy={forceReset} // Use the forceReset state here
         forcedParentId={categoryId ? parseInt(categoryId) : null}
-        forcedCategoryData={
-          categoryId
-            ? categoriesData.find((cat) => cat.id === parseInt(categoryId))
-            : null
-        }
-        key={categoryId || "root"} // Add this key to force remount
+        // forcedCategoryData={
+        //   categoryId
+        //     ? categoriesData.find((cat) => cat.id === parseInt(categoryId))
+        //     : null
+        // }
+        // key={categoryId || "root"} // Add this key to force remount
       />
 
       <div className="container">
