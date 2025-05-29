@@ -35,7 +35,7 @@ const TopHeader = () => {
           <div className="col-6 col-md-3 col-lg-4 text-left">
             <i className="fa-solid fa-phone"></i>
             <a href="tel:+962779523688">(+962) 779 523 688</a>
-            {ctx.isLoggedIn && (
+            {ctx.isLoggedIn === true && (
               <h1>Auth Test if you see it thta's mean you are authenticat</h1>
             )}
           </div>

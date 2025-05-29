@@ -1,11 +1,8 @@
-import React, { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { baseUrl } from "../Pages/API/ApiConfig";
-import { data } from "react-router-dom";
+import { set } from "react-hook-form";
 const BASE_URL = `${baseUrl}/api`;
 
-// واجهة القيم داخل الـ context
-
-// إنشاء السياق بقيم مبدئية
 export const AuthContext = createContext({
   isAuthenticated: false,
   token: null,
@@ -13,6 +10,7 @@ export const AuthContext = createContext({
   login: () => {},
   logout: () => {},
   isLoading: true,
+  error: "",
   user: {},
 });
 
@@ -21,6 +19,9 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState();
+
+  const isAuthenticated = !!localStorage.getItem("token");
 
   const login = (newToken, newUserId, user) => {
     setToken(newToken);
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }) => {
     setUser(user);
     localStorage.setItem("token", newToken);
     localStorage.setItem("userId", newUserId);
+    localStorage.setItem("userData", JSON.stringify(user));
   };
 
   const logout = () => {
@@ -35,15 +37,26 @@ export const AuthProvider = ({ children }) => {
     setUserId(null);
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    localStorage.removeItem("userData");
   };
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUserId = localStorage.getItem("userId");
+    let userData = null;
+    try {
+      const raw = localStorage.getItem("userData");
+      if (raw && raw !== "undefined") {
+        userData = JSON.parse(raw);
+      }
+    } catch (err) {
+      console.error("Failed to parse userData from localStorage", err);
+    }
 
     const verifyToken = async () => {
+      let res;
       try {
-        const res = await fetch(`${BASE_URL}/auth/verify-token`, {
+        res = await fetch(`${BASE_URL}/auth/verify-token`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -59,13 +72,18 @@ export const AuthProvider = ({ children }) => {
         const data = await res.json();
 
         if (res.ok && data.valid) {
+          console.log(res.status);
           login(storedToken, data.user.id.toString(), data.user);
-        } else {
+        } else if (res.status === 401 && !data.valid) {
+          console.log(res.status);
           logout();
+        } else {
+          setError("Server Faild Please try Another Time");
         }
       } catch (error) {
         console.error("Token verification failed:", error);
-        logout();
+        setUser(userData);
+        setError("Server Faild Please try Another Time");
       } finally {
         setIsLoading(false);
       }
@@ -81,7 +99,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated: !!token,
+        isAuthenticated,
         token,
         userId,
         login,
@@ -89,6 +107,7 @@ export const AuthProvider = ({ children }) => {
         isLoading,
         user,
         setUser,
+        error,
       }}
     >
       {children}

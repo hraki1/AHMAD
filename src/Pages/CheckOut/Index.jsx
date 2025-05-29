@@ -6,12 +6,16 @@ import CartSummary from "../Cart/CartSummary";
 import { baseUrl } from "../API/ApiConfig";
 import CheckoutItems from "./CheckoutItems";
 import AddressFiledCheckout from "./AddressFiledCheckout";
+import PaymentFiledCheckout from "./PaymentMethodFiledCheckout";
+import PCheckout from "./PCheckout";
 export default function Index() {
   const [discount, setDiscount] = useState(0); // Check this initial value
   const [couponApplied, setCouponApplied] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [cartId, setCartId] = useState(null);
   const [country, setCountry] = useState(null); // الدولة بشكل افتراضي
+
+  const [isVaildEntries, setIsVaildEntries] = useState(false); // الدولة بشكل افتراضي
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -42,26 +46,10 @@ export default function Index() {
     }
   }, []);
 
-  // const calculateTotal = () => {
-  //   const subtotal = cartItems.reduce(
-  //     (total, item) => total + item.price * item.quantity,
-  //     0
-  //   );
-  //   const discountAmount = discount;
-  //   const totalAfterDiscount = subtotal - discountAmount;
-
-  //   return { subtotal, discountAmount, totalAfterDiscount };
-  // };
-
-  // const { subtotal, discountAmount, totalAfterDiscount } = calculateTotal();
-
   return (
     <div>
       <PageHeader title="Checkout" />
-      <AddressFiledCheckout
-        country={country || "Jordan"}
-        setCountry={setCountry}
-      />
+      <PCheckout country={country || "Jordan"} setCountry={setCountry} />
       <div className="container">
         <div className="row">
           <div className="col-12 col-sm-12 col-md-12 col-lg-8 main-col">

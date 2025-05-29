@@ -10,6 +10,7 @@ import { baseUrl } from "../API/ApiConfig";
 import { useCart } from "../../Context/CartContext";
 import { useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext";
+
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -71,8 +72,6 @@ const Index = () => {
 
       if (response.ok && data.token) {
         localStorage.setItem("token", data.token);
-        const expirationTime = Date.now() + 24 * 60 * 60 * 1000; // 24 ساعة بالميلي ثانية
-        localStorage.setItem("expiration", expirationTime.toString());
         if (data.user && data.user.id) {
           localStorage.setItem("userId", data.user.id);
           ctx.login(data.token, data.user.id);

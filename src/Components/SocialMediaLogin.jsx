@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { baseUrl } from "../Pages/API/ApiConfig";
 
 const SocialMediaLogin = () => {
   return (
@@ -19,7 +20,7 @@ const SocialMediaLogin = () => {
           <i className="fa-brands fa-facebook-f mx-1"></i> facebook
         </Link>
         <Link
-          to=""
+          to={baseUrl + "/api/auth/google"}
           className="social-link facebook rounded-5 d-flex-justify-center"
           style={{ backgroundColor: "red" }}
         >

@@ -11,6 +11,7 @@ const AccountLinks = () => {
   const checkAuth = useContext(AuthContext);
 
   const handleLogout = () => {
+    
     checkAuth.logout();
     updateCart();
     navigate("/LogIn");
@@ -67,7 +68,7 @@ const AccountMenu = () => {
         {checkAuth.isAuthenticated ? (
           <i className="fa-solid fa-user fa-xl" />
         ) : (
-          <i class="fa-solid fa-right-to-bracket fa-xl"></i>
+          <i className="fa-solid fa-right-to-bracket fa-xl"></i>
         )}
       </div>
       <div id="accountBox">

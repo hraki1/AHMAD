@@ -823,8 +823,6 @@ export default function Checkout({ country, setCountry }) {
               checkoutLink="/Payment"
             />
           </div>
-          {/* End Shipping Method  */}
-          {/*  */}
         </div>
       </form>
     </div>

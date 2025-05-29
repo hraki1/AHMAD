@@ -29,7 +29,6 @@ export const CartContext = createContext({
   removeCoupon: () => {},
 });
 
-
 export function CartProvider({ children }) {
   const [cartSummary, setCartSummary] = useState({
     subtotal: 0,
@@ -73,7 +72,7 @@ export function CartProvider({ children }) {
   const updateCartState = useCallback((data) => {
     setCartId(data.cart_id || null);
     setCartSummary({
-      subtotal: data.sub_total || 0,
+      subtotal: data.sub_total_with_discount || 0,
       total: data.grand_total || 0,
       discount: data.discount_amount || 0,
       shipping: data.shipping_fee_incl_tax || 0,

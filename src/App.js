@@ -99,7 +99,6 @@ function App() {
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-
           <Footer />
           <ScrollTop />
         </div>
