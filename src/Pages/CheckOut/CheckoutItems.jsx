@@ -47,13 +47,6 @@ export default function CheckoutItems({ btnName, checkoutLink = "/CheckOut" }) {
         <Link to="/ShopGrid" className="btn btn-outline-secondary">
           Continue shopping
         </Link>
-        <Link
-          to={checkoutLink}
-          className="btn btn-primary"
-          disabled={isLoading}
-        >
-          {btnName}
-        </Link>
       </div>
     </div>
   );

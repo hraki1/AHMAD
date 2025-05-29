@@ -12,6 +12,7 @@ const AccountLinks = () => {
   const { t } = useTranslation();
 
   const handleLogout = () => {
+    
     checkAuth.logout();
     updateCart();
     navigate("/LogIn");
@@ -68,6 +69,8 @@ const AccountMenu = () => {
         {checkAuth.isAuthenticated ? (
           <i className="fa-solid fa-user fa-xl" />
         ) : (
+          <i className="fa-solid fa-right-to-bracket fa-xl"></i>
+
           <i className="fa-solid fa-right-to-bracket fa-xl" />
         )}
       </div>
