@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../Context/CartContext";
 import { useContext } from "react";
 import { AuthContext } from "../../../Context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const AccountLinks = () => {
   const navigate = useNavigate();
   const { updateCart } = useCart();
-
   const checkAuth = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const handleLogout = () => {
     
@@ -18,19 +19,19 @@ const AccountLinks = () => {
   };
 
   const linkSign = [
-    { href: "/MYAccount", icon: "fa-address-card", label: "My Account" },
-    { href: "/Wishlist", icon: "fa-heart", label: "Wishlist" },
+    { href: "/MYAccount", icon: "fa-address-card", label: t("MyAccount") },
+    { href: "/Wishlist", icon: "fa-heart", label: t("Wishlist") },
     {
       onClick: handleLogout,
       icon: "fa-right-from-bracket",
-      label: "Sign Out",
+      label: t("SignOut"),
     },
   ];
 
   const linkOut = [
-    { href: "/LogIn", icon: "fa-right-to-bracket", label: "LogIn" },
-    { href: "/SignUp", icon: "fa-user", label: "SignUp" },
-    { href: "/Wishlist", icon: "fa-heart", label: "Wishlist" },
+    { href: "/LogIn", icon: "fa-right-to-bracket", label: t("LogIn") },
+    { href: "/SignUp", icon: "fa-user", label: t("SignUp") },
+    { href: "/Wishlist", icon: "fa-heart", label: t("Wishlist") },
   ];
 
   return (
@@ -69,6 +70,8 @@ const AccountMenu = () => {
           <i className="fa-solid fa-user fa-xl" />
         ) : (
           <i className="fa-solid fa-right-to-bracket fa-xl"></i>
+
+          <i className="fa-solid fa-right-to-bracket fa-xl" />
         )}
       </div>
       <div id="accountBox">

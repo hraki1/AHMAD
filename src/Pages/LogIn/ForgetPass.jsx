@@ -44,7 +44,7 @@ export default function ForgetPass() {
   return (
     <div>
       <Toaster />
-      <PageHeader title="Forget Password" />
+      <PageHeader title="Forget Password" hideHome={true} />
       <div className="container">
         <div className="login-register pt-2 mt-5 mb-5">
           <div className="row">

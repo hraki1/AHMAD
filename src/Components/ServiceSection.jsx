@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 
 /**
  * @param services
@@ -10,6 +11,8 @@ export default function ServiceSection({
   pageType,
   titleClass,
 }) {
+  const { t } = useTranslation();
+
   return (
     <section
       className={`section service-section ${
@@ -24,7 +27,7 @@ export default function ServiceSection({
                 <i className={`icon  ${s.icon}`} aria-hidden="true"></i>
               </div>
               <div className="service-content">
-                <div className={`title mb-2 ${titleClass}`}>{s.title}</div>
+                <div className={`title mb-2 ${titleClass}`}>{t(s.title)}</div>
                 {s.link ? (
                   <a
                     href={s.link}
@@ -32,10 +35,10 @@ export default function ServiceSection({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {s.subtitle}
+                    {t(s.subtitle)}
                   </a>
                 ) : (
-                  <span className="text-muted">{s.subtitle}</span>
+                  <span className="text-muted">{t(s.subtitle)}</span>
                 )}
               </div>
             </div>

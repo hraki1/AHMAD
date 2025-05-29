@@ -1,24 +1,25 @@
 import React from "react";
-
+import { useTranslation } from "react-i18next";
 const StickyMenubarMobile = () => {
+  const { t } = useTranslation();
   return (
     <div className="menubar-mobile d-flex align-items-center justify-content-between d-lg-none">
       <div className="menubar-shop menubar-item">
         <a href="shop-grid-view.html">
           <i className="menubar-icon anm anm-th-large-l"></i>
-          <span className="menubar-label">Shop</span>
+          <span className="menubar-label">{t("Shop")}</span>
         </a>
       </div>
       <div className="menubar-account menubar-item">
         <a href="my-account.html">
           <i className="menubar-icon icon anm anm-user-al"></i>
-          <span className="menubar-label">Account</span>
+          <span className="menubar-label">{t("MyAccount")}</span>
         </a>
       </div>
       <div className="menubar-search menubar-item">
         <a href="index.html">
           <span className="menubar-icon anm anm-home-l"></span>
-          <span className="menubar-label">Home</span>
+          <span className="menubar-label">{t("Home")}</span>
         </a>
       </div>
       <div className="menubar-wish menubar-item">
@@ -27,7 +28,7 @@ const StickyMenubarMobile = () => {
             <i className="menubar-icon icon anm anm-heart-l"></i>
             <span className="wishlist-count counter menubar-count">0</span>
           </span>
-          <span className="menubar-label">Wishlist</span>
+          <span className="menubar-label">{t("Wishlist")}</span>
         </a>
       </div>
       <div className="menubar-cart menubar-item">
@@ -41,7 +42,7 @@ const StickyMenubarMobile = () => {
             <i className="menubar-icon icon anm anm-cart-l"></i>
             <span className="cart-count counter menubar-count">2</span>
           </span>
-          <span className="menubar-label">Cart</span>
+          <span className="menubar-label">{t("Cart")}</span>
         </a>
       </div>
     </div>

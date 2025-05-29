@@ -18,8 +18,10 @@ export default function AddressFieldCheckout({
   startPaymentHandler,
   isPaymentLoading,
 }) {
+import { useTranslation } from "react-i18next";
+export default function AddressFiledCheckout({ country, setCountry }) {
   const { user, isLoading: authIsLoading } = useContext(AuthContext);
-
+  const { t } = useTranslation();
   const userInformation = { ...user };
 
   const { countries, loading, error } = useCountriesData();
@@ -690,6 +692,45 @@ export default function AddressFieldCheckout({
                       />
                     )}
                   </div>
+                  )}
+                </fieldset>
+
+                <div className="d-flex gap-2 mt-2">
+                  {selectedSavedAddress && !isEditing && (
+                    <Button
+                      label={t("Edit Address")}
+                      type={"button"}
+                      primary={isEditing}
+                      outline={!isEditing}
+                      onClick={enableEditHandler}
+                    />
+                  )}
+
+                  {selectedSavedAddress && isEditing && (
+                    <Button
+                      label={t("Save")}
+                      type={"submit"}
+                      primary={isEditing}
+                      outline={!isEditing}
+                    />
+                  )}
+                  {selectedSavedAddress && isEditing && (
+                    <Button
+                      label={t("Cancel Edit")}
+                      type={"button"}
+                      primary={isEditing}
+                      outline={!isEditing}
+                      onClick={cancelEditHandler}
+                    />
+                  )}
+                  {showConfirmAddress && (
+                    <Button
+                      className=""
+                      label={t("Confirm Address")}
+                      type="submit"
+                      btn-secondary
+                    />
+                  )}
                 </div>
               </div>
             </div>

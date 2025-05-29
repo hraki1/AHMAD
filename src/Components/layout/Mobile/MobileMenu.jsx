@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import useFetchCategoryandSub from "../Header/useFetchCategoryandSub"; // Adjust the path as needed
 import { AuthContext } from "../../../Context/AuthContext";
 import { useCart } from "../../../Context/CartContext";
+import { useTranslation } from "react-i18next";
 
 const AccountLinksMobile = ({ toggleMenu }) => {
   const navigate = useNavigate();
   const { updateCart } = useCart();
   const { isAuthenticated, logout } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const handleLogoutMobile = () => {
     logout();
@@ -28,7 +30,7 @@ const AccountLinksMobile = ({ toggleMenu }) => {
               className="d-flex align-items-center"
               onClick={toggleMenu}
             >
-              <i className="fa-solid fa-address-card me-1"></i> My Account
+              <i className="fa-solid fa-address-card me-1"></i> {t("MyAccount")}
             </Link>
           </li>
           <li className="mb-3 pt-1">
@@ -37,7 +39,7 @@ const AccountLinksMobile = ({ toggleMenu }) => {
               className="d-flex align-items-center"
               onClick={toggleMenu}
             >
-              <i className="fa-solid fa-heart me-1"></i> Wishlist
+              <i className="fa-solid fa-heart me-1"></i> {t("Wishlist")}
             </Link>
           </li>
           <li className="pt-1">
@@ -46,7 +48,8 @@ const AccountLinksMobile = ({ toggleMenu }) => {
               className="d-flex align-items-center btn-link p-0 text-start"
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              <i className="fa-solid fa-right-from-bracket me-1"></i> Sign Out
+              <i className="fa-solid fa-right-from-bracket me-1"></i>{" "}
+              {t("SignOut")}
             </button>
           </li>
         </>
@@ -58,7 +61,7 @@ const AccountLinksMobile = ({ toggleMenu }) => {
               className="d-flex align-items-center"
               onClick={toggleMenu}
             >
-              <i className="fa-solid fa-right-to-bracket me-1"></i> Sign In
+              <i className="fa-solid fa-right-to-bracket me-1"></i> {t("LogIn")}
             </Link>
           </li>
           <li className="mb-3 pt-1">
@@ -67,7 +70,7 @@ const AccountLinksMobile = ({ toggleMenu }) => {
               className="d-flex align-items-center"
               onClick={toggleMenu}
             >
-              <i className="fa-solid fa-user me-1"></i> Register
+              <i className="fa-solid fa-user me-1"></i> {t("SignUp")}
             </Link>
           </li>
           <li className="pt-1">
@@ -76,7 +79,7 @@ const AccountLinksMobile = ({ toggleMenu }) => {
               className="d-flex align-items-center"
               onClick={toggleMenu}
             >
-              <i className="fa-solid fa-heart me-1"></i> Wishlist
+              <i className="fa-solid fa-heart me-1"></i> {t("Wishlist")}
             </Link>
           </li>
         </>
@@ -95,8 +98,8 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
   });
 
   const [openCats, setOpenCats] = useState({});
-
   const { categories, loading, error } = useFetchCategoryandSub();
+  const { t } = useTranslation();
 
   const toggleDropdown = (key, e) => {
     e.preventDefault();
@@ -107,7 +110,6 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
     }));
   };
 
-  // Open/close subcategories
   const toggleCatDropdown = (catId, e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -130,7 +132,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
         {/* HOME */}
         <li className="lvl1 parent megamenu">
           <Link to="#" onClick={(e) => e.preventDefault()}>
-            Home{" "}
+            {t("Home")}
             <i
               className="icon fa-solid fa-bars"
               onClick={(e) => toggleDropdown("home", e)}
@@ -142,7 +144,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
               <li>
                 <div className="d-flex justify-content-between align-items-center">
                   <Link to="/" className="site-nav" onClick={toggleMenu}>
-                    Home
+                    {t("Home")}
                   </Link>
                   <i
                     className="icon fa-solid fa-bars me-2"
@@ -167,7 +169,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
         {/* SHOP - CATEGORIES */}
         <li className="lvl1 parent megamenu">
           <Link to="#" onClick={(e) => e.preventDefault()}>
-            Categories{" "}
+            {t("Categories")}
             <i
               className="icon fa-solid fa-bars"
               onClick={(e) => toggleDropdown("shop", e)}
@@ -176,8 +178,8 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
           </Link>
           {dropdowns.shop && (
             <ul className="lvl-2 d-block" id="shop-dropdown">
-              {loading && <li>Loading...</li>}
-              {error && <li>Error When Get Data</li>}
+              {loading && <li>{t("Loading...")}</li>}
+              {error && <li>{t("Error When Get Data")}</li>}
               {!loading &&
                 !error &&
                 categories.length > 0 &&
@@ -186,7 +188,6 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
                     (cat) => cat.parentId === null || cat.parentId === undefined
                   )
                   .map((mainCat) => {
-                    // Sub Category
                     const subCategories = categories.filter(
                       (subCat) => subCat.parentId === mainCat.id
                     );
@@ -208,7 +209,6 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
                             ></i>
                           )}
                         </div>
-                        {/* Sub Category */}
                         {subCategories.length > 0 && openCats[mainCat.id] && (
                           <ul className="lvl-3 d-block ms-3">
                             {subCategories.map((subCat) => (
@@ -234,7 +234,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
         {/* Pages */}
         <li className="lvl1 parent megamenu">
           <Link to="#" onClick={(e) => e.preventDefault()}>
-            Pages{" "}
+            {t("Pages")}
             <i
               className="icon fa-solid fa-bars"
               onClick={(e) => toggleDropdown("pages", e)}
@@ -245,27 +245,27 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
             <ul className="lvl-2 d-block" id="pages-dropdown">
               <li>
                 <Link to="/AboutUs" className="site-nav" onClick={toggleMenu}>
-                  About Us
+                  {t("AboutUs")}
                 </Link>
               </li>
               <li>
                 <Link to="/ContactUs" className="site-nav" onClick={toggleMenu}>
-                  Contact Us
+                  {t("ContactUs")}
                 </Link>
               </li>
               <li>
                 <Link to="/Portfolio" className="site-nav" onClick={toggleMenu}>
-                  Portfolio Page
+                  {t("Portfolio")}
                 </Link>
               </li>
               <li>
                 <Link to="/faq" className="site-nav" onClick={toggleMenu}>
-                  FAQ
+                  {t("FAQ")}
                 </Link>
               </li>
               <li>
                 <Link to="/CMS" className="site-nav" onClick={toggleMenu}>
-                  CMS Page
+                  {t("CMS")}
                 </Link>
               </li>
             </ul>
@@ -275,7 +275,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
         {/* Blog */}
         <li className="lvl1 parent megamenu">
           <Link to="#" onClick={(e) => e.preventDefault()}>
-            Blog{" "}
+            {t("Blog")}
             <i
               className="icon fa-solid fa-bars"
               onClick={(e) => toggleDropdown("blog", e)}
@@ -286,7 +286,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
             <ul className="lvl-2 d-block" id="blog-dropdown">
               <li>
                 <Link to="/ShopGrid" className="site-nav" onClick={toggleMenu}>
-                  ShopGrid
+                  {t("ShopGrid")}
                 </Link>
               </li>
               <li>
@@ -295,12 +295,12 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
                   className="site-nav"
                   onClick={toggleMenu}
                 >
-                  Collection
+                  {t("Collection")}
                 </Link>
               </li>
               <li>
                 <Link to="/Wishlist" className="site-nav" onClick={toggleMenu}>
-                  Wishlist
+                  {t("Wishlist")}
                 </Link>
               </li>
             </ul>
@@ -308,18 +308,18 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
         </li>
 
         {/* Bottom Section */}
-
         <li className="mobile-menu-bottom">
           <div className="mobile-links">
             <ul className="list-inline d-inline-flex flex-column w-100">
               <AccountLinksMobile toggleMenu={toggleMenu} />
-              <li className="Main-title-mobile">Need Help?</li>
+              <li className="Main-title-mobile">{t("NeedHelp")}</li>
               <li className="mb-3 pt-1">
                 <a
                   href="tel:401234567890"
-                  className="d-flex align-items-center"
+                  className="d-flex align-items-center "
                 >
-                  <i className="fa-solid fa-phone me-1"></i> (+40) 123 456 7890
+                  <i className="fa-solid fa-phone me-1 lab-ltr"></i>
+                  <div className="lab-ltr">{t("Phone")}</div>
                 </a>
               </li>
               <li className="mb-3 pt-1">
@@ -333,7 +333,7 @@ const MobileNav = ({ isMenuOpen, toggleMenu }) => {
             </ul>
           </div>
           <div className="mobile-follow mt-2">
-            <div className="Main-title-mobile">Follow Us</div>
+            <div className="Main-title-mobile">{t("FollowUs")}</div>
             <ul className="list-inline social-icons d-inline-flex mt-1">
               <li className="list-inline-item">
                 <Link to="#" title="Facebook">
