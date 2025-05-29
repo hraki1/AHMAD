@@ -56,45 +56,6 @@ function App() {
     <Router>
       <TopHeader />
 
-          <Footer />
-          <ScrollTop />
-        </div>
-      </Router>
-    );
-  } else if (!isAuthenticated && !isLoading) {
-    routes = (
-      <Router>
-        <ScrollToTop />
-        <div className="App">
-          <TopHeader />
-          <Header />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/AboutUs" element={<AboutUsPage />} />
-            <Route path="/Cart" element={<CartPage />} />
-            <Route path="/CMS" element={<Cms />} />
-            <Route path="/Collection" element={<Collection />} />
-            <Route path="/ContactUs" element={<Contact />} />
-            <Route path="/FAQ" element={<FAQ />} />
-            <Route path="/Portfolio" element={<Portfolio />} />
-            <Route path="/Product/:url_key" element={<Product />} />
-            <Route path="/ShopGrid" element={<ShopGrid />} />
-            <Route path="/Category" element={<Category />} />
-            <Route path="/Wishlist" element={<Wishlist />} />
-            <Route path="/SignUp" element={<Sign />} />
-            <Route path="/LogIn" element={<Login />} />
-            <Route path="/Brands" element={<Brands />} />
-            <Route path="/ForgetPass" element={<ForgetPass />} />
-            <Route path="/reset-password/:token" element={<ResetPassword />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Footer />
-          <ScrollTop />
-        </div>
-      </Router>
-    );
-  }
-
       <Routes>
         <Route
           element={
