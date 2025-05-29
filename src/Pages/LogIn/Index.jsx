@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import SocialMediaLogin from "../../Components/SocialMediaLogin";
 import { Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import Button from "../../Components/common/Button";
-import { useLocation } from "react-router-dom";
 import { baseUrl } from "../API/ApiConfig";
 import { useCart } from "../../Context/CartContext";
 import { useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext";
+
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -21,8 +20,10 @@ const Index = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const isRTL = document.documentElement.dir === "rtl";
 
   const ctx = useContext(AuthContext);
+  const from = location.state?.from?.pathname || "/";
 
   const [formInput, setFormInput] = useState({
     email: "",
@@ -67,12 +68,11 @@ const Index = () => {
 
       const data = await response.json();
 
-      console.log(data);
-
       if (response.ok && data.token) {
         localStorage.setItem("token", data.token);
-        const expirationTime = Date.now() + 24 * 60 * 60 * 1000; // 24 ساعة بالميلي ثانية
+        const expirationTime = Date.now() + 24 * 60 * 60 * 1000;
         localStorage.setItem("expiration", expirationTime.toString());
+
         if (data.user && data.user.id) {
           localStorage.setItem("userId", data.user.id);
           ctx.login(data.token, data.user.id);
@@ -83,9 +83,10 @@ const Index = () => {
         } else {
           localStorage.removeItem("rememberedEmail");
         }
+
         await updateCart();
 
-        navigate(redirectPath);
+        navigate(from || redirectPath, { replace: true });
       } else {
         alert(data.message || "Login failed");
       }
@@ -154,7 +155,8 @@ const Index = () => {
                         />
                         <button
                           type="button"
-                          className="password-toggle-btn position-absolute top-50 end-0 translate-middle-y bg-transparent border-0 me-2"
+                          className="password-toggle-btn position-absolute top-50 translate-middle-y bg-transparent border-0 me-2"
+                          style={{ [isRTL ? "left" : "right"]: 0 }}
                           onClick={togglePasswordVisibility}
                           aria-label={
                             showPassword ? "Hide password" : "Show password"

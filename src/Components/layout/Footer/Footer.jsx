@@ -1,14 +1,17 @@
-// File: Footer.jsx
 import React, { useState } from "react";
 import CollapsibleLinks from "./CollapsibleLinks";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
   const [subscribe, setSubscribe] = useState("");
+  const { t } = useTranslation();
+
   function subscribes(e) {
     e.preventDefault();
     console.log("Subscribed with email: ", subscribe);
   }
+
   return (
     <>
       <div className="footer">
@@ -23,12 +26,9 @@ const Footer = () => {
               <div className="row align-items-center">
                 <div className="col-12 col-md-6 mb-3 mb-md-0">
                   <div className="main-italic mb-1">
-                    Sign Up Our Newsletter &amp; Get 10% OFF
+                    {t("Newsletter_Title")}
                   </div>
-                  <div className="main-title-2">
-                    Sign up to stay in the loop. Receive updates, access to
-                    exclusive deals, and more.
-                  </div>
+                  <div className="main-title-2">{t("Newsletter_Subtitle")}</div>
                 </div>
                 <div className="col-12 col-md-6">
                   <div className="input-group">
@@ -36,7 +36,7 @@ const Footer = () => {
                       type="email"
                       className="form-control newsletter-input"
                       name="email"
-                      placeholder="Enter your email address..."
+                      placeholder={t("Enter_email")}
                       value={subscribe}
                       onChange={(e) => setSubscribe(e.target.value)}
                     />
@@ -45,7 +45,7 @@ const Footer = () => {
                       className="btn btn-secondary newsletter-submit"
                       name="commit"
                     >
-                      Subscribe
+                      {t("Subscribe")}
                     </button>
                   </div>
                 </div>
@@ -54,115 +54,110 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* ===== Footer Top ===== */}
         <div className="footer-top">
           <div className="container">
             <div className="row">
               <div className="col-12 col-md-3">
-                <CollapsibleLinks title="Informations">
+                <CollapsibleLinks title={t("Informations")}>
                   <li>
-                    <Link to="/MYAccount">My Account</Link>
+                    <Link to="/MYAccount">{t("My_Account")}</Link>
                   </li>
                   <li>
-                    <Link to="/AboutUs">About us</Link>
+                    <Link to="/AboutUs">{t("About_us")}</Link>
                   </li>
                   <li>
-                    <Link to="/LogIn">Login</Link>
+                    <Link to="/LogIn">{t("Login")}</Link>
                   </li>
                   <li>
-                    <Link to="/SignUp">SignUp</Link>
-                  </li>
-                </CollapsibleLinks>
-              </div>
-
-              <div className="col-12 col-md-3">
-                <CollapsibleLinks title="Quick Shop">
-                  <li>
-                    <Link to="/Collection">Collection</Link>
-                  </li>
-                  <li>
-                    <Link to="/ShopGrid">ShopGrid</Link>
-                  </li>
-                  <li>
-                    <Link to="/Product">Product</Link>
-                  </li>
-                  <li>
-                    <Link to="/Wishlist">Wishlist</Link>
-                  </li>
-                  <li>
-                    <Link to="/CheckOut">CheckOut</Link>
-                  </li>
-                  <li>
-                    <Link to="/Cart">Cart</Link>
+                    <Link to="/SignUp">{t("SignUp")}</Link>
                   </li>
                 </CollapsibleLinks>
               </div>
 
               <div className="col-12 col-md-3">
-                <CollapsibleLinks title="Customer Services">
+                <CollapsibleLinks title={t("Quick_Shop")}>
                   <li>
-                    <Link to="/CMS">CMS</Link>
+                    <Link to="/Collection">{t("Collection")}</Link>
                   </li>
                   <li>
-                    <Link to="/FAQ">FAQ</Link>
+                    <Link to="/ShopGrid">{t("ShopGrid")}</Link>
                   </li>
                   <li>
-                    <Link to="/MYAccount">MYAccount</Link>
+                    <Link to="/Product">{t("Product")}</Link>
                   </li>
                   <li>
-                    <Link to="/ContactUs">ContactUs</Link>
+                    <Link to="/Wishlist">{t("Wishlist")}</Link>
+                  </li>
+                  <li>
+                    <Link to="/CheckOut">{t("CheckOut")}</Link>
+                  </li>
+                  <li>
+                    <Link to="/Cart">{t("Cart")}</Link>
+                  </li>
+                </CollapsibleLinks>
+              </div>
+
+              <div className="col-12 col-md-3">
+                <CollapsibleLinks title={t("Customer_Services")}>
+                  <li>
+                    <Link to="/CMS">{t("CMS")}</Link>
+                  </li>
+                  <li>
+                    <Link to="/FAQ">{t("FAQ")}</Link>
+                  </li>
+                  <li>
+                    <Link to="/MYAccount">{t("My_Account")}</Link>
+                  </li>
+                  <li>
+                    <Link to="/ContactUs">{t("ContactUs")}</Link>
                   </li>
                 </CollapsibleLinks>
               </div>
 
               <div className="col-12 col-md-3 footer-contact">
-                <h4 className="h4 mb-3">Contact Us</h4>
-
+                <h4 className="h4 mb-3">{t("Contact_Us")}</h4>
                 <p className="d-flex align-items-center mb-2">
                   <i className="fa-solid fa-location-dot me-2 pt-1" />
-                  55 Amman Khalda, 2568 street, 23568 JO
+                  {t("Address")}
                 </p>
-
                 <p className="d-flex align-items-center mb-2">
                   <i className="fa-solid fa-phone me-2" />
-                  <a href="tel:401234567890">(+40) 123 456 7890</a>
+                  <a href="tel:401234567890">{t("Phone")}</a>
                 </p>
-
                 <p className="d-flex align-items-center">
                   <i className="fa-solid fa-envelope me-2" />
                   <a href="mailto:info@example.com">info@example.com</a>
                 </p>
-
                 <ul className="list-inline social-icons mt-3">
                   <li className="list-inline-item">
-                    <a href="#">
+                    <Link to="#">
                       <i className="fab fa-facebook-f" />
-                    </a>
+                    </Link>
                   </li>
                   <li className="list-inline-item">
-                    <a href="#">
+                    <Link to="#">
                       <i className="fab fa-twitter" />
-                    </a>
+                    </Link>
                   </li>
                   <li className="list-inline-item">
-                    <a href="#">
+                    <Link to="#">
                       <i className="fab fa-pinterest-p" />
-                    </a>
+                    </Link>
                   </li>
                   <li className="list-inline-item">
-                    <a href="#">
+                    <Link to="#">
                       <i className="fab fa-linkedin-in" />
-                    </a>
+                    </Link>
                   </li>
                   <li className="list-inline-item">
-                    <a href="#">
+                    <Link to="#">
                       <i className="fab fa-instagram" />
-                    </a>
+                    </Link>
                   </li>
                   <li className="list-inline-item">
-                    <a href="#">
+                    <Link to="#">
                       <i className="fab fa-youtube" />
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -184,9 +179,7 @@ const Footer = () => {
                   <i className="fa-brands fa-cc-paypal fa-2xl me-2" />
                 </li>
               </ul>
-              <div className="copytext">
-                &copy; 2024 Hema. All Rights Reserved.
-              </div>
+              <div className="copytext">{t("Footer_Copyright")}</div>
             </div>
           </div>
         </div>

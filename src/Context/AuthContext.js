@@ -1,11 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { baseUrl } from "../Pages/API/ApiConfig";
-import { data } from "react-router-dom";
 const BASE_URL = `${baseUrl}/api`;
 
-// واجهة القيم داخل الـ context
-
-// إنشاء السياق بقيم مبدئية
 export const AuthContext = createContext({
   isAuthenticated: false,
   token: null,

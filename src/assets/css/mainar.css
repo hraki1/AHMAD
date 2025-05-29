@@ -1,0 +1,89 @@
+/*  */
+.app.rtl .text-left {
+  text-align: right !important;
+}
+.app.rtl .text-right {
+  text-align: left !important;
+}
+.app.rtl .float-left {
+  float: right !important;
+}
+.app.rtl .float-right {
+  float: left !important;
+}
+
+.top-header .text-left {
+  text-align: left !important;
+}
+.top-header .text-right {
+  text-align: right !important;
+}
+.top-header .float-left {
+  float: left !important;
+}
+.top-header .float-right {
+  float: right !important;
+}
+
+.top-header .container {
+  direction: ltr;
+}
+
+.top-header .phone-container {
+  order: 1;
+  direction: ltr;
+}
+.fa-phone {
+  direction: ltr !important;
+}
+.lab-ltr {
+  direction: ltr !important;
+}
+.top-header .language-picker {
+  order: 2;
+  direction: ltr;
+}
+
+html[dir="rtl"] .language-picker {
+  direction: ltr;
+}
+
+/* Slider Prev */
+.slick-arrow {
+  direction: ltr !important; /* تجاهل اتجاه اللغة */
+}
+html[dir="rtl"] .slick-prev {
+  right: 10px !important;
+  left: auto !important;
+}
+
+html[dir="rtl"] .slick-next {
+  left: 10px !important;
+  right: auto !important;
+}
+
+/* لما الصفحة بالإنجليزي (LTR) */
+html[dir="ltr"] .slick-prev {
+  left: 10px !important;
+  right: auto !important;
+}
+
+html[dir="ltr"] .slick-next {
+  right: 10px !important;
+  left: auto !important;
+}
+/*  */
+html[dir="rtl"] .password-input-wrapper {
+  direction: ltr;
+}
+
+html[dir="rtl"] .password-toggle-btn {
+  left: 0;
+  right: auto;
+  transform: translateY(-50%);
+}
+
+html[dir="rtl"] .password-input-wrapper input {
+  padding-right: 15px;
+  padding-left: 40px;
+}

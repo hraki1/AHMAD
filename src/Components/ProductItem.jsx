@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { fetchAllProducts } from "../utils/fetchAllProducts";
 import { Link } from "react-router-dom";
 import Button from "./common/Button";
+import { useTranslation } from "react-i18next";
 
 export default function ProductItem() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
+
   useEffect(() => {
     const controller = new AbortController();
     const loadProducts = async () => {
@@ -138,7 +141,11 @@ export default function ProductItem() {
               </div>
             ))}
             <div className="view-collection text-center mt-4 mt-md-5">
-              <Button label="View Collection" to="/ShopGrid" primary={false} />
+              <Button
+                label={t("view_collection")}
+                to="/ShopGrid"
+                primary={false}
+              />
             </div>
           </div>
         </div>

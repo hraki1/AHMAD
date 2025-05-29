@@ -5,6 +5,7 @@ import PageHeader from "../../Components/layout/Header/PageHeader";
 import Button from "../../Components/common/Button";
 import { baseUrl } from "../API/ApiConfig";
 import toast, { Toaster } from "react-hot-toast";
+import { useTransition } from "react";
 export default function ResetPassword() {
   const [formInput, setFormInput] = useState({
     newPassword: "",
@@ -21,7 +22,7 @@ export default function ResetPassword() {
     setFormInput({ ...formInput, [e.target.name]: e.target.value });
     setMessage({ text: "", type: "" });
   };
-
+  const { t } = useTransition();
   const isStrong = (password) =>
     /[A-Z]/.test(password) &&
     /[a-z]/.test(password) &&
@@ -70,7 +71,7 @@ export default function ResetPassword() {
   return (
     <>
       <Toaster />
-      <PageHeader title="Reset Password" />
+      <PageHeader title="Reset Password" hideHome={true} />
       <div className="container">
         <div className="row justify-content-center pt-5">
           <div className="col-md-6">
@@ -126,7 +127,7 @@ export default function ResetPassword() {
                 )}
 
                 <Button
-                  label={loading ? "Resetting..." : "Reset Password"}
+                  label={loading ? t("Resetting") : t("Reset_password")}
                   type="submit"
                   primary
                   className="w-100 mt-3"

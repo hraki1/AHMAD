@@ -4,11 +4,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import useFetchCategories from "../Pages/Hooks/useFetchCategories";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useTranslation } from "react-i18next";
 
 export default function PopularCategories({
   showHeader = true,
-  italic = "Shop by category",
-  heading = "Popular Collections",
+  italic,
+  heading,
   selectedCategoryId,
   setSelectedCategoryId,
   setSelectedParentId,
@@ -20,9 +21,18 @@ export default function PopularCategories({
   forcedCategoryData,
   data = [],
 }) {
+  const { t } = useTranslation();
+
+  // تعيين القيم الافتراضية مع الترجمة
+  const defaultItalic = t("Shop_by_category");
+  const defaultHeading = t("Popular_Collections");
+
+  // استخدام القيم الممررة أو الترجمات الافتراضية
+  italic = italic || defaultItalic;
+  heading = heading || defaultHeading;
+
   const location = useLocation();
   const initialHierarchy = location.state?.categoryHierarchy || [];
-
   const [categoryHierarchy, setCategoryHierarchy] = useState([]);
 
   const parentId =
@@ -51,14 +61,14 @@ export default function PopularCategories({
         setCategoryHierarchy([
           {
             id: forcedParentId,
-            title: "Loading...",
+            title: t("Loading"),
             img: "",
             count: 0,
           },
         ]);
       }
     }
-  }, [forcedParentId, data]);
+  }, [forcedParentId, data, t]);
 
   useEffect(() => {
     if (sliderRef.current?.innerSlider) {
@@ -151,7 +161,9 @@ export default function PopularCategories({
           </div>
           <div className="details mt-3 text-center">
             <div className="popular-title">{c.title}</div>
-            <div className="counts-popular">{c.count} Products</div>
+            <div className="counts-popular">
+              {c.count} {t("Products")}
+            </div>
           </div>
         </div>
       ))}
@@ -175,14 +187,16 @@ export default function PopularCategories({
                 className="btn btn-outline-primary ms-2"
                 onClick={backOneLevel}
               >
-                Back One Level
+                {t("Back_One_Level")}
               </button>
             )}
           </div>
         )}
 
         {loading && (
-          <div className="text-center fs-5 text-muted my-5">Loading...</div>
+          <div className="text-center fs-5 text-muted my-5">
+            {t("Loading")}...
+          </div>
         )}
         {!loading && error && categories.length === 0 && (
           <div className="text-center fs-5 text-danger my-5">{error}</div>
@@ -190,8 +204,8 @@ export default function PopularCategories({
         {!loading && categories.length === 0 ? (
           <div className="text-center fs-5 text-muted my-5">
             {parentId
-              ? "No subcategories found for this category."
-              : "No main categories found."}
+              ? t("No_subcategories_found")
+              : t("No_main_categories_found")}
           </div>
         ) : (
           renderSlider()

@@ -9,6 +9,7 @@ import MobileMenu from "../Mobile/MobileMenu";
 import useFetchCategoryandSub from "./useFetchCategoryandSub";
 import { CartContext } from "../../../Context/CartContext";
 import { useWishlist } from "../../../Context/WishlistContext";
+import { useTranslation } from "react-i18next";
 
 const NavItem = ({ title, links }) => {
   return (
@@ -71,6 +72,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { categories, loading, error } = useFetchCategoryandSub();
   const { wishlistItems } = useWishlist();
+  const { t } = useTranslation();
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -123,12 +125,16 @@ const Header = () => {
           <div className="col-1 col-sm-1 col-md-1 col-lg-8 align-self-center d-menu-col cl-dis">
             <nav className="navigation" id="AccessibleNav">
               <ul id="siteNav" className="site-nav medium center">
-                <NavItem title="Home" links={[{ to: "/", label: "Home" }]} />
+                <NavItem
+                  title={t("Home")}
+                  links={[{ to: "/", label: t("Home") }]}
+                />
 
                 {!loading && !error && categories.length > 0 && (
                   <li className="megamenu head-drop-down">
                     <Link to="/ShopGrid">
-                      Categories <i className="fa-solid fa-angle-down ms-1" />
+                      {t("Categories")}{" "}
+                      <i className="fa-solid fa-angle-down ms-1" />
                     </Link>
                     <div className="megamenu style1">
                       <ul className="row grid--uniform mmWrapper">
@@ -176,23 +182,22 @@ const Header = () => {
                   </li>
                 )}
                 <NavItem
-                  title="Pages"
+                  title={t("Pages")}
                   links={[
-                    { to: "/AboutUs", label: "About Us" },
-                    { to: "/ContactUs", label: "Contact Us" },
-                    { to: "/Portfolio", label: "Portfolio Page" },
-                    { to: "/FAQ", label: "FAQs Page" },
-                    { to: "/CMS", label: "CMS Page" },
-                    { to: "/Cart", label: "Cart" },
+                    { to: "/AboutUs", label: t("AboutUs") },
+                    { to: "/ContactUs", label: t("ContactUs") },
+                    { to: "/Portfolio", label: t("Portfolio") },
+                    { to: "/FAQ", label: t("FAQ") },
+                    { to: "/CMS", label: t("CMS") },
+                    { to: "/Cart", label: t("Cart") },
                   ]}
                 />
                 <NavItem
-                  title="Blog"
+                  title={t("Blog")}
                   links={[
-                    { to: "/ShopGrid", label: "ShopGrid" },
-                    // { to: "/Product", label: "Product" },
-                    { to: "/Collection", label: "Collection" },
-                    { to: "/Wishlist", label: "Wishlist" },
+                    { to: "/ShopGrid", label: t("ShopGrid") },
+                    { to: "/Collection", label: t("Collection") },
+                    { to: "/Wishlist", label: t("Wishlist") },
                   ]}
                 />
               </ul>
@@ -227,7 +232,7 @@ const Header = () => {
             />
             <button
               type="button"
-              className="iconset pe-0 menu-icon js-mobile-nav-toggle mobile-nav--open d-lg-none"
+              className="iconset pe-0 menu-icon js-mobile-nav-toggle mobile-nav--open d-lg-none me-1"
               title="Menu"
               onClick={toggleMenu}
             >

@@ -5,6 +5,7 @@ import Button from "../../Components/common/Button";
 import brandIcon from "../../assets/images/icons/brand-icon.png";
 import useFetchBrands from "../Hooks/useFetchBrands";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 export default function TestimonialSection() {
   const settings = {
     slidesToShow: 3,
@@ -22,13 +23,13 @@ export default function TestimonialSection() {
     ],
   };
   const { brands, loading, error } = useFetchBrands();
-
+  const { t } = useTranslation();
   return (
     <section className="section home-blog-post">
       <div className="container">
         <div className="section-header">
-          <div className="main-italic mb-2 mt-0">Brands</div>
-          <div className="main-title-heading">Our brands</div>
+          <div className="main-italic mb-2 mt-0">{t("Brands")}</div>
+          <div className="main-title-heading">{t("Our_brands")}</div>
         </div>
 
         <div className="testimonial-wraper">
@@ -70,7 +71,7 @@ export default function TestimonialSection() {
           )}
 
           <div className="view-collection text-center mt-4 mt-md-5">
-            <Button label="View brands" to="/Brands" primary={false} />
+            <Button label={t("View_brands")} to="/Brands" primary={false} />
           </div>
         </div>
       </div>
