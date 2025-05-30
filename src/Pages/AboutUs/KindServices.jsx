@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import aboutImage from "../../assets/images/about/about4.jpg"; // استيراد الصورة
-import { accordionItems } from "./data";
 import { useTranslation } from "react-i18next";
 export default function KindServices() {
   const [activeAccordion, setActiveAccordion] = useState(null);

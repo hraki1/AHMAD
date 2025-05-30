@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
-    if (storedToken && storedUserId) {
+    if (storedToken) {
       verifyToken();
     } else {
       setIsLoading(false);

@@ -54,7 +54,8 @@ const DashboardSidebar = () => {
                 {dataAuth.user.avatar ? (
                   <img
                     className="rounded-circle blur-up"
-                    src={dataAuth.user.avatar}
+                    // src={dataAuth.user.avatar}
+                    src={imgprofile}
                     alt="user"
                     width="130"
                     loading="lazy"

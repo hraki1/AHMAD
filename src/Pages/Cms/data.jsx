@@ -1,3 +1,6 @@
+// Sections.jsx
+import React from "react";
+
 export const sections = [
   {
     title: "Payment Method",

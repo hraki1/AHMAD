@@ -123,13 +123,15 @@ export default function Cart({
         <Link to="/ShopGrid" className="btn btn-outline-secondary">
           Continue shopping
         </Link>
-        <Link
-          to={checkoutLink}
-          className="btn btn-primary"
-          disabled={isLoading}
-        >
-          {btnName}
-        </Link>
+        {cartItems.length === 0 && (
+          <Link
+            to={checkoutLink}
+            className="btn btn-primary"
+            disabled={isLoading}
+          >
+            {btnName}
+          </Link>
+        )}
       </div>
     </div>
   );

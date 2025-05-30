@@ -1,6 +1,5 @@
 import React from "react";
 import paymentimg from "../../assets/images/icons/safepayment.png";
-import { Link } from "react-router-dom";
 import { useCart } from "../../Context/CartContext";
 import { baseUrl } from "../../Pages/API/ApiConfig";
 

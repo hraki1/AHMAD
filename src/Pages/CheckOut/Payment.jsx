@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import CartSummary from "../Cart/CartSummary";
 import { useCart } from "../../Context/CartContext";
@@ -26,6 +26,10 @@ export default function Payment() {
   const [discount, setDiscount] = useState(0);
   const { cartId, updateCart } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    updateCart();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,7 +88,7 @@ export default function Payment() {
 
       console.log("Order placed successfully:", data);
       alert("Order placed successfully!");
-      await updateCart();
+       updateCart();
     } catch (error) {
       console.error("Order submission failed:", error.message);
       alert("Error placing order: " + error.message);

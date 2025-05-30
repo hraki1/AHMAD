@@ -16,6 +16,13 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 
+// استيراد الصور يدويًا
+import img1 from "../../assets/images/products/product2.jpg";
+import img2 from "../../assets/images/products/product2-1.jpg";
+import img3 from "../../assets/images/products/product2-2.jpg";
+
+const images = [img1, img2, img3];
+
 const QuickViewModal = ({ show, onHide }) => {
   return (
     <Modal
@@ -37,16 +44,14 @@ const QuickViewModal = ({ show, onHide }) => {
           <div className="col-12 col-sm-6 mb-3">
             <div id="quickView" className="carousel slide">
               <div className="carousel-inner">
-                {[...Array(6)].map((_, i) => (
+                {images.map((img, i) => (
                   <div
                     key={i}
                     className={`carousel-item ${i === 0 ? "active" : ""}`}
                   >
                     <img
                       className="rounded-0"
-                      src={require(`../../assets/images/products/product2${
-                        i === 0 ? "" : `-${i}`
-                      }.jpg`)}
+                      src={img}
                       alt="product"
                       title="Product"
                       width="625"
@@ -58,7 +63,7 @@ const QuickViewModal = ({ show, onHide }) => {
 
               {/* Carousel indicators */}
               <div className="carousel-indicators list-inline">
-                {[...Array(6)].map((_, i) => (
+                {images.map((img, i) => (
                   <div
                     key={i}
                     className={`list-inline-item ${i === 0 ? "active" : ""}`}
@@ -67,13 +72,11 @@ const QuickViewModal = ({ show, onHide }) => {
                   >
                     <img
                       className="rounded-0"
-                      src={require(`../../assets/images/products/product2${
-                        i === 0 ? "" : `-${i}`
-                      }.jpg`)}
+                      src={img}
                       alt="product"
                       title="Product"
-                      width="625"
-                      height="808"
+                      width="100"
+                      height="100"
                     />
                   </div>
                 ))}
@@ -185,7 +188,7 @@ const QuickViewModal = ({ show, onHide }) => {
             <div className="d-flex mb-3">
               <div className="quantity me-3">
                 <div className="qtyField">
-                  <a className="qtyBtn minus" href="#;">
+                  <a className="qtyBtn minus" href="#">
                     <FontAwesomeIcon icon={faMinus} />
                   </a>
                   <input
@@ -195,7 +198,7 @@ const QuickViewModal = ({ show, onHide }) => {
                     className="product-form__input qty"
                     readOnly
                   />
-                  <a className="qtyBtn plus" href="#;">
+                  <a className="qtyBtn plus" href="#">
                     <FontAwesomeIcon icon={faPlus} />
                   </a>
                 </div>

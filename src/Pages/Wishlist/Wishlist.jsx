@@ -1,14 +1,15 @@
 import { useWishlist } from "../../Context/WishlistContext";
 import { useState } from "react";
 import QuickViewModal from "../ProductModal/QuickViewModal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AddToCart } from "../API/AddToCart";
 import { toast } from "react-toastify";
-import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../../Context/CartContext";
 
 const Wishlist = () => {
-  const { wishlistItems, removeFromWishlist } = useWishlist();
+  const { wishlistItems, removeFromWishlist, addToWishlist } = useWishlist();
+  const { updateCart } = useCart();
+
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [addToCartStatus, setAddToCartStatus] = useState({
@@ -17,10 +18,9 @@ const Wishlist = () => {
     message: "",
     error: null,
   });
+
   const navigate = useNavigate();
   const location = useLocation();
-  const { addToWishlist } = useWishlist();
-  const { updateCart } = useCart(); // Get updateCart function from context
 
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
@@ -92,11 +92,12 @@ const Wishlist = () => {
 
     if (result.success) {
       toast.success(result.message);
-      await updateCart(); // Update cart state after adding
+      await updateCart();
     } else {
       toast.error(result.message || "Failed to add item.");
     }
   };
+
   const handleQuickView = (product, e) => {
     e.preventDefault();
     setSelectedProduct(product);
@@ -226,7 +227,7 @@ const Wishlist = () => {
                           {addToCartStatus.message}
                         </div>
                       )}
-                  </td>{" "}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -3,12 +3,12 @@ import Button from "../../Components/common/Button";
 import useCountriesData from "../Hooks/useCountriesData";
 import { baseUrl } from "../API/ApiConfig";
 import CartSummary from "./CartSummary";
-import { useCart } from "../../Context/CartContext";
 import { AuthContext } from "../../Context/AuthContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import toast, { Toaster } from "react-hot-toast";
-import { ArrowDown, ChevronDown } from "lucide-react";
-import PaymentFiledCheckout from "./PaymentMethodFiledCheckout";
+import { ChevronDown } from "lucide-react";
+import DelevaryFiledCheckout from "./DelevaryMethodFiledCheckout";
+import { addressValidate as validateForm } from "./addressValidation";
 
 export default function AddressFieldCheckout({
   country,
@@ -130,44 +130,6 @@ export default function AddressFieldCheckout({
     }));
   };
 
-  const validateForm = () => {
-    const errors = {};
-
-    if (!formData.fullName.trim()) {
-      errors.fullName = "Full Name is required.";
-    } else if (!/^[A-Za-z][A-Za-z0-9\s]*$/.test(formData.fullName)) {
-      errors.fullName =
-        "Full Name must start with a letter and contain only letters, numbers, and spaces.";
-    }
-
-    if (!formData.phoneNumber.trim()) {
-      errors.phoneNumber = "Phone Number is required.";
-    } else if (!/^\+\d+$/.test(formData.phoneNumber)) {
-      errors.phoneNumber =
-        "Phone Number must start with '+' and contain digits only.";
-    }
-
-    if (!formData.addressOne.trim()) {
-      errors.addressOne = "Address is required.";
-    }
-
-    if (!formData.postCode.trim()) {
-      errors.postCode = "Postcode is required.";
-    } else if (!/^\d+$/.test(formData.postCode)) {
-      errors.postCode = "Postcode must contain only numbers.";
-    }
-
-    if (!formData.country) {
-      errors.country = "Country is required.";
-    }
-
-    if (!formData.city) {
-      errors.city = "City is required.";
-    }
-
-    return errors;
-  };
-
   const handleSaveForm = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -176,7 +138,7 @@ export default function AddressFieldCheckout({
       return;
     }
 
-    const validationErrors = validateForm();
+    const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -346,9 +308,8 @@ export default function AddressFieldCheckout({
                 </div>
               </div>
 
-              {/* ***************************************************************** */}
               <div className="mt-5">
-                <PaymentFiledCheckout
+                <DelevaryFiledCheckout
                   country={country}
                   setCountry={setCountry}
                   onSelectDelevaryMethod={onSelectDelevaryMethod}

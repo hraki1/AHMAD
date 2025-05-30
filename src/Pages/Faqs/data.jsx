@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 export const servicesFaqs = [
   {
     icon: "fa-solid fa-truck fs-3",
@@ -15,7 +17,6 @@ export const servicesFaqs = [
       </>
     ),
   },
-
   {
     icon: "fa-regular fa-credit-card fs-3",
     title: (
@@ -24,7 +25,6 @@ export const servicesFaqs = [
       </>
     ),
   },
-
   {
     icon: "fa-regular fa-circle-user fs-3",
     title: (

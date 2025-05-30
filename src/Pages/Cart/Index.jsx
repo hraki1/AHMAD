@@ -29,6 +29,7 @@ export default function Index() {
     showShippingAndTax,
     setShowShippingAndTax,
     updateCart,
+    cartCount,
   } = useCart();
 
   useEffect(() => {
@@ -97,7 +98,11 @@ export default function Index() {
       <PageHeader title="Shopping Cart" />
       <div className="container">
         <div className="row">
-          <div className="col-12 col-sm-12 col-md-12 col-lg-8 main-col">
+          <div
+            className={`col-12 col-sm-12 col-md-12  ${
+              cartCount === 0 ? "col-lg-12" : "col-lg-8 "
+            } main-col`}
+          >
             <Cart
               cartItems={cartItems}
               setCartItems={setCartItems}
@@ -108,29 +113,34 @@ export default function Index() {
               btnName={"Proceed To Checkout"}
             />
           </div>
-          <div className="col-lg-4">
-            <CartSummary
-              btnName={"Proceed To Checkout"}
-              isPreview={true}
-              setCouponApplied={setCouponApplied}
-              setCouponMessage={setCouponMessage}
-              useGrandTotal={false}
-            />
-          </div>
+
+          {cartCount !== 0 && (
+            <div className="col-lg-4">
+              <CartSummary
+                btnName={"Proceed To Checkout"}
+                isPreview={true}
+                setCouponApplied={setCouponApplied}
+                setCouponMessage={setCouponMessage}
+                useGrandTotal={false}
+              />
+            </div>
+          )}
         </div>
 
-        <div className="row">
-          <div className="col-12">
-            <CartForms
-              cartId={cartId}
-              setCouponApplied={setCouponApplied}
-              setTotal={setTotal}
-              couponApplied={couponApplied}
-              message={couponMessage}
-              setMessage={setCouponMessage}
-            />
+        {cartCount !== 0 && (
+          <div className="row">
+            <div className="col-12">
+              <CartForms
+                cartId={cartId}
+                setCouponApplied={setCouponApplied}
+                setTotal={setTotal}
+                couponApplied={couponApplied}
+                message={couponMessage}
+                setMessage={setCouponMessage}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <ProductItem />
     </div>

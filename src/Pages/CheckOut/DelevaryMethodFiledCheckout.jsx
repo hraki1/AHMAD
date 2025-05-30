@@ -5,7 +5,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import toast, { Toaster } from "react-hot-toast";
 
-export default function PaymentFiledCheckout({
+export default function DelevaryFiledCheckout({
   country,
   onSelectDelevaryMethod,
 }) {
