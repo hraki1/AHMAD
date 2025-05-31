@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MiniCart from "../../../Pages/Cart/MiniCart";
 import logoSarah from "../../../assets/images/2.png";
 import AccountMenu from "./AccountMenu";
@@ -71,6 +71,8 @@ const Header = () => {
   const { wishlistItems } = useWishlist();
   const { t } = useTranslation();
 
+  const navigate = useNavigate();
+
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
@@ -111,7 +113,8 @@ const Header = () => {
   const handleSearchKeyPress = (e) => {
     if (e.key === "Enter") {
       console.log("Search: ", searchText);
-      // هنا ممكن تضيف منطق البحث أو إعادة التوجيه
+      navigate(`/search?query=${encodeURIComponent(searchText)}`);
+      setSearchText("");
     }
   };
 

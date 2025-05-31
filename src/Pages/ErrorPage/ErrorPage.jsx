@@ -2,9 +2,14 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Frown } from "lucide-react";
 
+import Header from "../../Components/layout/Header/Header";
+import TopHeader from "../../Components/layout/Header/TopHeader";
+
 const ErrorPage = () => {
   return (
     <>
+      <TopHeader />
+      <Header />
       <motion.div
         className="d-flex flex-column justify-content-center align-items-center vh-100 bg-dark text-white px-3"
         initial={{ opacity: 0 }}

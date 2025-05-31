@@ -17,6 +17,7 @@ import { AuthProvider } from "./Context/AuthContext";
 
 // i18n
 import i18n from "./i18n";
+import { SearchProvider } from "./Context/SearchContext";
 i18n.on("languageChanged", (lng) => {
   const dir = lng === "ar" ? "rtl" : "ltr";
   document.documentElement.dir = dir;
@@ -27,11 +28,13 @@ i18n.on("languageChanged", (lng) => {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <App />
-        </WishlistProvider>
-      </CartProvider>
+      <SearchProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <App />
+          </WishlistProvider>
+        </CartProvider>
+      </SearchProvider>
     </AuthProvider>
   </React.StrictMode>
 );
