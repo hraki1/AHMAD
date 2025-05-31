@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
+import Modal from "../../Components/UI/Modal";
 import CartSummary from "../Cart/CartSummary";
 import { useCart } from "../../Context/CartContext";
 import toast, { Toaster } from "react-hot-toast";
@@ -20,6 +21,9 @@ export default function Payment() {
   const [discount, setDiscount] = useState(0);
   const { cartId, updateCart, cartItems } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState();
+  const [modalMessage, setModalMessage] = useState();
 
   const navigate = useNavigate();
 
@@ -53,7 +57,7 @@ export default function Payment() {
 
   const handlerStripePayment = async () => {
     try {
-      const response = await fetch("http://localhost:3000/payment/checkout", {
+      const response = await fetch("http://localhost:9090/payment/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,6 +109,8 @@ export default function Payment() {
       }
 
       toast.success("Order placed successfully!");
+      setModalMessage("Order placed successfully!");
+      setIsModalOpen(true);
       updateCart();
     } catch (error) {
       console.error("Order submission failed:", error.message);
@@ -114,9 +120,26 @@ export default function Payment() {
     }
   };
 
+  function handleCloseModal() {
+    setIsModalOpen(false);
+    navigate("/");
+  }
+
   return (
     <>
       <Toaster />
+      <Modal open={isModalOpen}>
+        <div className="p-4 text-center">
+          <div className="d-flex justify-content-center">
+            <p className="mb-1 fs-4 text-success fw-bold">{modalMessage}</p>
+          </div>
+          <div className="d-flex justify-content-center gap-3 mt-4">
+            <button onClick={handleCloseModal} className="btn btn-primary px-4">
+              OK
+            </button>
+          </div>
+        </div>
+      </Modal>
       <PageHeader title="Payment" />
       <div className="container">
         <form className="checkout-form" onSubmit={(e) => e.preventDefault()}>
