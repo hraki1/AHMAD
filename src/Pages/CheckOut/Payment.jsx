@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import CartSummary from "../Cart/CartSummary";
 import { useCart } from "../../Context/CartContext";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function Payment() {
   const [formData, setFormData] = useState({
     deliveryMethod: "standard",
-    paymentMethod: "card",
+    paymentMethod: "cod",
     cardName: "",
     cardType: "",
     cardNumber: "",
@@ -14,6 +16,19 @@ export default function Payment() {
     expDate: "",
     paypalEmail: "",
   });
+
+  const [discount, setDiscount] = useState(0);
+  const { cartId, updateCart, cartItems } = useCart();
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!cartId) {
+      navigate("/cart");
+    }
+    updateCart();
+  }, []);
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -23,52 +38,55 @@ export default function Payment() {
     }));
   };
 
-  const [discount, setDiscount] = useState(0);
-  const { cartId, updateCart } = useCart();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const handlePlaceOrder = async () => {
+    const method = formData.paymentMethod;
+    if (method === "card") {
+      return handlerStripePayment();
+    } else if (method === "cod") {
+      return handleCashOnDeliveryOrder();
+    } else if (method === "paypal") {
+      toast.error("PayPal payment is currently not supported.");
+    } else {
+      toast.bind("Please select a payment method.");
+    }
+  };
 
-  useEffect(() => {
-    updateCart();
-  }, []);
+  const handlerStripePayment = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/payment/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cartItems }),
+      });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+      const resData = await response.json();
 
+      if (!response.ok) {
+        throw new Error(resData.message || "Stripe session creation failed.");
+      }
+
+      window.location.href = resData.url;
+    } catch (err) {
+      console.error("Stripe error:", err);
+      toast.error("Stripe payment failed. Please try again.");
+    }
+  };
+
+  const handleCashOnDeliveryOrder = async () => {
     const token = localStorage.getItem("token");
-
     if (!token) {
-      alert("You must be logged in to place an order.");
+      toast.error("You must be logged in to place an order.");
       return;
     }
 
     setIsProcessing(true);
 
-    const paymentMethodApiMap = {
-      card: "stripe",
-      paypal: "paypal",
-      cod: "cash_on_delivery",
-    };
-
-    const selectedPaymentMethod = paymentMethodApiMap[formData.paymentMethod];
-
-    // build payload
     const payload = {
-      cartId: cartId,
-      paymentMethod: selectedPaymentMethod,
+      cartId,
+      paymentMethod: "cash_on_delivery",
     };
-
-    // Add payment-specific data
-    if (formData.paymentMethod === "card") {
-      payload.cardDetails = {
-        name: formData.cardName,
-        type: formData.cardType,
-        number: formData.cardNumber,
-        cvv: formData.cvv,
-        expDate: formData.expDate,
-      };
-    } else if (formData.paymentMethod === "paypal") {
-      payload.paypalEmail = formData.paypalEmail;
-    }
 
     try {
       const response = await fetch("https://api.sareh-nomow.xyz/api/orders", {
@@ -86,12 +104,11 @@ export default function Payment() {
         throw new Error(data.message || "Failed to place order");
       }
 
-      console.log("Order placed successfully:", data);
-      alert("Order placed successfully!");
-       updateCart();
+      toast.success("Order placed successfully!");
+      updateCart();
     } catch (error) {
       console.error("Order submission failed:", error.message);
-      alert("Error placing order: " + error.message);
+      toast.error("Error placing order: " + error.message);
     } finally {
       setIsProcessing(false);
     }
@@ -99,14 +116,15 @@ export default function Payment() {
 
   return (
     <>
+      <Toaster />
       <PageHeader title="Payment" />
       <div className="container">
-        <form className="checkout-form" onSubmit={handleSubmit}>
+        <form className="checkout-form" onSubmit={(e) => e.preventDefault()}>
           <div className="row">
             <div className="col-md-8">
-              {/* Payment Methods */}
               <div className="block mb-4">
                 <h3 className="title mb-3">Payment Methods</h3>
+
                 {/* Credit Card */}
                 <div className="customRadio">
                   <input
@@ -119,70 +137,6 @@ export default function Payment() {
                   />
                   <label htmlFor="card">Pay with credit card</label>
                 </div>
-
-                {formData.paymentMethod === "card" && (
-                  <div className="card-body px-0">
-                    <div className="row">
-                      <div className="form-group col-md-6">
-                        <label htmlFor="cardName">Name on Card *</label>
-                        <input
-                          type="text"
-                          name="cardName"
-                          className="form-control"
-                          value={formData.cardName}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="form-group col-md-6">
-                        <label htmlFor="cardType">Credit Card Type *</label>
-                        <select
-                          name="cardType"
-                          className="form-control"
-                          value={formData.cardType}
-                          onChange={handleChange}
-                        >
-                          <option value="">Please Select</option>
-                          <option value="american-express">
-                            American Express
-                          </option>
-                          <option value="visa">Visa Card</option>
-                          <option value="mastercard">Master Card</option>
-                          <option value="discover">Discover Card</option>
-                        </select>
-                      </div>
-                      <div className="form-group col-md-4">
-                        <label htmlFor="cardNumber">Credit Card Number *</label>
-                        <input
-                          type="text"
-                          name="cardNumber"
-                          className="form-control"
-                          value={formData.cardNumber}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="form-group col-md-4">
-                        <label htmlFor="cvv">CVV Code *</label>
-                        <input
-                          type="text"
-                          name="cvv"
-                          className="form-control"
-                          value={formData.cvv}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="form-group col-md-4">
-                        <label htmlFor="expDate">Expiration Date *</label>
-                        <input
-                          type="date"
-                          name="expDate"
-                          className="form-control"
-                          value={formData.expDate}
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {/* Paypal */}
                 <div className="customRadio">
@@ -225,16 +179,15 @@ export default function Payment() {
               </div>
             </div>
 
-            {/* Cart Summary */}
             <div className="col-md-4">
               <CartSummary
                 tax={0}
                 shipping={0}
                 setDiscount={setDiscount}
-                btnName={"Place Order"}
+                btnName={isProcessing ? "Processing..." : "Place Order"}
                 useGrandTotal={true}
                 mode="payment"
-                onPlaceOrder={handleSubmit}
+                onPlaceOrder={handlePlaceOrder}
               />
             </div>
           </div>
