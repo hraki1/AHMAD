@@ -63,17 +63,6 @@ export default function Index() {
               checkoutLink="/Payment"
             />
           </div>
-          {/* <div className="col-lg-4 marg-btm-big">
-            <CartSummary
-              subtotal={subtotal}
-              discount={discountAmount}
-              tax={0}
-              shipping={0}
-              setDiscount={setDiscount}
-              btnName={"Payemnt"}
-              useGrandTotal={true}
-            />
-          </div> */}
         </div>
       </div>
     </div>

@@ -37,6 +37,8 @@ import Root from "./Pages/RootLayout/Root.jsx";
 import PaymentSuccess from "./Pages/SuccessPayment/Successpayment.jsx";
 import ErrorPage from "./Pages/ErrorPage/ErrorPage.jsx";
 
+import SearchResults from "./Pages/SearchResults/Index.jsx";
+
 const router = createBrowserRouter([
   {
     errorElement: <ErrorPage />,
@@ -52,6 +54,7 @@ const router = createBrowserRouter([
       { path: "/Portfolio", element: <Portfolio /> },
       { path: "/Product/:url_key", element: <Product /> },
       { path: "/ShopGrid", element: <ShopGrid /> },
+      { path: "search", element: <SearchResults /> },
       { path: "/Category", element: <Category /> },
       { path: "/Wishlist", element: <Wishlist /> },
       { path: "/SignUp", element: <Sign /> },
