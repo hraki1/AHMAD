@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import MiniCart from "../../../Pages/Cart/MiniCart";
 import logoSarah from "../../../assets/images/2.png";
@@ -19,7 +19,7 @@ const NavItem = ({ title, links }) => {
           {title} <i className="fa-solid fa-angle-down ms-1" />
         </Link>
       ) : (
-        <a href="#">
+        <a href="#!">
           {title} <i className="fa-solid fa-angle-down ms-1" />
         </a>
       )}
@@ -46,15 +46,10 @@ const HeaderCart = ({
 
   return (
     <div className="header-cart iconset" title="Cart">
-      <Link
-        to="/Cart"
-        // className="header-cart btn-minicart clr-none"
-        // data-bs-toggle="offcanvas"
-        // data-bs-target="#minicart-drawer"
-      >
+      <Link to="/Cart">
         <i
           className="fa-solid fa-cart-shopping fa-xl"
-          style={{ color: "#000000" }}
+          style={{ color: "#000" }}
         />
         <span className="cart-count">{cartCount}</span>
       </Link>
@@ -70,6 +65,8 @@ const HeaderCart = ({
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+
   const { categories, loading, error } = useFetchCategoryandSub();
   const { wishlistItems } = useWishlist();
   const { t } = useTranslation();
@@ -111,25 +108,39 @@ const Header = () => {
     setCartItems(updatedItems);
   };
 
-  useEffect(() => {}, [categories]);
+  const handleSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      console.log("Search: ", searchText);
+      // هنا ممكن تضيف منطق البحث أو إعادة التوجيه
+    }
+  };
 
   return (
     <header className="header d-flex align-items-center header-1 header-fixed">
       <div className="container">
-        <div className="row">
-          <div className="logo col-5 col-sm-3 col-md-3 col-lg-2 align-self-center">
+        <div className="row align-items-center">
+          {/* Logo */}
+          <div className="col-5 col-sm-3 col-md-3 col-lg-2">
             <Link className="logoImg" to="/">
-              <img src={logoSarah} alt="logo Sarah" />
+              <img
+                src={logoSarah}
+                alt="logo Sarah"
+                style={{ maxHeight: "60px" }}
+              />
             </Link>
           </div>
-          <div className="col-1 col-sm-1 col-md-1 col-lg-8 align-self-center d-menu-col cl-dis">
+
+          {/* Nav Menu */}
+          <div className="col-12 col-lg-7 d-none d-lg-block">
             <nav className="navigation" id="AccessibleNav">
-              <ul id="siteNav" className="site-nav medium center">
+              <ul
+                id="siteNav"
+                className="site-nav medium center d-flex justify-content-center gap-4"
+              >
                 <NavItem
                   title={t("Home")}
                   links={[{ to: "/", label: t("Home") }]}
                 />
-
                 {!loading && !error && categories.length > 0 && (
                   <li className="megamenu head-drop-down">
                     <Link to="/ShopGrid">
@@ -139,16 +150,11 @@ const Header = () => {
                     <div className="megamenu style1">
                       <ul className="row grid--uniform mmWrapper">
                         {categories
-                          .filter(
-                            (cat) =>
-                              cat.parentId === null ||
-                              cat.parentId === undefined
-                          )
+                          .filter((cat) => cat.parentId == null)
                           .map((mainCat) => {
                             const subCategories = categories.filter(
                               (subCat) => subCat.parentId === mainCat.id
                             );
-
                             return (
                               <li
                                 key={mainCat.id}
@@ -203,44 +209,86 @@ const Header = () => {
               </ul>
             </nav>
           </div>
-          <div className="col-7 col-sm-9 col-md-9 col-lg-2 align-self-center icons-col text-right">
-            <div className="search-parent iconset">
-              <div className="site-search" title="Search">
-                <Link to="" className="search-icon">
-                  <i
-                    className="fa fa-magnifying-glass fa-xl"
-                    style={{ color: "#000000" }}
-                    aria-hidden="true"
-                  />
-                </Link>
-              </div>
-            </div>
-            <AccountMenu />
-            <div className="wishlist-link iconset" title="Wishlist">
-              <Link to="/Wishlist">
-                <i
-                  className="fas fa-heart fa-xl"
-                  style={{ color: "#000000" }}
-                />
-                <span className="wishlist-count">{wishlistItems.length}</span>
-              </Link>
-            </div>
-            <HeaderCart
-              cartItems={cartItems}
-              handleQuantityChange={handleQuantityChange}
-              handleRemove={handleRemove}
-            />
-            <button
-              type="button"
-              className="iconset pe-0 menu-icon js-mobile-nav-toggle mobile-nav--open d-lg-none me-1"
-              title="Menu"
-              onClick={toggleMenu}
+
+          {/* Search + Icons */}
+          <div
+            className="d-flex align-items-center justify-content-end col-7 col-sm-9 col-md-9 col-lg-3"
+            style={{ gap: "12px" }}
+          >
+            {/* Search Input - ياخذ أكبر مساحة ممكنة */}
+            <div
+              className="search-parent iconset"
+              style={{
+                flexGrow: 1,
+                minWidth: "220px", // أقل عرض ممكن
+                maxWidth: "100%",
+              }}
             >
-              <i
-                className="fa-solid fa-bars fa-xl"
-                style={{ color: "#000000" }}
+              <input
+                type="text"
+                className="form-control form-control-lg"
+                placeholder={t("Search...")}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={handleSearchKeyPress}
+                style={{
+                  width: "100%",
+                  padding: "14px 20px",
+                  fontSize: "1.3rem",
+                  borderRadius: "12px",
+                  boxShadow: "0 0 8px rgba(0,0,0,0.12)",
+                  border: "1px solid #ccc",
+                  transition: "box-shadow 0.3s ease",
+                }}
+                onFocus={(e) =>
+                  (e.target.style.boxShadow = "0 0 12px rgba(0,0,0,0.3)")
+                }
+                onBlur={(e) =>
+                  (e.target.style.boxShadow = "0 0 8px rgba(0,0,0,0.12)")
+                }
               />
-            </button>
+            </div>
+
+            {/* Icons - لا تسمح لها بالضغط على البحث */}
+            <div
+              className="d-flex align-items-center gap-3"
+              style={{ flexShrink: 0 }}
+            >
+              <div className="d-none d-md-flex gap-3 align-items-center">
+                <AccountMenu />
+                <div className="wishlist-link iconset" title="Wishlist">
+                  <Link to="/Wishlist">
+                    <i
+                      className="fas fa-heart fa-xl"
+                      style={{ color: "#000" }}
+                    />
+                    <span className="wishlist-count">
+                      {wishlistItems.length}
+                    </span>
+                  </Link>
+                </div>
+              </div>
+
+              <HeaderCart
+                cartItems={cartItems}
+                handleQuantityChange={handleQuantityChange}
+                handleRemove={handleRemove}
+              />
+
+              {/* Mobile Menu Toggle */}
+              <button
+                type="button"
+                className="iconset pe-0 menu-icon js-mobile-nav-toggle d-lg-none"
+                title="Menu"
+                onClick={toggleMenu}
+                style={{ background: "none", border: "none" }}
+              >
+                <i
+                  className="fa-solid fa-bars fa-xl"
+                  style={{ color: "#000" }}
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>
