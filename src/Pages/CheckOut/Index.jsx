@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import PageHeader from "../../Components/layout/Header/PageHeader";
-import Cart from "../Cart/Cart";
-import CartSummary from "../Cart/CartSummary";
 import { baseUrl } from "../API/ApiConfig";
 import CheckoutItems from "./CheckoutItems";
-import AddressFiledCheckout from "./AddressFiledCheckout";
-import PaymentFiledCheckout from "./DelevaryMethodFiledCheckout";
 import Checkout from "./Checkout";
+
 export default function Index() {
   const [discount, setDiscount] = useState(0); // Check this initial value
   const [couponApplied, setCouponApplied] = useState(false);
