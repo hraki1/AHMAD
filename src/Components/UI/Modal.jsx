@@ -28,18 +28,22 @@ const Modal = ({ children, open }) => {
   if (!modalRoot) return null;
 
   console.log(open);
-  console.log("");  
+  console.log("");
 
   return createPortal(
     <motion.dialog
       id="modal"
-      style={{ zIndex: 9999, backgroundColor: 'rgb(27 49 84)' }} // هنا
+      style={{ zIndex: 9999, backgroundColor: "rgb(27 49 84)" }} // هنا
       ref={scope}
-        className=" col-12 col-md-6  rounded-4   text-white shadow border border-secondary"
-      initial={{ y: 100, opacity: 0 }}
-      animate={shouldAnimate ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      exit={!shouldAnimate ? { y: 100, opacity: 0 } : { y: 0, opacity: 1 }}
+      className=" col-12 col-md-6  rounded-4   text-white shadow border border-secondary"
+      initial={{ y: 100, scale: 1.2, opacity: 0 }}
+      animate={
+        shouldAnimate
+          ? { y: 0, scale: 1, opacity: 1 }
+          : { y: 100, scale: 0, opacity: 1.2 }
+      }
+      exit={{ y: 100, scale: 0, opacity: 1.2, transition: 0.1 }}
+      transition={{ duration: 0.3 }}
     >
       {children}
     </motion.dialog>,
