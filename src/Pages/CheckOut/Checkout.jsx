@@ -53,13 +53,13 @@ export default function Checkout({ country, setCountry }) {
     cartId: cartId ?? "",
     DelevaryMethodId: selectedDelevaryId ?? "",
     addressId: selectedAddressId ?? "",
-
     userId: userId ?? "",
   };
 
   console.log(orderData);
 
   async function startPaymentHandler() {
+    console.log(orderData);
     const isVaild = isVaildOrder(orderData);
     if (isVaild.isVaild) {
       console.log("start payment");
