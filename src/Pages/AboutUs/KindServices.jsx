@@ -42,16 +42,18 @@ export default function KindServices() {
                     <div className="accordion-item" key={id}>
                       <h2 className="accordion-header" id={`heading${id}`}>
                         <button
-                          className="accordion-button"
+                          className="accordion-button d-flex justify-content-between align-items-center"
                           type="button"
                           onClick={() => toggleAccordion(id)}
                         >
-                          {title}
-                          <i
-                            className={`fas fa-plus ms-auto ${
-                              activeAccordion === id ? "rotate" : ""
-                            }`}
-                          ></i>
+                          <span className="flex-grow-1">{title}</span>
+                          <span className="icon-container">
+                            <i
+                              className={`fas fa-plus ${
+                                activeAccordion === id ? "rotate" : ""
+                              }`}
+                            ></i>
+                          </span>
                         </button>
                       </h2>
                       <div

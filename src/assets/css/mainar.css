@@ -87,3 +87,12 @@ html[dir="rtl"] .password-input-wrapper input {
   padding-right: 15px;
   padding-left: 40px;
 }
+
+/* About  */
+html[dir="rtl"] .accordion-button span.flex-grow-1 {
+  text-align: right;
+}
+
+html[dir="ltr"] .accordion-button span.flex-grow-1 {
+  text-align: left;
+}
