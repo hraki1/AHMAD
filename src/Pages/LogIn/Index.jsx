@@ -8,7 +8,7 @@ import { baseUrl } from "../API/ApiConfig";
 import { useCart } from "../../Context/CartContext";
 import { useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext";
-
+import { useTranslation } from "react-i18next";
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -97,7 +97,7 @@ const Index = () => {
       setLoading(false);
     }
   };
-
+  const { t } = useTranslation();
   return (
     <>
       <PageHeader title="LogIn" />
@@ -113,7 +113,7 @@ const Index = () => {
                   className="customer-form"
                 >
                   <div className="main-title-2 text-center fs-4 mb-3 mt-1">
-                    Login
+                    {t(`LogIn`)}
                   </div>
                   <div className="form-row">
                     <div className="form-group col-12">
@@ -121,13 +121,13 @@ const Index = () => {
                         htmlFor="CustomerEmail"
                         className="form-label-title"
                       >
-                        Email <span className="required">*</span>
+                        {t(`Email`)} <span className="required">*</span>
                       </label>
                       <input
                         type="email"
                         id="CustomerEmail"
                         required
-                        placeholder="Email"
+                        placeholder={t("form.email")}
                         value={formInput.email}
                         onChange={(e) =>
                           setFormInput({ ...formInput, email: e.target.value })
@@ -140,14 +140,14 @@ const Index = () => {
                         htmlFor="CustomerPassword"
                         className="form-label-title"
                       >
-                        Password <span className="required">*</span>
+                        {t(`Password`)} <span className="required">*</span>
                       </label>
                       <div className="password-input-wrapper position-relative">
                         <input
                           type={showPassword ? "text" : "password"}
                           id="CustomerPassword"
                           required
-                          placeholder="Password"
+                          placeholder={t("form.password")}
                           value={formInput.pass}
                           onChange={(e) =>
                             setFormInput({ ...formInput, pass: e.target.value })
@@ -180,15 +180,17 @@ const Index = () => {
                             checked={formInput.rememberPass}
                             onChange={handleCheckBox}
                           />
-                          <label htmlFor="remember">Remember me</label>
+                          <label htmlFor="remember">{t(`Remember_me`)}</label>
                         </div>
-                        <Link to="/ForgetPass">Forgot your password?</Link>
+                        <Link to="/ForgetPass">
+                          {t(`Forgot_your_password`)}
+                        </Link>
                       </div>
                     </div>
 
                     <div className="form-group col-12 mb-0">
                       <Button
-                        label={loading ? "Logging in..." : "Login"}
+                        label={loading ? t(`Logging_in`) : t(`Login`)}
                         type="submit"
                         primary
                         className="w-100"
@@ -201,9 +203,9 @@ const Index = () => {
                 </form>
 
                 <div className="login-signup-text mt-4 mb-2 fs-6 text-center text-muted">
-                  Don't have an account?{" "}
+                  {t(`Don't_have_an_account?`)}{" "}
                   <Link to="/SignUp" className="btn-link">
-                    Sign up now
+                    {t(`Sign_up_now`)}
                   </Link>
                 </div>
               </div>

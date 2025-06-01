@@ -31,10 +31,10 @@ const TopHeader = () => {
       <div className="container">
         <div className="row align-items-center">
           {/* Left */}
-          <div className="col-6 col-md-3 col-lg-4 text-left">
+          <div className="col-6 col-md-3 col-lg-4 ">
             <div className="phone-container" style={{ direction: "ltr" }}>
               <i className="fa-solid fa-phone"></i>
-              <a href="tel:+962779523688">(+962) 779 523 688</a>
+              <a href="tel:+962779523688 ">(+962) 779 523 688</a>
             </div>
             {ctx.isLoggedIn && (
               <h1>Auth Test if you see it that's mean you are authenticated</h1>

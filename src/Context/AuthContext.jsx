@@ -9,6 +9,7 @@ export const AuthContext = createContext({
   userId: null,
   login: () => {},
   logout: () => {},
+  loginWithGoogle: () => {},
   isLoading: true,
   error: "",
   user: {},
@@ -30,6 +31,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", newToken);
     localStorage.setItem("userId", newUserId);
     localStorage.setItem("userData", JSON.stringify(user));
+  };
+
+  const loginWithGoogle = (token) => {
+    setToken(token);
   };
 
   const logout = () => {
@@ -94,7 +99,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       setIsLoading(false);
     }
-  }, []);
+  }, [token]);
 
   return (
     <AuthContext.Provider
@@ -108,6 +113,7 @@ export const AuthProvider = ({ children }) => {
         user,
         setUser,
         error,
+        loginWithGoogle,
       }}
     >
       {children}

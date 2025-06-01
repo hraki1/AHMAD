@@ -35,7 +35,9 @@ export default function ServiceSection({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {t(s.subtitle)}
+                    <span className="text-muted rtl-digits" dir="ltr">
+                      {t(s.subtitle)}
+                    </span>
                   </a>
                 ) : (
                   <span className="text-muted">{t(s.subtitle)}</span>

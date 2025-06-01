@@ -3,105 +3,81 @@ import React, { useState } from "react";
 export const servicesFaqs = [
   {
     icon: "fa-solid fa-truck fs-3",
-    title: (
-      <>
-        Shipping & <br /> Orders
-      </>
-    ),
+    title: "Faqs.titleOne",
   },
   {
     icon: "fa-solid fa-bus fs-3",
-    title: (
-      <>
-        Exchanges & <br /> Returns
-      </>
-    ),
+    title: "Faqs.titleTow",
   },
   {
     icon: "fa-regular fa-credit-card fs-3",
-    title: (
-      <>
-        Payments & <br /> Privacy
-      </>
-    ),
+    title: "Faqs.titleThree",
   },
   {
     icon: "fa-regular fa-circle-user fs-3",
-    title: (
-      <>
-        Account & <br /> Settings
-      </>
-    ),
+    title: "Faqs.titleFour",
   },
 ];
 
 export const faqData = [
   {
-    title: "Shopping Basics",
+    titleKey: "faq.0.title",
     questions: [
       {
-        question: "What Shipping Methods Are Available?",
-        answer:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
+        questionKey: "faq.0.questions.0.question",
+        answerKey: "faq.0.questions.0.answer",
       },
       {
-        question: "What are your shipping and return policies?",
-        answer:
-          "There are many variations of passages of Lorem Ipsum available, but the majority...",
+        questionKey: "faq.0.questions.1.question",
+        answerKey: "faq.0.questions.1.answer",
         image: "assets/images/collection/sub-collection5.jpg",
-        more: [
-          "Our mission is to create top-quality Html Template...",
-          "Create your store with our Optimal Html Template...",
-          "Optimal comes with easy-to-use interface and outstanding support...",
+        moreKey: [
+          "faq.0.questions.1.more.0",
+          "faq.0.questions.1.more.1",
+          "faq.0.questions.1.more.2",
         ],
       },
       {
-        question: "Do You Ship Internationally?",
-        answer:
-          "Contrary to popular belief, Lorem Ipsum is not simply random text...",
+        questionKey: "faq.0.questions.2.question",
+        answerKey: "faq.0.questions.2.answer",
       },
     ],
   },
   {
-    title: "Payments",
+    titleKey: "faq.1.title",
     questions: [
       {
-        question: "What Payment Methods Are Accepted?",
-        answer:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
+        questionKey: "faq.1.questions.0.question",
+        answerKey: "faq.1.questions.0.answer",
       },
       {
-        question: "Do you accept international credit cards?",
-        answer: "Nullam sed neque luctus, maximus diam sed, facilisis orci...",
+        questionKey: "faq.1.questions.1.question",
+        answerKey: "faq.1.questions.1.answer",
       },
       {
-        question: "Do you charge sales tax on any item?",
-        answer:
-          "Contrary to popular belief, Lorem Ipsum is not simply random text...",
+        questionKey: "faq.1.questions.2.question",
+        answerKey: "faq.1.questions.2.answer",
       },
     ],
   },
   {
-    title: "Shipping & Returns",
+    titleKey: "faq.2.title",
     questions: [
       {
-        question: "I want to return my purchase! What do I do?",
-        answer:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
+        questionKey: "faq.2.questions.0.question",
+        answerKey: "faq.2.questions.0.answer",
       },
       {
-        question: "How long does it take for me to get a refund?",
-        answer:
-          "It is a long established fact that a reader will be distracted...",
+        questionKey: "faq.2.questions.1.question",
+        answerKey: "faq.2.questions.1.answer",
       },
       {
-        question: "How Can I Cancel Or Change My Order?",
-        answer: "In vulputate metus lacus, eu vehicula dolor feugiat id...",
+        questionKey: "faq.2.questions.2.question",
+        answerKey: "faq.2.questions.2.answer",
       },
       {
-        question: "How can I get assistance if I need it?",
-        answer:
-          "Contrary to popular belief, Lorem Ipsum is not simply random text...",
+        questionKey: "faq.2.questions.3.question",
+        answerKey: "faq.2.questions.3.answer",
       },
     ],
   },

@@ -1,47 +1,84 @@
-import React, { useState } from "react";
-import imgtrack from "../../assets/images/products/product9.jpg";
+import React, { useState, useEffect } from "react";
 
-const OrdersTracking = () => {
+const OrdersTracking = ({ orders }) => {
   const [orderId, setOrderId] = useState("");
   const [billingEmail, setBillingEmail] = useState("");
+  const [currentOrder, setCurrentOrder] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (orders && orders.length > 0) {
+      // Find the most recent order by created_at
+      const lastOrder = orders.reduce((latest, order) => {
+        const latestDate = new Date(latest.created_at);
+        const currentDate = new Date(order.created_at);
+        return currentDate > latestDate ? order : latest;
+      }, orders[0]);
+
+      setCurrentOrder(lastOrder);
+      setOrderId(lastOrder.order_number);
+      setBillingEmail(lastOrder.customer_email);
+    }
+  }, [orders]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle tracking logic here
-    console.log("Tracking order:", orderId, billingEmail);
+    setError("");
+
+    // Validate at least one field is filled
+    if (!orderId && !billingEmail) {
+      setError("Please enter either Order ID or Billing Email");
+      return;
+    }
+
+    // Find matching order
+    const foundOrder = orders.find(
+      (order) =>
+        (orderId && order.order_number === orderId) ||
+        (billingEmail &&
+          order.customer_email.toLowerCase() === billingEmail.toLowerCase())
+    );
+
+    if (foundOrder) {
+      setCurrentOrder(foundOrder);
+    } else {
+      setError("No order found with the provided details");
+    }
   };
 
+  if (!currentOrder) {
+    return <div>Loading order information...</div>;
+  }
+
+  // Tracking steps logic
   const trackingSteps = [
     "order placed",
     "preparing to ship",
     "shipped",
     "delivered",
   ];
-  const currentStepIndex = 2; // Example: 0-based index of current step (shipped)
 
-  const trackingTable = [
-    {
-      date: "14 May 2023",
-      time: "08.00 AM",
-      status: "Shipped",
-      badge: "bg-success",
-      location: "Canada",
-    },
-    {
-      date: "15 May 2023",
-      time: "12.00 AM",
-      status: "Shipping info received",
-      badge: "bg-dark",
-      location: "California",
-    },
-    {
-      date: "16 May 2023",
-      time: "10.00 AM",
-      status: "Origin scan",
+  const statusToStepIndex = {
+    processing: 1,
+    shipped: 2,
+    delivered: 3,
+  };
+  const currentStepIndex = statusToStepIndex[currentOrder.status] ?? 0;
+
+  // Tracking table from activities
+  const trackingTable = currentOrder.activities
+    .slice()
+    .reverse()
+    .map((activity) => ({
+      date: new Date(activity.created_at).toLocaleDateString(),
+      time: new Date(activity.created_at).toLocaleTimeString(),
+      status: activity.comment,
       badge: "bg-secondary",
-      location: "London",
-    },
-  ];
+      location: "-",
+    }));
+
+  const productImage =
+    currentOrder.items?.[0]?.thumbnail || "https://via.placeholder.com/150";
 
   return (
     <div className="orders-card mt-0 h-100">
@@ -51,9 +88,10 @@ const OrdersTracking = () => {
 
       <form className="orderstracking-from" onSubmit={handleSubmit}>
         <p className="mb-3">
-          To track your order please enter your OrderID in the box below and
-          press "Track" button.
+          To track your order please enter your OrderID or Billing Email in the
+          boxes below and press "Track" button. At least one field is required.
         </p>
+        {error && <div className="alert alert-danger">{error}</div>}
         <div className="row align-items-center">
           <div className="form-group col-md-5 col-lg-5">
             <input
@@ -63,7 +101,6 @@ const OrdersTracking = () => {
               onChange={(e) => setOrderId(e.target.value)}
               id="orderId"
               type="text"
-              required
             />
           </div>
           <div className="form-group col-md-5 col-lg-5">
@@ -73,8 +110,7 @@ const OrdersTracking = () => {
               value={billingEmail}
               onChange={(e) => setBillingEmail(e.target.value)}
               id="billingEmail"
-              type="text"
-              required
+              type="email"
             />
           </div>
           <div className="form-group col-md-2 col-lg-2">
@@ -87,14 +123,16 @@ const OrdersTracking = () => {
 
       <div className="row mt-2">
         <div className="col-sm-12">
-          <div className="title-account">Status for order no: 000123</div>
+          <div className="title-account">
+            Status for order no: {currentOrder.order_number}
+          </div>
 
           <div className="row mt-3">
             <div className="col-lg-2 col-md-3 col-sm-4">
               <img
                 className="rounded-0 blur-up lazyload"
-                src={imgtrack}
-                alt="product"
+                src={productImage}
+                alt={currentOrder.items?.[0]?.product_name || "product"}
                 width="100%"
               />
             </div>
@@ -106,7 +144,9 @@ const OrdersTracking = () => {
                       <span>Order name</span>
                     </div>
                     <div className="right">
-                      <span>Cuff Beanie Cap</span>
+                      <span>
+                        {currentOrder.items?.[0]?.product_name || "-"}
+                      </span>
                     </div>
                   </li>
                   <li>
@@ -114,7 +154,7 @@ const OrdersTracking = () => {
                       <span>Customer number</span>
                     </div>
                     <div className="right">
-                      <span>000123</span>
+                      <span>{currentOrder.order_number}</span>
                     </div>
                   </li>
                   <li>
@@ -122,7 +162,9 @@ const OrdersTracking = () => {
                       <span>Order date</span>
                     </div>
                     <div className="right">
-                      <span>14 Nov 2021</span>
+                      <span>
+                        {new Date(currentOrder.created_at).toLocaleDateString()}
+                      </span>
                     </div>
                   </li>
                   <li>
@@ -130,7 +172,13 @@ const OrdersTracking = () => {
                       <span>Ship Date</span>
                     </div>
                     <div className="right">
-                      <span>16 Nov 2021</span>
+                      <span>
+                        {currentOrder.shipments?.[0]?.shipped_at
+                          ? new Date(
+                              currentOrder.shipments[0].shipped_at
+                            ).toLocaleDateString()
+                          : "-"}
+                      </span>
                     </div>
                   </li>
                   <li>
@@ -138,7 +186,7 @@ const OrdersTracking = () => {
                       <span>Shipping address</span>
                     </div>
                     <div className="right">
-                      <span>55 Gallaxy Enque, 2568 street, 23568 NY</span>
+                      <span>{currentOrder.shipping_method_name || "-"}</span>
                     </div>
                   </li>
                   <li>
@@ -146,7 +194,7 @@ const OrdersTracking = () => {
                       <span>Carrier</span>
                     </div>
                     <div className="right">
-                      <span>Ipsum</span>
+                      <span>{currentOrder.shipping_method_name || "-"}</span>
                     </div>
                   </li>
                   <li>
@@ -154,7 +202,9 @@ const OrdersTracking = () => {
                       <span>Carrier tracking number</span>
                     </div>
                     <div className="right">
-                      <span>000123</span>
+                      <span>
+                        {currentOrder.transactions?.[0]?.transaction_id || "-"}
+                      </span>
                     </div>
                   </li>
                 </ul>

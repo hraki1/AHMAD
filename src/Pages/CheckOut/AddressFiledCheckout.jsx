@@ -9,7 +9,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { ChevronDown } from "lucide-react";
 import DelevaryFiledCheckout from "./DelevaryMethodFiledCheckout";
 import { addressValidate as validateForm } from "./addressValidation";
-
+import { useTranslation } from "react-i18next";
 export default function AddressFieldCheckout({
   country,
   setCountry,
@@ -35,7 +35,7 @@ export default function AddressFieldCheckout({
   const [discount, setDiscount] = useState(0); // Check this initial value
   const [cartItems, setCartItems] = useState([]);
   const [approve, setApprove] = useState(false);
-
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState({
     fullName: userInformation?.full_name ?? "",
     phoneNumber: userInformation?.phone_number ?? "",
@@ -293,7 +293,7 @@ export default function AddressFieldCheckout({
           {approve ? (
             <div className="col-lg-8 col-md-8 col-sm-12">
               <div className="p-4 border rounded shadow-sm bg-white">
-                <h5 className="mb-4">Saved Address</h5>
+                <h5 className="mb-4">{t(`checkOut.Saved_Address`)}</h5>
 
                 <div className="accordion" id="accordionExample">
                   <div className="accordion-item card mb-3">
@@ -321,7 +321,9 @@ export default function AddressFieldCheckout({
               {savedAddresses.length > 0 && (
                 <div className="block mb-3 payment-methods mb-4">
                   <div className="block-content">
-                    <div className="main-title-check mb-3">Saved Address</div>
+                    <div className="main-title-check mb-3">
+                      {t(`checkOut.Saved_Address`)}
+                    </div>
                     <div className="payment-accordion">
                       <div className="accordion" id="accordionExample">
                         <div className="accordion-item card mb-4">
@@ -354,13 +356,13 @@ export default function AddressFieldCheckout({
                                   </div>
 
                                   <div className="text-start w-100">
-                                    <small className="d-block">
+                                    <small className="d-flex">
                                       {savedAddresses.find(
                                         (addr) =>
                                           addr.id === selectedSavedAddressId
                                       )?.address_1 || "Address 1"}
                                     </small>
-                                    <small className="d-block">
+                                    <small className="d-flex">
                                       {savedAddresses.find(
                                         (addr) =>
                                           addr.id === selectedSavedAddressId
@@ -374,7 +376,7 @@ export default function AddressFieldCheckout({
                                   </div>
                                 </div>
                               ) : (
-                                "Select a saved address"
+                                t(`checkOut.Select_address`)
                               )}
 
                               <i className="fa-solid fa-bars"></i>
@@ -404,12 +406,12 @@ export default function AddressFieldCheckout({
                                       <strong>{addr.full_name}</strong>
                                     </div>
                                     <div className="mt-1">
-                                      <small className="d-block">
+                                      <small className="d-flex">
                                         {addr.address_1}
                                         {addr.address_2 &&
                                           `, ${addr.address_2}`}
                                       </small>
-                                      <small className="d-block">
+                                      <small className="d-flex">
                                         {addr.city?.name || "No city"},
                                         {addr.countries?.name || "No country"}
                                       </small>
@@ -430,14 +432,15 @@ export default function AddressFieldCheckout({
                 <div className="block-content">
                   <div className="main-title-check mb-3">
                     {selectedSavedAddressId
-                      ? "Address Details"
-                      : "Add New Address"}
+                      ? t(`checkOut.Address_Details`)
+                      : t(`checkOut.Add_New_Address`)}
                   </div>
                   <fieldset>
                     <div className="row">
                       <div className="form-group col-12 col-sm-6">
                         <label htmlFor="fullName" className="form-label">
-                          Full Name <span className="required">*</span>
+                          {t(`checkOut.full_name`)}{" "}
+                          <span className="required">*</span>
                         </label>
                         <input
                           name="fullName"
@@ -456,7 +459,8 @@ export default function AddressFieldCheckout({
 
                       <div className="form-group col-12 col-sm-6">
                         <label htmlFor="phoneNumber" className="form-label">
-                          Phone Number <span className="required">*</span>
+                          {t(`servicesAbout.Phone_Number`)}
+                          <span className="required">*</span>
                         </label>
                         <input
                           name="phoneNumber"
@@ -477,7 +481,8 @@ export default function AddressFieldCheckout({
                     <div className="row">
                       <div className="form-group col-12">
                         <label htmlFor="address-1" className="form-label">
-                          Address <span className="required">*</span>
+                          {t(`checkOut.Address`)}{" "}
+                          <span className="required">*</span>
                         </label>
                         <input
                           name="addressOne"
@@ -500,7 +505,7 @@ export default function AddressFieldCheckout({
                           value={formData.addressTwo}
                           onChange={handleChange}
                           className="form-control"
-                          placeholder="Apartment, suite, unit etc. (optional)"
+                          placeholder={t(`checkOut.Apartment`)}
                           readOnly={!isEditing}
                         />
                       </div>
@@ -509,7 +514,8 @@ export default function AddressFieldCheckout({
                     <div className="row">
                       <div className="form-group col-12 col-sm-6">
                         <label htmlFor="postcode" className="form-label">
-                          Postcode / ZIP <span className="required">*</span>
+                          {t(`checkOut.Postcode`)}{" "}
+                          <span className="required">*</span>
                         </label>
                         <input
                           name="postCode"
@@ -530,17 +536,22 @@ export default function AddressFieldCheckout({
                           htmlFor="address_country1"
                           className="form-label"
                         >
-                          Country <span className="required">*</span>
+                          {t(`checkOut.Country`)}{" "}
+                          <span className="required">*</span>
                         </label>
                         <select
                           name="country"
                           value={formData.country}
                           onChange={handleChange}
-                          className="form-control"
+                          className={`form-control ${
+                            i18n.language === "ar" ? "select-rtl" : ""
+                          }`}
                           required
                           disabled={!isEditing}
                         >
-                          <option value="">Select a Country</option>
+                          <option value="">
+                            {t(`Select`)} {t(`checkOut.Country`)}
+                          </option>
                           {countries.map((countryItem) => (
                             <option
                               key={countryItem.id}
@@ -564,17 +575,22 @@ export default function AddressFieldCheckout({
                           htmlFor="address_province"
                           className="form-label"
                         >
-                          Town / City <span className="required">*</span>
+                          {t(`checkOut.City`)}{" "}
+                          <span className="required">*</span>
                         </label>
                         <select
                           name="city"
                           value={formData.city}
                           onChange={handleChange}
-                          className="form-control"
+                          className={`form-control ${
+                            i18n.language === "ar" ? "select-rtl" : ""
+                          }`}
                           required
                           disabled={!isEditing}
                         >
-                          <option value="">Select a City</option>
+                          <option value="">
+                            {t(`Select`)} {t(`checkOut.City`)}
+                          </option>
                           {selectedCountryData?.Cities?.map((city) => (
                             <option key={city.id} value={city.name}>
                               {city.name}
@@ -598,7 +614,7 @@ export default function AddressFieldCheckout({
                             onChange={handleChange}
                           />
                           <label htmlFor="checkout_tearm">
-                            Save address to my account
+                            {t(`checkOut.Save_account`)}
                           </label>
                         </div>
                       </div>
@@ -608,7 +624,7 @@ export default function AddressFieldCheckout({
                   <div className="d-flex gap-2 mt-2">
                     {selectedSavedAddress && !isEditing && (
                       <Button
-                        label={"Edit Address"}
+                        label={t(`Edit_Address`)}
                         type={"button"}
                         primary={isEditing}
                         outline={!isEditing}
@@ -618,7 +634,7 @@ export default function AddressFieldCheckout({
 
                     {selectedSavedAddress && isEditing && (
                       <Button
-                        label={"Save"}
+                        label={t(`Save`)}
                         type={"submit"}
                         primary={isEditing}
                         outline={!isEditing}
@@ -626,7 +642,7 @@ export default function AddressFieldCheckout({
                     )}
                     {selectedSavedAddress && isEditing && (
                       <Button
-                        label={"Cancel Edit"}
+                        label={t(`Cancel_Edit`)}
                         type={"button"}
                         primary={isEditing}
                         outline={!isEditing}
@@ -636,7 +652,7 @@ export default function AddressFieldCheckout({
                     {showConfirmAddress && (
                       <Button
                         className=""
-                        label="Confirm Address"
+                        label={t(`Confirm_Address`)}
                         type="submit"
                         btn-secondary
                       />
@@ -644,7 +660,7 @@ export default function AddressFieldCheckout({
                     {selectedSavedAddress && !isEditing && (
                       <Button
                         className=""
-                        label="Approve Address"
+                        label={t(`Approve_Address`)}
                         type="button"
                         btn-secondary
                         onClick={() => setApprove((prev) => !prev)}
@@ -661,7 +677,7 @@ export default function AddressFieldCheckout({
               tax={0}
               shipping={0}
               setDiscount={setDiscount}
-              btnName={"Go to Payemnt"}
+              btnName={t(`checkOut.Go_to_Payemnt`)}
               useGrandTotal={false}
               mode="checkout"
               onPlaceOrder={startPaymentHandler}

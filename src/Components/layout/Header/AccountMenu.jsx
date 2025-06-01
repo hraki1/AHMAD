@@ -37,20 +37,24 @@ const AccountLinks = () => {
     <div className="customer-links">
       <ul className="m-0">
         {(checkAuth.isAuthenticated ? linkSign : linkOut).map((link, index) => (
-          <li key={index}>
+          <li key={index} className="account-link-item">
             {link.onClick ? (
               <button
                 onClick={link.onClick}
-                className="btn-link p-0 text-start"
+                className="btn-link p-0 text-start d-flex align-items-center"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <i className={`fa-solid ${link.icon} fa-lg me-2`} />
-                {link.label}
+                <span className="icon">
+                  <i className={`fa-solid ${link.icon} fa-lg`} />
+                </span>
+                <span className="label">{link.label}</span>
               </button>
             ) : (
-              <a href={link.href}>
-                <i className={`fa-solid ${link.icon} fa-lg me-2`} />
-                {link.label}
+              <a href={link.href} className="d-flex align-items-center">
+                <span className="icon">
+                  <i className={`fa-solid ${link.icon} fa-lg`} />
+                </span>
+                <span className="label">{link.label}</span>
               </a>
             )}
           </li>
@@ -79,4 +83,3 @@ const AccountMenu = () => {
 };
 
 export default AccountMenu;
-  

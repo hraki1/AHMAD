@@ -7,7 +7,7 @@ import ProductItem from "../../Components/ProductItem";
 import { baseUrl } from "../API/ApiConfig";
 import { useCart } from "../../Context/CartContext";
 import { AuthContext } from "../../Context/AuthContext";
-
+import { useTranslation } from "react-i18next";
 export default function Index() {
   const [cartItems, setCartItems] = useState([]);
   const [cartId, setCartId] = useState(null);
@@ -93,9 +93,10 @@ export default function Index() {
       </div>
     );
   }
+  const { t } = useTranslation();
   return (
     <div>
-      <PageHeader title="Shopping Cart" />
+      <PageHeader title={t(`Shopping_Cart`)} />
       <div className="container">
         <div className="row">
           <div
@@ -110,14 +111,14 @@ export default function Index() {
               couponApplied={couponApplied}
               setCartId={setCartId}
               cartId={cartId}
-              btnName={"Proceed To Checkout"}
+              btnName={t(`Proceed_To_Checkout`)}
             />
           </div>
 
           {cartCount !== 0 && (
             <div className="col-lg-4">
               <CartSummary
-                btnName={"Proceed To Checkout"}
+                btnName={t(`Proceed_To_Checkout`)}
                 isPreview={true}
                 setCouponApplied={setCouponApplied}
                 setCouponMessage={setCouponMessage}

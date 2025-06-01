@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { baseUrl } from "../API/ApiConfig";
 import { CartContext } from "../../Context/CartContext";
 import CartItem from "./CartItem";
-
+import { useTranslation } from "react-i18next";
 export default function Cart({
   btnName,
   showRemoveIcon = true,
@@ -21,7 +21,7 @@ export default function Cart({
 
   const updateQuantity = async (cart_item_id, newQty) => {
     if (!token || !cartId || isLoading) {
-      toast.error("Cart data is loading, please wait...");
+      toast.error(t(`Cart_loading`));
       return;
     }
 
@@ -40,11 +40,11 @@ export default function Cart({
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to update cart item");
+        throw new Error(errorData.message || t(`Failed_update`));
       }
 
       await updateCart();
-      toast.success("Cart updated");
+      toast.success(t(`Cart_updated`));
     } catch (err) {
       toast.error(err.message);
     }
@@ -52,7 +52,7 @@ export default function Cart({
 
   const removeItem = async (cart_item_id) => {
     if (!cartId || !cart_item_id || isLoading) {
-      toast.error("Cart data is loading, please wait...");
+      toast.error(t(`Cart_loading`));
       return;
     }
 
@@ -65,11 +65,11 @@ export default function Cart({
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.message || "Failed to remove item");
+        throw new Error(errData.message || t(`Failed_remove`));
       }
 
       updateCart();
-      toast.success("Item removed");
+      toast.success(t(`Item_removed`));
       setIsLoadingDelete(false);
     } catch (err) {
       toast.error(err.message);
@@ -87,7 +87,7 @@ export default function Cart({
         </Link>
       </div>
     );
-
+  const { t } = useTranslation();
   return (
     <div className="container py-4">
       <Toaster />
@@ -95,10 +95,10 @@ export default function Cart({
         <thead>
           <tr>
             <th></th>
-            <th colSpan="2">Product</th>
-            <th className="text-center">Price</th>
-            <th className="text-center">Quantity</th>
-            <th className="text-center">Total</th>
+            <th colSpan="2">{t(`Product`)}</th>
+            <th className="text-center">{t(`Price`)}</th>
+            <th className="text-center">{t(`Quantity`)}</th>
+            <th className="text-center">{t(`Total`)}</th>
           </tr>
         </thead>
         <tbody>
@@ -121,9 +121,9 @@ export default function Cart({
 
       <div className="d-flex justify-content-between align-items-center mt-4">
         <Link to="/ShopGrid" className="btn btn-outline-secondary">
-          Continue shopping
+          {t(`Continue_shopping`)}
         </Link>
-        {cartItems.length === 0 && (
+        {cartItems.length > 0 && (
           <Link
             to={checkoutLink}
             className="btn btn-primary"

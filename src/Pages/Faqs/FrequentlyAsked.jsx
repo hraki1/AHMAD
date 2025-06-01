@@ -1,13 +1,15 @@
 import React from "react";
-
+import { useTranslation } from "react-i18next";
 const FrequentlyAsked = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="container mb-5 mt-5">
       {/* Frequently Content */}
       <div className="row help-center mb-4 mb-md-0">
         <div className="col-12 col-sm-12 col-md-10 col-lg-6 mx-auto">
           <h2 className="mb-5 text-center main-title-heading">
-            Frequently Asked Questions
+            {t(`Frequently_Asked_Questions`)}
           </h2>
           <form
             className="frequently-search"
@@ -20,7 +22,7 @@ const FrequentlyAsked = () => {
                 type="text"
                 className="form-control input-group-field"
                 name="search"
-                placeholder="Search…"
+                placeholder={t(`Search`)}
                 required
               />
               <button
@@ -28,7 +30,7 @@ const FrequentlyAsked = () => {
                 className="input-group-btn btn btn-secondary"
                 name="search"
               >
-                Search
+                {t(`Search`)}
               </button>
             </div>
           </form>

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../../Components/layout/Header/PageHeader";
 import SocialMediaRegister from "../../Components/SocialMediaLogin";
 import { baseUrl } from "../API/ApiConfig";
+import { useTranslation } from "react-i18next";
+
 const Index = () => {
   const [formInput, setFormInput] = useState({
     name: "",
@@ -109,7 +111,7 @@ const Index = () => {
       }
     }
   };
-
+  const { t } = useTranslation();
   return (
     <>
       <PageHeader title="SignUp" />
@@ -121,7 +123,7 @@ const Index = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="customer-form">
                     <div className="main-title-2 text-center fs-4 mb-4">
-                      Sign up
+                      {t(`SignUp`)}
                     </div>
                     <div className="form-row">
                       {/* Username */}
@@ -130,12 +132,12 @@ const Index = () => {
                           className="form-label-title"
                           htmlFor="CustomerUsername"
                         >
-                          User Name <span className="required"></span>
+                          {t(`UserName`)} <span className="required"></span>
                         </label>
                         <input
                           type="text"
                           id="CustomerUsername"
-                          placeholder="Username"
+                          placeholder={t("form.name")}
                           name="name"
                           value={formInput.name}
                           onChange={handleInputChange}
@@ -152,12 +154,12 @@ const Index = () => {
                           className="form-label-title"
                           htmlFor="CustomerEmail"
                         >
-                          E-mail <span className="required"></span>
+                          {t("form.email")} <span className="required"></span>
                         </label>
                         <input
                           type="email"
                           id="CustomerEmail"
-                          placeholder="Email"
+                          placeholder={t("form.email")}
                           name="email"
                           value={formInput.email}
                           onChange={handleInputChange}
@@ -174,12 +176,12 @@ const Index = () => {
                           className="form-label-title"
                           htmlFor="CustomerPassword"
                         >
-                          Password <span className="required"></span>
+                          {t(`Password`)} <span className="required"></span>
                         </label>
                         <input
                           type="password"
                           id="CustomerPassword"
-                          placeholder="Password"
+                          placeholder={t("form.password")}
                           name="pass"
                           value={formInput.pass}
                           onChange={handleInputChange}
@@ -196,12 +198,13 @@ const Index = () => {
                           className="form-label-title"
                           htmlFor="CustomerConfirmPassword"
                         >
-                          Confirm Password <span className="required"></span>
+                          {t("form.confirmPassword")}{" "}
+                          <span className="required"></span>
                         </label>
                         <input
                           id="CustomerConfirmPassword"
                           type="password"
-                          placeholder="Confirm Password"
+                          placeholder={t("form.confirmPassword")}
                           name="confiPass"
                           value={formInput.confiPass}
                           onChange={handleInputChange}
@@ -218,12 +221,12 @@ const Index = () => {
                           className="form-label-title"
                           htmlFor="CustomerPhone"
                         >
-                          Phone Number <span className="required"></span>
+                          {t("form.phone")} <span className="required"></span>
                         </label>
                         <input
                           type="tel"
                           id="CustomerPhone"
-                          placeholder="Phone"
+                          placeholder={t("form.phone")}
                           name="phone"
                           value={formInput.phone}
                           onChange={handleInputChange}
@@ -246,12 +249,12 @@ const Index = () => {
                               onChange={handleInputChange}
                             />
                             <label htmlFor="agree">
-                              I agree to{" "}
+                              {t(`agree`)}{" "}
                               <Link
                                 to="/terms"
                                 style={{ textDecorationLine: "underline" }}
                               >
-                                terms & Policy.
+                                {t(`terPol`)}{" "}
                               </Link>
                             </label>
                           </div>
@@ -269,7 +272,7 @@ const Index = () => {
                           type="submit"
                           className="btn btn-primary btn-lg w-100"
                         >
-                          Register
+                          {t(`Register`)}
                         </button>
                       </div>
                     </div>
@@ -279,9 +282,9 @@ const Index = () => {
 
                     {/* Login Link */}
                     <div className="login-signup-text mt-4 mb-2 fs-6 text-center text-muted">
-                      Have an account?{" "}
+                      {t(`Have_an_account`)}{" "}
                       <Link to="/LogIn" className="btn-link">
-                        Login Now
+                        {t(`LoginNow`)}
                       </Link>
                     </div>
                   </div>

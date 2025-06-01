@@ -11,33 +11,33 @@ export const counterData = [
     icon: "fas fa-history",
     count: "50",
     text: "M+",
-    title: "Years of foundation",
+    title: "stats.years_of_foundation",
   },
   {
     icon: "fa-solid fa-users",
     count: "100",
     text: "B+",
-    title: "Skilled team members",
+    title: "stats.skilled_team_members",
   },
   {
     icon: "fa-solid fa-handshake",
     count: "80",
     text: "M+",
-    title: "Happy customers",
+    title: "stats.happy_customers",
   },
   {
     icon: "fa-solid fa-chart-column",
     count: "70",
     text: "B+",
-    title: "Monthly orders",
+    title: "stats.monthly_orders",
   },
 ];
 
 // For Team Member
 export const teamData = [
   {
-    name: "Bruce Sutton",
-    position: "CEO - Founder",
+    name: "Bruce_Sutton",
+    position: "CEO_Founder",
     image: teamImage1, // Use the imported image
     socialLinks: {
       facebook: "#",
@@ -47,8 +47,8 @@ export const teamData = [
     },
   },
   {
-    name: "Ellen Thornton",
-    position: "Products Manager",
+    name: "Ellen_Thornton",
+    position: "Products_Manager",
     image: teamImage2, // Use the imported image
     socialLinks: {
       facebook: "#",
@@ -58,7 +58,7 @@ export const teamData = [
     },
   },
   {
-    name: "Lisa John",
+    name: "Lisa_John",
     position: "Marketing",
     image: teamImage3, // Use the imported image
     socialLinks: {
@@ -69,7 +69,7 @@ export const teamData = [
     },
   },
   {
-    name: "Jackly Smith",
+    name: "Jackly_Smith",
     position: "Designer",
     image: teamImage1, // Use the imported image
     socialLinks: {
@@ -85,22 +85,22 @@ export const teamData = [
 export const servicesAbout = [
   {
     icon: "fa-solid fa-trophy",
-    title: "Winner Master",
-    subtitle: "Award 2019",
+    title: "awards.winner_master",
+    subtitle: "awards.award_2014",
   },
   {
     icon: "fa-solid fa-trophy",
-    title: "Winner Master",
-    subtitle: "Award 2019",
+    title: "awards.winner_master",
+    subtitle: "awards.award_2016",
   },
   {
     icon: "fa-solid fa-trophy",
-    title: "Winner Master",
-    subtitle: "Award 2019",
+    title: "awards.winner_master",
+    subtitle: "awards.award_2018",
   },
   {
     icon: "fa-solid fa-trophy",
-    title: "Winner Master",
-    subtitle: "Award 2019",
+    title: "awards.winner_master",
+    subtitle: "awards.award_2020",
   },
 ];

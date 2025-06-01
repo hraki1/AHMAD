@@ -61,8 +61,8 @@ export default function DelevaryFiledCheckout({
   }, []);
 
   function selectDelevaryMethodHandler(payMethod) {
-    console.log(payMethod.method_id);
-    onSelectDelevaryMethod(payMethod.method_id);
+    console.log(payMethod);
+    onSelectDelevaryMethod(payMethod.shipping_zone_method_id);
   }
 
   if (loading || authIsLoading)

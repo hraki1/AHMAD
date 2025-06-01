@@ -2,15 +2,16 @@ import React, { useContext, useState } from "react";
 import { baseUrl } from "../API/ApiConfig";
 import { useCart } from "../../Context/CartContext";
 import { AuthContext } from "../../Context/AuthContext";
-
+import { useTranslation } from "react-i18next";
 const CartForms = ({
   cartId,
   setCouponApplied,
   setTotal,
   couponApplied: couponAppliedProp,
-  message, // ✅ استقبال message كـ prop
-  setMessage, // ✅ استقبال setMessage كـ prop
+  message,
+  setMessage,
 }) => {
+  const { t } = useTranslation();
   const [couponCode, setCouponCode] = useState("");
   const { updateCart } = useCart();
 
@@ -26,12 +27,12 @@ const CartForms = ({
     }
 
     if (!couponCode.trim()) {
-      setMessage("Please enter a coupon code.");
+      setMessage(t(`coupon_code`));
       return;
     }
 
     if (!cartId) {
-      setMessage("Please wait, cart is still loading!");
+      setMessage(t(`cart_loading`));
       return;
     }
 
@@ -53,21 +54,20 @@ const CartForms = ({
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(data.message || "Coupon applied successfully.");
+        setMessage(data.message || t(`Coupon_applied`));
         setCouponApplied(true);
         await updateCart();
         setCouponCode("");
       } else {
-        setMessage(data.message || "Invalid coupon code.");
+        setMessage(data.message || t(`Invalid_coupon`));
         setCouponApplied(false);
       }
     } catch (error) {
-      console.error("Error applying coupon:", error);
-      setMessage("Failed to apply coupon. Please try again.");
+      console.error(t(`Error_coupon`), error);
+      setMessage(t(`Failed_coupon`));
       setCouponApplied(false);
     }
   };
-
   return (
     <>
       <div className="col-12 col-sm-12 col-md-12 col-lg-8 main-col">
@@ -75,10 +75,8 @@ const CartForms = ({
           {/* Note Section */}
           <div className="col-12 col-sm-12 col-md-12 col-lg-6 mb-12 cart-col">
             <div className="cart-note mb-4">
-              <h5>Add a note to your order</h5>
-              <label htmlFor="cart-note">
-                Notes about your order, e.g. special notes for delivery.
-              </label>
+              <h5>{t(`note_order`)}</h5>
+              <label htmlFor="cart-note">{t(`Notes_delivery`)}</label>
               <textarea
                 name="note"
                 id="cart-note"
@@ -92,10 +90,10 @@ const CartForms = ({
           {/* Discount Section */}
           <div className="col-12 col-sm-12 col-md-12 col-lg-6 mb-12 cart-col">
             <div className="cart-discount">
-              <h5>Apply Discount Code</h5>
+              <h5>{t(`Apply_Discount`)}</h5>
               <form onSubmit={handleCouponApplied}>
                 <div className="form-group">
-                  <label htmlFor="coupon">Enter your coupon code.</label>
+                  <label htmlFor="coupon">{t(`Enter_coupon`)}</label>
                   <div className="input-group0">
                     <input
                       className="form-control"
@@ -110,7 +108,7 @@ const CartForms = ({
                     <input
                       type="submit"
                       className="btn text-nowrap mt-3"
-                      value="Apply Coupon"
+                      value={t(`Apply_Coupon`)}
                       disabled={
                         !cartId || !couponCode.trim() || couponAppliedProp
                       }
@@ -121,7 +119,7 @@ const CartForms = ({
                 {message && (
                   <div
                     className={`alert ${
-                      message === "Coupon applied successfully."
+                      message === t(`Coupon_applied`)
                         ? "alert-success"
                         : "alert-info"
                     } mt-2`}

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import imgprofile from "../../assets/images/users/user-img3.jpg";
 import AccountInfo from "./AccountInfo";
 import AddressBook from "./AddressBook";
@@ -8,31 +8,44 @@ import Wishlist from "./Wishlist";
 import SavedCards from "./SavedCards";
 import SecuritySettings from "./SecuritySettings";
 import { AuthContext } from "../../Context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCart } from "../../Context/CartContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
+import OrderProducts from "./OrderProducts";
 
-const DashboardSidebar = () => {
+const DashboardSidebar = ({ orders }) => {
   const [activeTab, setActiveTab] = useState("info");
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const viewTap = searchParams.get("viewTap");
+    if (viewTap) {
+      setActiveTab(viewTap);
+    }
+  }, [searchParams]);
+
+  const handleTabClick = (id) => {
+    setActiveTab(id);
+    const params = new URLSearchParams(searchParams);
+    params.set("viewTap", id);
+    navigate(`?${params.toString()}`, { replace: true });
+  };
 
   const tabs = [
     { id: "info", label: "Account Info" },
     { id: "AddressBook", label: "Address Book" },
     { id: "orders", label: "My Orders" },
+    { id: "myProducts", label: "My Products" },
     { id: "orderstracking", label: "Orders Tracking" },
     { id: "wishlist", label: "My Wishlist" },
     { id: "payment", label: "Saved Cards" },
     { id: "security", label: "Settings" },
   ];
 
-  const handleTabClick = (id) => {
-    setActiveTab(id);
-  };
-
   const { logout } = useContext(AuthContext);
   const dataAuth = useContext(AuthContext);
   const { updateCart } = useCart();
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     dataAuth.logout();
@@ -54,7 +67,6 @@ const DashboardSidebar = () => {
                 {dataAuth.user.avatar ? (
                   <img
                     className="rounded-circle blur-up"
-                    // src={dataAuth.user.avatar}
                     src={imgprofile}
                     alt="user"
                     width="130"
@@ -112,9 +124,12 @@ const DashboardSidebar = () => {
               />
             )}
             {activeTab === "AddressBook" && <AddressBook />}
-            {activeTab === "orders" && <Orders />}
-            {activeTab === "orderstracking" && <OrdersTracking />}
+            {activeTab === "orders" && <Orders orders={orders} />}
+            {activeTab === "orderstracking" && (
+              <OrdersTracking orders={orders} />
+            )}
             {activeTab === "wishlist" && <Wishlist />}
+            {activeTab === "myProducts" && <OrderProducts orders={orders} />}
             {activeTab === "payment" && <SavedCards />}
             {activeTab === "security" && <SecuritySettings />}
           </div>

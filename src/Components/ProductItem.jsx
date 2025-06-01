@@ -53,7 +53,7 @@ export default function ProductItem() {
     <section className="section product-slider pb-0 mb-5">
       <div className="container">
         <div className="section-header">
-          <div className="main-title-pages">You may also like</div>
+          <div className="main-title-pages">{t(`You_may_also_like`)}</div>
         </div>
         <div className="product-slider-4items gp10 arwOut5 grid-products">
           <div className="row">

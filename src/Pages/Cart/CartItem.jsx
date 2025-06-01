@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Modal from "../../Components/UI/Modal";
-
+import { useTranslation } from "react-i18next";
 export default function CartItem({
   itemId,
   image,
@@ -32,18 +32,16 @@ export default function CartItem({
       onUpdatedQuantity(itemId, quantity - 1);
     }
   }
-
+  const { t } = useTranslation();
   return (
     <>
       <Modal open={modalOpen}>
         <div className="p-4 text-center">
           <h2 className="h4 fw-bold text-white">
-            Remove <strong className="text-danger">{name}</strong> from your
-            cart?
+            {t(`Remove`)} <strong className="text-danger">{name}</strong>{" "}
+            {t(`from_your_cart`)}
           </h2>
-          <p className="desc">
-            This will permanently remove the item from your cart.
-          </p>
+          <p className="desc">{t(`This_permanently`)}</p>
 
           <div className="d-flex justify-content-center gap-3 mt-4">
             <button
@@ -52,14 +50,14 @@ export default function CartItem({
               }}
               className="btn btn-secondary px-4 btn-one-hover-shipp"
             >
-              {isLoadingDelete ? "Deleting..." : " Yes, Remove"}
+              {(isLoadingDelete ? "Deleting..." : t(`Yes`), t(`Remove`))}
             </button>
 
             <button
               onClick={() => setModalOpen(false)}
               className="btn btn-primary px-4 btn-tow-hover-shipp"
             >
-              Cancel
+              {t(`Cancel`)}
             </button>
           </div>
         </div>

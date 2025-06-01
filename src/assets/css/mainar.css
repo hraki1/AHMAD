@@ -87,3 +87,58 @@ html[dir="rtl"] .password-input-wrapper input {
   padding-right: 15px;
   padding-left: 40px;
 }
+
+/* About  */
+html[dir="rtl"] .accordion-button span.flex-grow-1 {
+  text-align: right;
+}
+
+html[dir="ltr"] .accordion-button span.flex-grow-1 {
+  text-align: left;
+}
+
+/* Input PlaceHolder */
+.app.rtl input::placeholder,
+.app.rtl textarea::placeholder {
+  text-align: right;
+  direction: rtl;
+}
+
+.contact-style2.app.rtl .form-control::placeholder {
+  text-align: right;
+  direction: rtl;
+}
+
+.app.rtl #ContactFormName::placeholder,
+.app.rtl #ContactFormEmail::placeholder,
+.app.rtl #ContactFormPhone::placeholder,
+.app.rtl #ContactSubject::placeholder,
+.app.rtl #ContactFormMessage::placeholder {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Page Contact Page */
+.drop-header-con .fas.fa-plus {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease;
+}
+
+html[dir="rtl"] .drop-header-con .fas.fa-plus {
+  right: auto;
+  left: 15px;
+}
+
+.drop-header-con:not(.collapsed) .fas.fa-plus {
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Select */
+html[dir="rtl"] .select-rtl {
+  background-position: left 0.75rem center !important;
+  padding-left: 2.25rem !important;
+  padding-right: 0.75rem !important;
+}

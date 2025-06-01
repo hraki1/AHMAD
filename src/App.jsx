@@ -34,9 +34,14 @@ import { AuthContext } from "./Context/AuthContext.jsx";
 import { ProtectedRoute } from "./Components/layout/ProtectedRoute.jsx";
 import MinimalLayout from "./Components/layout/MinimalLayout.jsx";
 import Root from "./Pages/RootLayout/Root.jsx";
+import PaymentSuccess from "./Pages/SuccessPayment/Successpayment.jsx";
+import ErrorPage from "./Pages/ErrorPage/ErrorPage.jsx";
+
+import SearchResults from "./Pages/SearchResults/Index.jsx";
 
 const router = createBrowserRouter([
   {
+    errorElement: <ErrorPage />,
     element: <Root />,
     children: [
       { path: "/", element: <HomePage /> },
@@ -49,6 +54,7 @@ const router = createBrowserRouter([
       { path: "/Portfolio", element: <Portfolio /> },
       { path: "/Product/:url_key", element: <Product /> },
       { path: "/ShopGrid", element: <ShopGrid /> },
+      { path: "search", element: <SearchResults /> },
       { path: "/Category", element: <Category /> },
       { path: "/Wishlist", element: <Wishlist /> },
       { path: "/SignUp", element: <Sign /> },
@@ -60,6 +66,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <CheckOut />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/cancel",
+        element: (
+          <ProtectedRoute>
+            <h1>Canceled</h1>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/success",
+        element: (
+          <ProtectedRoute>
+            <PaymentSuccess />
           </ProtectedRoute>
         ),
       },
@@ -81,6 +103,10 @@ const router = createBrowserRouter([
       },
       { path: "*", element: <NotFound /> },
     ],
+  },
+  {
+    path: "/success",
+    element: <PaymentSuccess />,
   },
   {
     element: <MinimalLayout />,

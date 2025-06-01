@@ -22,7 +22,7 @@ const NotFound = () => {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <Frown size={80} className="text-primary mb-4 text-white" />
-          <h1 className="display-1 text-white fw-bold mb-2">404</h1>
+          <h1 className="display-1 text-white fw-bold mb-2">Page Not Found</h1>
           <p className="fs-4 mb-4 text-info">
             Oops! The page you're looking for doesn't exist.
           </p>
