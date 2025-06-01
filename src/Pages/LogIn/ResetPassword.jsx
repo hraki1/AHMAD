@@ -5,7 +5,7 @@ import PageHeader from "../../Components/layout/Header/PageHeader";
 import Button from "../../Components/common/Button";
 import { baseUrl } from "../API/ApiConfig";
 import toast, { Toaster } from "react-hot-toast";
-import { useTransition } from "react";
+import { useTranslation } from "react-i18next";
 export default function ResetPassword() {
   const [formInput, setFormInput] = useState({
     newPassword: "",
@@ -22,7 +22,7 @@ export default function ResetPassword() {
     setFormInput({ ...formInput, [e.target.name]: e.target.value });
     setMessage({ text: "", type: "" });
   };
-  const { t } = useTransition();
+  const { t } = useTranslation();
   const isStrong = (password) =>
     /[A-Z]/.test(password) &&
     /[a-z]/.test(password) &&
@@ -36,12 +36,12 @@ export default function ResetPassword() {
 
     if (!isStrong(newPassword))
       return setMessage({
-        text: "Password must include uppercase, lowercase, number, and be at least 8 characters.",
+        text: t(`PasswordRequirements`),
         type: "danger",
       });
 
     if (newPassword !== confirmPassword)
-      return setMessage({ text: "Passwords do not match.", type: "danger" });
+      return setMessage({ text: t(`PasswordsDoNotMatch`), type: "danger" });
 
     setLoading(true);
     try {
@@ -57,39 +57,40 @@ export default function ResetPassword() {
       const data = await res.json();
       if (res.ok) {
         setSuccess(true);
-        toast.success("Password reset successful!");
+        toast.success(t(`PasswordResetSuccessful`));
       } else {
-        setMessage({ text: data.message || "Reset failed.", type: "danger" });
+        setMessage({ text: data.message || t(`ResetFailed`), type: "danger" });
       }
     } catch {
-      setMessage({ text: "An unexpected error occurred.", type: "danger" });
+      setMessage({ text: t(`UnexpectedError`), type: "danger" });
     } finally {
       setLoading(false);
     }
   };
+  const isRTL = document.documentElement.dir === "rtl";
 
   return (
     <>
       <Toaster />
-      <PageHeader title="Reset Password" hideHome={true} />
+      <PageHeader title={t(`Reset_password`)} hideHome={true} />
       <div className="container">
         <div className="row justify-content-center pt-5">
           <div className="col-md-6">
             {success ? (
               <div className="text-center p-4 bor-form">
                 <h2 className="text-success mb-3">
-                  Your password has been changed successfully! !
+                  {t(`PasswordChangedTitle`)}
                 </h2>
-                <p>You can now log in with your new password. .</p>
+                <p>{t(`PasswordChangedDescription`)}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="bor-form p-4">
-                <h2 className="text-center mb-4">Reset Your Password</h2>
+                <h2 className="text-center mb-4">{t(`Reset_password`)}</h2>
 
                 {["newPassword", "confirmPassword"].map((name, i) => (
                   <div className="form-group mb-3" key={name}>
                     <label>
-                      {i === 0 ? "New Password" : "Confirm Password"}{" "}
+                      {i === 0 ? t(`New_Password`) : t(`Confirm_Password`)}{" "}
                       <span className="text-danger">*</span>
                     </label>
                     <div className="position-relative">
@@ -100,7 +101,9 @@ export default function ResetPassword() {
                         onChange={handleChange}
                         className="form-control"
                         placeholder={
-                          i === 0 ? "Enter new password" : "Re-enter password"
+                          i === 0
+                            ? t(`Enter_new_password`)
+                            : t(`Re-enter_password`)
                         }
                         required
                       />
@@ -108,8 +111,9 @@ export default function ResetPassword() {
                         <button
                           type="button"
                           onClick={toggleVisibility}
-                          className="position-absolute end-0 top-50 translate-middle-y bg-transparent border-0 me-2"
+                          className="password-toggle-btn position-absolute top-50 translate-middle-y bg-transparent border-0 me-2"
                           aria-label="Toggle Password"
+                          style={{ [isRTL ? "left" : "right"]: 0 }}
                         >
                           {showPassword ? (
                             <EyeOff size={18} />

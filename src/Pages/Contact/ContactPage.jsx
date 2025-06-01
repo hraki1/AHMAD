@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { faqData } from "./data";
-
+import { useTranslation } from "react-i18next";
 export default function ContactPage() {
   // State to track form input values
   const [formData, setFormData] = useState({
@@ -8,7 +8,7 @@ export default function ContactPage() {
     email: "",
     phone: "",
     subject: "",
-    message: ""
+    message: "",
   });
 
   // State to track validation errors
@@ -17,7 +17,7 @@ export default function ContactPage() {
     email: "",
     phone: "",
     subject: "",
-    message: ""
+    message: "",
   });
 
   // Handle input changes
@@ -25,14 +25,14 @@ export default function ContactPage() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
-    
+
     // Clear error when user types
     if (errors[name]) {
       setErrors({
         ...errors,
-        [name]: ""
+        [name]: "",
       });
     }
   };
@@ -41,24 +41,26 @@ export default function ContactPage() {
   const validateForm = () => {
     let isValid = true;
     const newErrors = { ...errors };
-    
+
     // Check if all fields are filled
     for (const field in formData) {
       if (!formData[field].trim()) {
-        newErrors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+        newErrors[field] = `${
+          field.charAt(0).toUpperCase() + field.slice(1)
+        } is required`;
         isValid = false;
       }
     }
-    
+
     // Phone number validation - must be at least 10 digits
     if (formData.phone.trim()) {
-      const digitsOnly = formData.phone.replace(/\D/g, '');
+      const digitsOnly = formData.phone.replace(/\D/g, "");
       if (digitsOnly.length < 10) {
         newErrors.phone = "Phone number must be at least 10 digits";
         isValid = false;
       }
     }
-    
+
     setErrors(newErrors);
     return isValid;
   };
@@ -66,7 +68,7 @@ export default function ContactPage() {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent the default form submission
-    
+
     // Validate form before proceeding
     if (validateForm()) {
       // Print form data to console
@@ -74,6 +76,7 @@ export default function ContactPage() {
     }
   };
 
+  const { t } = useTranslation();
   return (
     <div id="page-content" className="mt-5">
       <div className="container contact-style2">
@@ -83,10 +86,10 @@ export default function ContactPage() {
               {/* Contact Form */}
               <div className="formFeilds contact-form form-vertical mb-4 mb-lg-0">
                 <div className="section-header">
-                  <div className="main-title-heading">Send Us a Message</div>
-                  <div className="main-italic">
-                    You can contact us any way that is convenient for you.
+                  <div className="main-title-heading">
+                    {t(`Send_Us_a_Message`)}
                   </div>
+                  <div className="main-italic">{t(`CanContact`)}</div>
                 </div>
 
                 <form
@@ -102,12 +105,14 @@ export default function ContactPage() {
                           id="ContactFormName"
                           name="name"
                           className="form-control"
-                          placeholder="Name *"
+                          placeholder={t("form.name")}
                           value={formData.name}
                           onChange={handleInputChange}
                           required
                         />
-                        <span className="error_msg" id="name_error">{errors.name}</span>
+                        <span className="error_msg" id="name_error">
+                          {errors.name}
+                        </span>
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -117,12 +122,14 @@ export default function ContactPage() {
                           id="ContactFormEmail"
                           name="email"
                           className="form-control"
-                          placeholder="Email *"
+                          placeholder={t("form.email")}
                           value={formData.email}
                           onChange={handleInputChange}
                           required
                         />
-                        <span className="error_msg" id="email_error">{errors.email}</span>
+                        <span className="error_msg" id="email_error">
+                          {errors.email}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -136,12 +143,14 @@ export default function ContactPage() {
                           id="ContactFormPhone"
                           name="phone"
                           pattern="[0-9\-]*"
-                          placeholder="Phone Number * (min 10 digits)"
+                          placeholder={t("form.phone")}
                           value={formData.phone}
                           onChange={handleInputChange}
                           required
                         />
-                        <span className="error_msg" id="phone_error">{errors.phone}</span>
+                        <span className="error_msg" id="phone_error">
+                          {errors.phone}
+                        </span>
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -151,7 +160,7 @@ export default function ContactPage() {
                           id="ContactSubject"
                           name="subject"
                           className="form-control"
-                          placeholder="Subject"
+                          placeholder={t("form.subject")}
                           value={formData.subject}
                           onChange={handleInputChange}
                         />
@@ -166,7 +175,7 @@ export default function ContactPage() {
                       name="message"
                       className="form-control"
                       rows="6"
-                      placeholder="Message"
+                      placeholder={t("form.message")}
                       value={formData.message}
                       onChange={handleInputChange}
                     ></textarea>
@@ -197,40 +206,36 @@ export default function ContactPage() {
             <div className="col-lg-6">
               <div className="section-header">
                 <div className="main-title-heading">
-                  People usually ask these
+                  {t(`PeopleUsuallyAsk`)}
                 </div>
-                <div className="main-italic">
-                  We would be happy to answer your questions.
-                </div>
+                <div className="main-italic">{t(`HappyToAnswer`)}</div>
               </div>
 
               <div className="contact-details faqs-style faqs-style1">
                 <div className="accordion" id="accordionFaq">
                   {faqData.map((faq, idx) => (
                     <div className="accordion-item" key={idx}>
-                      <h2 className="accordion-header" id={`heading${idx}`}>
+                      <h2 className="accordion-header " id={`heading${idx}`}>
                         <button
-                          className="accordion-button collapsed"
+                          className="accordion-button collapsed drop-header-con"
                           type="button"
                           data-bs-toggle="collapse"
                           data-bs-target={`#collapse${idx}`}
                           aria-expanded="false"
                           aria-controls={`collapse${idx}`}
                         >
-                          {faq.question}
+                          {t(faq.question)}
                           <i className="fas fa-plus ms-auto"></i>
                         </button>
                       </h2>
                       <div
                         id={`collapse${idx}`}
-                        className={`accordion-collapse collapse${
-                          idx === 0 ? " show" : ""
-                        }`}
+                        className="accordion-collapse collapse"
                         aria-labelledby={`heading${idx}`}
                         data-bs-parent="#accordionFaq"
                       >
                         <div className="accordion-body">
-                          <div className="desc-content">{faq.answer}</div>
+                          <div className="desc-content">{t(faq.answer)}</div>
                         </div>
                       </div>
                     </div>

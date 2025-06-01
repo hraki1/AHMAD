@@ -3,7 +3,7 @@ import paymentimg from "../../assets/images/icons/safepayment.png";
 import { Link } from "react-router-dom";
 import { useCart } from "../../Context/CartContext";
 import { baseUrl } from "../../Pages/API/ApiConfig";
-
+import { useTranslation } from "react-i18next";
 export default function CartSummary({
   btnName = "",
   isPreview = false,
@@ -27,7 +27,7 @@ export default function CartSummary({
     setDiscount,
     subtotalWithDiscount,
   } = useCart();
-
+  const { t } = useTranslation();
   const discountPercentage = subtotal ? (discount / subtotal) * 100 : 0;
 
   const handleRemoveDiscount = async () => {
@@ -54,10 +54,10 @@ export default function CartSummary({
         setCouponApplied(false);
         setCouponMessage("");
       } else {
-        console.error("Failed to remove discount:", data);
+        console.error(t(`remove_discount`), data);
       }
     } catch (error) {
-      console.error("Error removing discount:", error);
+      console.error(t(`Error_discount`), error);
     }
   };
 
@@ -68,7 +68,7 @@ export default function CartSummary({
       <div className="cart-order-detail cart-col">
         <div className="row g-0 border-bottom pb-2">
           <span className="col-6 cart-subtotal-title">
-            <strong>Subtotal</strong>
+            <strong>{t(`Subtotal`)}</strong>
           </span>
           <span className="col-6 cart-subtotal text-end">
             ${subtotal.toFixed(2)}
@@ -78,7 +78,7 @@ export default function CartSummary({
         {discount > 0 && (
           <div className="row g-0 border-bottom py-2">
             <span className="col-6 cart-subtotal-title">
-              <strong>Coupon Discount</strong>
+              <strong>{t(`Coupon_Discount`)}</strong>
             </span>
             <span className="col-6 cart-subtotal text-end">
               -${discount.toFixed(2)}
@@ -90,7 +90,7 @@ export default function CartSummary({
           <>
             <div className="row g-0 border-bottom py-2">
               <span className="col-6 cart-subtotal-title">
-                <strong>Tax</strong>
+                <strong>{t(`Tax`)}</strong>
               </span>
               <span className="col-6 cart-subtotal text-end">
                 ${tax.toFixed(2)}
@@ -99,7 +99,7 @@ export default function CartSummary({
 
             <div className="row g-0 border-bottom py-2">
               <span className="col-6 cart-subtotal-title">
-                <strong>Shipping</strong>
+                <strong>{t(`Shipping`)}</strong>
               </span>
               <span className="col-6 cart-subtotal text-end">
                 {shipping === 0 ? "Free shipping" : `$${shipping.toFixed(2)}`}
@@ -111,34 +111,32 @@ export default function CartSummary({
         <div className="row g-0 pt-2">
           {discountPercentage > 0 && (
             <div className="small text-muted">
-              <span>Price Before Discount: ${subtotal.toFixed(2)}</span>
+              <span>
+                {t(`Price_Before_Discount`)} ${subtotal.toFixed(2)}
+              </span>
               <br />
               <button
                 onClick={handleRemoveDiscount}
                 className="btn-remove-dis mt-1 mb-2"
               >
-                Remove Discount
+                {t(`Remove_Discount`)}
               </button>
             </div>
           )}
 
           <span className="col-6 cart-subtotal-title fs-6">
-            <strong>Total</strong>
+            <strong>{t("Total")}</strong>
           </span>
           <span className="col-6 cart-subtotal text-end fs-5 text-primary">
             <b>${totalAmountToShow.toFixed(2)}</b>
           </span>
         </div>
 
-        <p className="cart-shipping mt-3">
-          Shipping &amp; taxes calculated at checkout
-        </p>
+        <p className="cart-shipping mt-3">{t(`Shipping_taxes`)}</p>
 
         <div className="customCheckbox cart-tearm">
           <input type="checkbox" id="cart-tearm" />
-          <label htmlFor="cart-tearm">
-            I agree with the terms and conditions
-          </label>
+          <label htmlFor="cart-tearm">{t(`Iagree`)}</label>
         </div>
         {mode === "payment" ? (
           <button
@@ -146,7 +144,7 @@ export default function CartSummary({
             className="btn btn-lg btn-success my-4 w-100"
             onClick={onPlaceOrder}
           >
-            Place Order
+            {t(`Place_Order`)}
           </button>
         ) : (
           <Link

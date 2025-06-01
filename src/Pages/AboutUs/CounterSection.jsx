@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useTransition } from "react";
 import PropTypes from "prop-types";
 import CountUp from "react-countup"; // استيراد مكتبة CountUp
 import { useInView } from "react-intersection-observer";
-
+import { useTranslation } from "react-i18next";
 /**
  * @param counterData
  */
+
 export default function CounterSection({ counterData }) {
+  const { t } = useTranslation();
+
   return (
     <section className="destination-section section section-color-light">
       <div className="container">
@@ -33,6 +36,8 @@ CounterSection.propTypes = {
 
 // مكون فرعي لكل عنصر لاحتواء useInView
 function CounterItem({ item }) {
+  const { t } = useTranslation();
+
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.5,
@@ -49,7 +54,7 @@ function CounterItem({ item }) {
         </span>
         <span className="ms-1 text">{item.text}</span>
       </p>
-      <div className="counterup-title">{item.title}</div>
+      <div className="counterup-title">{t(item.title)}</div>
     </div>
   );
 }

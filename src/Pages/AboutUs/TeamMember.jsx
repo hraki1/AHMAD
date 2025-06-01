@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { teamData } from "./data";
-
+import { useTranslation } from "react-i18next";
 function TeamMember({ member }) {
+  const { t } = useTranslation();
   return (
     <div className="team-item col-item">
       <div className="team-img zoom-scal rounded-0">
@@ -31,8 +32,10 @@ function TeamMember({ member }) {
         </ul>
       </div>
       <div className="team-bio pt-3">
-        <div className="name-person">{member.name}</div>
-        <div className="sub-name-person">{member.position}</div>
+        <div className="name-person">{t(`teamData.${member.name}`)}</div>
+        <div className="sub-name-person">
+          {t(`teamPosition.${member.position}`)}
+        </div>
       </div>
     </div>
   );
@@ -48,14 +51,15 @@ TeamMember.propTypes = {
 };
 
 export default function TeamSection() {
+  const { t } = useTranslation();
   return (
     <div className="team-section section">
       <div className="container">
         <div className="section-header">
           <div className="main-italic mb-2 mt-0">
-            Good leaders make it better
+            {t("Good_leaders_make_it_better")}
           </div>
-          <div className="main-title-heading">Meet Our Leaders</div>
+          <div className="main-title-heading">{t("Meet_Our_Leaders")}</div>
         </div>
 
         <div className="team-items row col-row row-cols-lg-4 row-cols-md-4 row-cols-sm-2 row-cols-2 text-center">

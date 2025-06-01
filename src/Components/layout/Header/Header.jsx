@@ -144,7 +144,7 @@ const Header = () => {
                   title={t("Home")}
                   links={[{ to: "/", label: t("Home") }]}
                 />
-                {!loading && !error && categories.length > 0 && (
+                {!loading && !error && categories.length > 0 ? (
                   <li className="megamenu head-drop-down">
                     <Link to="/ShopGrid">
                       {t("Categories")}{" "}
@@ -189,7 +189,15 @@ const Header = () => {
                       </ul>
                     </div>
                   </li>
+                ) : (
+                  <li className="megamenu head-drop-down">
+                    <Link to="/ShopGrid">
+                      {t("Categories")}{" "}
+                      <i className="fa-solid fa-angle-down ms-1" />
+                    </Link>
+                  </li>
                 )}
+
                 <NavItem
                   title={t("Pages")}
                   links={[

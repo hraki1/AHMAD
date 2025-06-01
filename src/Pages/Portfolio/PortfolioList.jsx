@@ -3,7 +3,7 @@ import PortfolioNav from "./PortfolioNav";
 import PortfolioItem from "./PortfolioItem";
 import { projects } from "./data";
 import PortfolioModal from "./PortfolioModal";
-
+import { useTranslation } from "react-i18next";
 const PortfolioList = () => {
   const [filter, setFilter] = useState("*");
 
@@ -13,17 +13,15 @@ const PortfolioList = () => {
       : projects.filter(
           (project) => project.category === filter || filter === "*"
         );
-
+  const { t } = useTranslation();
   return (
     <div className="container">
       <div className="page-title text-center mb-4">
-        <div className="main-title-heading">Portfolio Style</div>
-        <div className="desc-title-page">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. <br />
-          Lorem Ipsum has been the industry's standard dummy text ever since the
-          1500s.
-        </div>
+        <div className="main-title-heading">{t(`Portfolio_Style`)}</div>
+        <div
+          className="desc-title-page"
+          dangerouslySetInnerHTML={{ __html: t("Portfolio_Desc") }}
+        ></div>
       </div>
 
       <PortfolioNav onFilterChange={setFilter} />

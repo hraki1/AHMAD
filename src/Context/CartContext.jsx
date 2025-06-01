@@ -8,7 +8,7 @@ import React, {
 import { baseUrl } from "../Pages/API/ApiConfig";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { useTranslation } from "react-i18next";
 export const CartContext = createContext({
   cartCount: 0,
   isLoading: false,
@@ -28,8 +28,8 @@ export const CartContext = createContext({
   applyCoupon: () => {},
   removeCoupon: () => {},
 });
-
 export function CartProvider({ children }) {
+  const { t } = useTranslation(); // هنا فقط
   const [cartSummary, setCartSummary] = useState({
     subtotal: 0,
     total: 0,
@@ -144,7 +144,7 @@ export function CartProvider({ children }) {
   const addItem = useCallback(
     async (productId, quantity = 1) => {
       if (!cartId) {
-        toast.error("Please login to add items to the cart.");
+        toast.error(t(`Please_cart`));
         return;
       }
 
@@ -164,11 +164,10 @@ export function CartProvider({ children }) {
     },
     [cartId, fetchCartData, fetchWithAuth]
   );
-
   const removeItem = useCallback(
     async (cart_item_id) => {
       if (!cartId) {
-        toast.error("Please login to modify the cart.");
+        toast.error(t(`Please_modify`));
         return;
       }
 
@@ -192,7 +191,7 @@ export function CartProvider({ children }) {
   const applyCoupon = useCallback(
     async (couponCode) => {
       if (!cartId) {
-        toast.error("Please login to apply coupon.");
+        toast.error(t(`Please_apply`));
         return false;
       }
 
@@ -202,7 +201,7 @@ export function CartProvider({ children }) {
           method: "POST",
           body: JSON.stringify({ cart_id: cartId, coupon_code: couponCode }),
         });
-        toast.success("Coupon applied successfully");
+        toast.success(t(`Coupon_applied`));
         await fetchCartData();
         return true;
       } catch (error) {
@@ -217,7 +216,7 @@ export function CartProvider({ children }) {
 
   const removeCoupon = useCallback(async () => {
     if (!cartId) {
-      toast.error("Please login to remove coupon.");
+      toast.error(t(`Please_remove`));
       return;
     }
 
@@ -227,7 +226,7 @@ export function CartProvider({ children }) {
         method: "POST",
         body: JSON.stringify({ cart_id: cartId }),
       });
-      toast.success("Coupon removed successfully");
+      toast.success(t(`Coupon_removed`));
       await fetchCartData();
     } catch (error) {
       toast.error(error.message);

@@ -3,14 +3,14 @@ import PageHeader from "../../Components/layout/Header/PageHeader";
 import { baseUrl } from "../API/ApiConfig";
 import CheckoutItems from "./CheckoutItems";
 import Checkout from "./Checkout";
-
+import { useTranslation } from "react-i18next";
 export default function Index() {
   const [discount, setDiscount] = useState(0); // Check this initial value
   const [couponApplied, setCouponApplied] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [cartId, setCartId] = useState(null);
   const [country, setCountry] = useState(null); // الدولة بشكل افتراضي
-
+  const { t } = useTranslation();
   const [isVaildEntries, setIsVaildEntries] = useState(false); // الدولة بشكل افتراضي
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function Index() {
 
   return (
     <div>
-      <PageHeader title="Checkout" />
+      <PageHeader title={t(`CheckOut`)} />
       <Checkout country={country || "Jordan"} setCountry={setCountry} />
       <div className="container">
         <div className="row">

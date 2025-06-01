@@ -38,6 +38,7 @@
   "Shop_Men": "Shop Men",
   "Explore_Now": "Explore Now!",
   "Shop_Now": "Shop now",
+  "Approve_Address": "Approve Address",
   "services": {
     "call": "Call us any time",
     "call_sub": "Contact us 24/7 hours a day",
@@ -86,5 +87,305 @@
       "title": "Sales Management",
       "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry..."
     }
-  ]
+  ],
+  "stats": {
+    "years_of_foundation": "Years of foundation",
+    "skilled_team_members": "Skilled team members",
+    "happy_customers": "Happy customers",
+    "monthly_orders": "Monthly orders"
+  },
+  "Good_leaders_make_it_better": "Good leaders make it better",
+  "Meet_Our_Leaders": "Meet Our Leaders",
+  "teamData": {
+    "Bruce_Sutton": "Bruce Sutton",
+    "Ellen_Thornton": "Ellen Thornton",
+    "Lisa_John": "Lisa John",
+    "Jackly_Smith": "Jackly Smith"
+  },
+  "teamPosition": {
+    "CEO_Founder": "CEO - Founder",
+    "Products_Manager": "Products Manager",
+    "Marketing": "Marketing",
+    "Designer": "Designer"
+  },
+  "awards": {
+    "winner_master": "Winner Master",
+    "award_2014": "Award 2014",
+    "award_2016": "Award 2016",
+    "award_2018": "Award 2018",
+    "award_2020": "Award 2020"
+  },
+  "someLongTextAbout": "Section 1.10.32 of \"de Finibus Bonorum et Malorum\", written by Cicero in 45 BC",
+  "DescVideoAbout": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+  "servicesAbout": {
+    "titleEmail": "E-mail Address",
+    "Phone_Number": "Phone Number",
+    "Fax": "Fax",
+    "MainAddress": "AMMAN KHALDA JAWAHER CENTER",
+    "SubAddress": "Building 44B Near Planet Dount"
+  },
+  "Send_Us_a_Message": "Send Us a Message",
+  "CanContact": "You can contact us any way that is convenient for you",
+  "form": {
+    "name": "Name *",
+    "email": "Email *",
+    "phone": "Phone Number *",
+    "subject": "Subject *",
+    "message": "Your Message",
+    "password": "Password *",
+    "confirmPassword": "Confirm Password *",
+    "submit": "Send"
+  },
+  "Password": "Password",
+  "Email": "Email",
+  "Remember_me": "Remember me",
+  "Forgot_your_password": "Forgot your password",
+  "Sign_in_with_social_account": "Sign in with social account",
+  "Don't_have_an_account?": "Don't have an account?",
+  "Sign_up_now": "Sign up now",
+  "OR": "OR",
+  "UserName": "User Name",
+  "agree": "I agree to",
+  "terPol": "terms & Policy",
+  "Have_an_account": "Have an account?",
+  "LoginNow": "Login Now",
+  "Register": "Register",
+  "Forget_Password": "Forget Password",
+  "PasswordResetSent": "Password reset link has been sent.",
+  "CheckEmailInstructions": "Check your email and follow the instructions to reset your password.",
+  "Processing": "Processing ...",
+  "PasswordChangedTitle": "Your password has been changed successfully!",
+  "PasswordChangedDescription": "You can now log in with your new password.",
+  "Enter_new_password": "Enter new password",
+  "Re-enter_password": "Re-enter password",
+  "New_Password": "New Password",
+  "Confirm_Password": "Confirm Password",
+  "PasswordRequirements": "Password must include uppercase, lowercase, number, and be at least 8 characters",
+  "PasswordsDoNotMatch": "Passwords do not match",
+  "PasswordResetSuccessful": "Password reset successful",
+  "ResetFailed": "Reset failed",
+  "UnexpectedError": "An unexpected error occurred",
+  "ResetLinkSent": "A password reset link has been sent to your email",
+  "UserNotFound": "User not found. Please try again",
+  "ServerConnectionError": "There was an error connecting to the server",
+  "PeopleUsuallyAsk": "People usually ask these",
+  "HappyToAnswer": "We would be happy to answer your questions",
+  "ContactTitle": {
+    "questionOne": "How can I cancel my order?",
+    "answerOne": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+    "questionTow": "Why is my registration delayed?",
+    "answerTow": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.",
+    "questionThree": "What do I need to buy products?",
+    "answerThree": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature.",
+    "questionFour": "How can I track an order?",
+    "answerFour": "Nullam sed neque luctus, maximus diam sed, facilisis orci. Nunc ultricies neque a aliquam sollicitudin.",
+    "questionFive": "How can I get money back?",
+    "answerFive": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+  },
+  "Portfolio_Style": "Portfolio Style",
+  "Portfolio_Desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. <br /> Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+  "Frequently_Asked_Questions": "Frequently Asked Questions",
+  "Search": "Search…",
+  "Faqs": {
+    "titleOne": "Shipping & Orders",
+    "titleTow": "Exchanges & Returns",
+    "titleThree": "Payments & Privacy",
+    "titleFour": "Account & Settings"
+  },
+  "faq": [
+    {
+      "title": "Shopping Basics",
+      "questions": [
+        {
+          "question": "What Shipping Methods Are Available?",
+          "answer": "Lorem Ipsum is simply dummy text of the printing and typesetting industry..."
+        },
+        {
+          "question": "What are your shipping and return policies?",
+          "answer": "There are many variations of passages of Lorem Ipsum available, but the majority...",
+          "image": "assets/images/collection/sub-collection5.jpg",
+          "more": [
+            "Our mission is to create top-quality Html Template...",
+            "Create your store with our Optimal Html Template...",
+            "Optimal comes with easy-to-use interface and outstanding support..."
+          ]
+        },
+        {
+          "question": "Do You Ship Internationally?",
+          "answer": "Contrary to popular belief, Lorem Ipsum is not simply random text..."
+        }
+      ]
+    },
+    {
+      "title": "Payments",
+      "questions": [
+        {
+          "question": "What Payment Methods Are Accepted?",
+          "answer": "Lorem Ipsum is simply dummy text of the printing and typesetting industry..."
+        },
+        {
+          "question": "Do you accept international credit cards?",
+          "answer": "Nullam sed neque luctus, maximus diam sed, facilisis orci..."
+        },
+        {
+          "question": "Do you charge sales tax on any item?",
+          "answer": "Contrary to popular belief, Lorem Ipsum is not simply random text..."
+        }
+      ]
+    },
+    {
+      "title": "Shipping & Returns",
+      "questions": [
+        {
+          "question": "I want to return my purchase! What do I do?",
+          "answer": "Lorem Ipsum is simply dummy text of the printing and typesetting industry..."
+        },
+        {
+          "question": "How long does it take for me to get a refund?",
+          "answer": "It is a long established fact that a reader will be distracted..."
+        },
+        {
+          "question": "How Can I Cancel Or Change My Order?",
+          "answer": "In vulputate metus lacus, eu vehicula dolor feugiat id..."
+        },
+        {
+          "question": "How can I get assistance if I need it?",
+          "answer": "Contrary to popular belief, Lorem Ipsum is not simply random text..."
+        }
+      ]
+    }
+  ],
+  "INFORMATION_PAGE": "INFORMATION PAGE",
+
+  "cms": {
+    "sections": [
+      {
+        "title": "Payment Method",
+        "contents": [
+          "The available international credit card options are VISA, Mastercard, Maestro, American Express, Discover and Diners. The available domestic debit card options are VISA and Mastercard.",
+          "Please note that Hema does not collect your credit/debit card number or personal information when you make a payment. For questions regarding your transactions on our site, please consult your card-issuing bank for information.",
+          "Please make sure that you enter the coupon code exactly as you received it, with no space before, within, or after it. To avoid errors, we recommend you to copy/paste the promotional code you received."
+        ],
+        "list": {
+          "type": "ul",
+          "items": [
+            "Coupons cannot be combined. You can only use one coupon code per order.",
+            "Coupons are subject to offer terms. This does exclude some items on our website which are not eligible for coupon discounts.",
+            "You can pay up to 70% of your purchase with bonus points at checkout. Remember that 100 points = $1."
+          ]
+        }
+      },
+      {
+        "title": "Shipping Information",
+        "contents": [
+          "We have put a lot of focus on making sure the items get delivered to our customers as quickly as possible. You will receive your order in 6-17 business days from the date that it is placed.",
+          "A confirmation email will be sent to you once the order is authorized and verified. We begin preparing your order immediately after it is verified. With this sort of time frame, it makes it difficult for us to change or cancel your order, however, we will do our best to support your request.",
+          "It normally takes 3-7 business days for us to process your order. Please note that this does not include holidays and weekends."
+        ]
+      },
+      {
+        "title": "To track your order",
+        "customList": [
+          "Click here and login to your account.",
+          "Once you're logged in, choose \"Order History\".",
+          "Click \"Track Package\" to retrieve your tracking information."
+        ]
+      },
+      {
+        "title": "Returns & Exchanges",
+        "contents": [
+          "It's bummed to us if you're not 100% satisfied with the items you received, we gladly accept returns postmarked within 45 days from the purchase date and we have made the returns so easy for you!"
+        ],
+        "list": {
+          "type": "ol",
+          "items": [
+            "Sign into your account.",
+            "Find the order in My Orders, click the “Return Item” button.",
+            "Select the item(s) you would like to return, indicate the reasons, and submit.",
+            "Select the mailing method: self-sending or pick-up service (choose the pick-up address and post office required information).",
+            "The logistics company will contact you as soon as possible, please wait for the courier to pick up the package or take the sealed package to the nearby mailing point and send to the address of Hema return center.",
+            "We will confirm the parcel immediately after we receive the return, update the status of the return and refund within 7 working days. The refund will be returned to your Hema wallet or to your original payment account."
+          ]
+        }
+      },
+      {
+        "title": "Return Conditions",
+        "contents": [
+          "We only accept returns postmarked within 45 days from the purchase date. Orders must be delivered. The address of the recipient must be in India. The following items cannot be returned or exchanged: bodysuits, lingerie & sleepwear, swimwear, jewelry, and accessories (except scarves, bags, and mermaid blankets).",
+          "All items in bundling promotion are not eligible for partial cancels, exchanges, or returns. Items returned must be in their unused condition with the original packing. We do not accept a returned item that’s worn, damaged, washed or altered in any way. We do not accept returned items that were sent back by you directly without checking with us first. We do not offer Freight To Collect (FTC) service for the packages returned to us. The returns will be made at your own cost."
+        ]
+      },
+      {
+        "title": "Refunds",
+        "contents": [
+          "Returns will be processed within 7 days upon receipt of your package. The refund will be issued to your Hema Wallet or the original payment account per your request. If the order is free shipping, postage will not be deducted.",
+          "Pick-up service charge will be deducted from total refund and self-sending shipping fee will be at your own cost.",
+          "Note: Refunds will be initiated for items only, other fees like insurance, shipping, COD service charges are non refundable."
+        ]
+      }
+    ]
+  },
+  "Shopping_Cart": "Shopping Cart",
+  "Price": "Price",
+  "Quantity": "Quantity",
+  "Total": "Total",
+  "Continue_shopping": "Continue shopping",
+  "Proceed_To_Checkout": "Proceed To Checkout",
+  "coupon_code": "Please enter a coupon code",
+  "cart_loading": "Please wait, cart is still loading",
+  "Coupon_applied": "Coupon applied successfully",
+  "Invalid_coupon": "Invalid coupon code",
+  "Error_coupon": "Error applying coupon",
+  "Failed_coupon": "Failed to apply coupon. Please try again",
+  "note_order": "Add a note to your order",
+  "Notes_delivery": "Notes about your order, e.g. special notes for delivery",
+  "Apply_Discount": "Apply Discount Code",
+  "Enter_coupon": "Enter your coupon code",
+  "Apply_Coupon": "Apply Coupon",
+  "Please_cart": "Please login to add items to the cart.",
+  "Please_modify": "Please login to modify the cart",
+  "Please_apply": "Please login to apply coupon",
+  "Please_remove": "Please login to remove coupon",
+  "Coupon_removed": "Coupon removed successfully",
+  "Failed_update": "Failed to update cart item",
+  "Cart_loading": "Cart data is loading, please wait...",
+  "Cart_updated": "Cart updated",
+  "Failed_remove": "Failed to remove item",
+  "Item_removed": "Item removed",
+  "Remove": "Remove",
+  "from_your_cart?": "from your cart?",
+  "This_permanently": "This will permanently remove the item from your cart.",
+  "Cancel": "Cancel",
+  "Yes": "Yes",
+  "remove_discount": "Failed to remove discount",
+  "Error_discount": "Error removing discount",
+
+  "Subtotal": "Subtotal",
+  "Coupon_Discount": "Coupon Discount",
+  "Tax": "Tax",
+  "Shipping": "Shipping",
+  "Price_Before_Discount": "Price Before Discount",
+  "Remove_Discount": "Remove Discount",
+  "Shipping_taxes": "Shipping &amp; taxes calculated at checkout",
+  "Iagree": "I agree with the terms and conditions",
+  "Place_Order": "Place Order",
+  "You_may_also_like": "You may also like",
+  "Select": "Select",
+  "full_name": "Full name",
+
+  "checkOut": {
+    "Address_saved_successfully": "Address saved successfully",
+    "Saved_Address": "Saved Address",
+    "Show_Address": "Show Address",
+    "Address": "Address",
+    "City": "City",
+    "Country": "Country",
+    "Apartment": "Apartment, suite, unit etc. (optional)",
+    "Postcode": "Postcode / ZIP",
+    "Save_account": "Save address to my account",
+    "Address_Details": "Address Details",
+    "Add_New_Address": "Add New Address",
+    "Go_to_Payemnt": "Go to Payemnt",
+    "Select_address": "Select a saved address"
+  }
 }
