@@ -1,11 +1,26 @@
-import OrderProduct from "./Orderproduct";
+import OrderProduct from "./OrderProduct";
+
 const OrderProducts = ({ orders }) => {
   if (orders.length === 0) {
-    return <div>there is not orders</div>;
+    return <div>There are no orders</div>;
   }
+
+  // 1️⃣ Flatten all items from all orders
   const allItems = orders.flatMap((order) => order.items);
 
-  console.log("allItems", allItems);
+  // 2️⃣ Merge items with the same id
+  const mergedItems = allItems.reduce((acc, item) => {
+    const existingItem = acc.find((i) => i.product_id === item.product_id);
+    if (existingItem) {
+      existingItem.qty += item.qty; // Merge quantities
+    } else {
+      acc.push({ ...item });
+    }
+    return acc;
+  }, []);
+
+  console.log("mergedItems", mergedItems);
+
   return (
     <div className="orders-card mt-0 h-100">
       <div className="top-sec d-flex-justify-center justify-content-between mb-4">
@@ -18,12 +33,12 @@ const OrderProducts = ({ orders }) => {
             <tr className="table-head text-nowrap">
               <th></th>
               <th>User Email</th>
-              <th>Quantyty</th>
+              <th>Quantity</th>
               <th>Total Price</th>
             </tr>
           </thead>
           <tbody>
-            {allItems.map((item, index) => (
+            {mergedItems.map((item, index) => (
               <OrderProduct key={index} item={item} />
             ))}
           </tbody>

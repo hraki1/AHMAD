@@ -77,9 +77,6 @@ const OrdersTracking = ({ orders }) => {
       location: "-",
     }));
 
-  const productImage =
-    currentOrder.items?.[0]?.thumbnail || "https://via.placeholder.com/150";
-
   return (
     <div className="orders-card mt-0 h-100">
       <div className="top-sec d-flex-justify-center justify-content-between mb-4">
@@ -128,14 +125,6 @@ const OrdersTracking = ({ orders }) => {
           </div>
 
           <div className="row mt-3">
-            <div className="col-lg-2 col-md-3 col-sm-4">
-              <img
-                className="rounded-0 blur-up lazyload"
-                src={productImage}
-                alt={currentOrder.items?.[0]?.product_name || "product"}
-                width="100%"
-              />
-            </div>
             <div className="col-lg-6 col-md-9 col-sm-8">
               <div className="tracking-detail d-flex-center">
                 <ul>

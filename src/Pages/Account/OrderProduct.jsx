@@ -1,195 +1,255 @@
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Star } from "lucide-react";
-import { Button, Form } from "react-bootstrap";
+import React, { useEffect, useState, useCallback } from "react";
+import { Star } from "lucide-react";
+import { Button, Form, Alert } from "react-bootstrap";
 import useFetchOneProductById from "../Hooks/useFetchOneProductById";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import Modal from "../../Components/UI/Modal";
 import { baseUrl } from "../API/ApiConfig";
+import StarRating from "./StartRating"; // New reusable component
 
 const OrderProduct = ({ item }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoveredStar, setHoveredStar] = useState(null);
   const [comment, setComment] = useState("");
+  const [reviewState, setReviewState] = useState({
+    isReviewed: false,
+    reviewData: null,
+    isLoading: false,
+    error: null,
+  });
+  const [submitState, setSubmitState] = useState({
+    isLoading: false,
+    error: null,
+    success: false,
+  });
+
+  console.log(reviewState.reviewData);
 
   const { product, loading, error } = useFetchOneProductById(item.product_id);
 
   const toggleDetails = () => setIsOpen(!isOpen);
 
-  const handleStarClick = (index) => {
-    setRating(index);
-  };
+  const handleStarClick = (index) => setRating(index);
 
-  const handleSubmitReview = (e) => {
-    e.preventDefault();
-    console.log("Submitted Review:", {
-      product_id: item.product_id,
-      rating,
-      review_text: comment,
-    });
-    // Reset form
+  const fetchReviewedProduct = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    setReviewState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-    const data = {
-      product_id: item.product_id,
-      rating,
-      review_text: comment,
-    };
-
-    const fetchAddReview = async () => {
-      const token = localStorage.getItem("token"); // get the token from localStorage
-      try {
-        const response = await fetch(`${baseUrl}/api/reviews`, {
-          method: "POST",
+    try {
+      const response = await fetch(
+        `${baseUrl}/api/reviews/product/${item.product_id}/customer`,
+        {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // add the token here
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            product_id: 2,
-            rating: 4,
-            review_text: comment,
-          }), // send review data
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to submit review");
         }
+      );
 
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error("Error adding review:", error);
-        throw error;
+      if (!response.ok) {
+        throw new Error("Failed to fetch review data");
       }
-    };
 
-    fetchAddReview();
-    toggleDetails();
-
-    setRating(0);
-    setComment("");
-  };
+      const resData = await response.json();
+      setReviewState({
+        isReviewed: resData.length > 0,
+        reviewData: resData[0] || null,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      setReviewState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error.message,
+      }));
+      console.error("Error fetching reviewed product:", error);
+    }
+  }, [item.product_id]);
 
   useEffect(() => {
-    console.log(product);
-  }, []);
+    fetchReviewedProduct();
+  }, [fetchReviewedProduct]);
 
-  console.log(item);
-  console.log(product);
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+
+    if (!rating) {
+      setSubmitState({
+        isLoading: false,
+        error: "Please select a rating",
+        success: false,
+      });
+      return;
+    }
+
+    setSubmitState({ isLoading: true, error: null, success: false });
+
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(`${baseUrl}/api/reviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          product_id: item.product_id,
+          rating,
+          review_text: comment,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit review");
+      }
+
+      const resData = await response.json();
+
+      setReviewState({
+        isReviewed: true,
+        reviewData: resData,
+        isLoading: false,
+        error: null,
+      });
+
+      setSubmitState({ isLoading: false, error: null, success: true });
+
+      // Reset form and close modal after 1 second
+      setTimeout(() => {
+        setRating(0);
+        setComment("");
+        setIsOpen(false);
+      }, 1000);
+    } catch (error) {
+      setSubmitState({
+        isLoading: false,
+        error: error.message,
+        success: false,
+      });
+      console.error("Error adding review:", error);
+    }
+  };
 
   if (loading) {
     return <Spinner />;
   }
 
   if (error) {
-    return <div>could not fetch product</div>;
+    return <Alert variant="danger">Could not fetch product: {error}</Alert>;
   }
 
   return (
     <>
-      {/* Summary Row */}
       <tr className="align-middle">
         <td>
-          <img src={product.images[0].origin_image} alt="" width="100" />
+          <img
+            src={product.images[0]?.origin_image || "/placeholder-product.png"}
+            alt={item.product_name}
+            width="100"
+            onError={(e) => {
+              e.target.src = "/placeholder-product.png";
+            }}
+          />
         </td>
         <td>{item.product_name}</td>
         <td>{item.qty}</td>
         <td>${item.final_price.toFixed(2)}</td>
         <td>
-          <Button
-            variant="outline-primary"
-            className="d-flex align-items-center gap-1"
-            onClick={toggleDetails}
-            style={{
-              borderRadius: "20px",
-              padding: "6px 12px",
-              fontWeight: "500",
-            }}
-          >
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star key={star} size={16} color="#ffc107" fill="#ffc107" />
-            ))}
-            <span style={{ marginLeft: "5px" }}>Review</span>
-          </Button>
+          {reviewState.isLoading ? (
+            <Spinner size="sm" />
+          ) : reviewState.isReviewed ? (
+            <div className="d-flex align-items-center gap-1">
+              <StarRating
+                rating={reviewState.reviewData?.rating || 0}
+                interactive={false}
+              />
+              <span className="ms-2">Reviewed</span>
+            </div>
+          ) : (
+            <Button
+              variant="outline-primary"
+              className="d-flex align-items-center gap-1"
+              onClick={toggleDetails}
+              disabled={reviewState.isLoading}
+              style={{
+                borderRadius: "20px",
+                padding: "6px 12px",
+                fontWeight: "500",
+              }}
+            >
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star key={star} size={16} color="#ccc" fill="none" />
+              ))}
+              <span style={{ marginLeft: "5px" }}>Review</span>
+            </Button>
+          )}
         </td>
       </tr>
 
-      {/* Details Row */}
-      {/* Modal with Review Form */}
-      <Modal open={isOpen}>
-        <div className="pt-3">
-          <h6 className="mb-3 text-light fs-4">Leave a Review</h6>
-          <div className="d-flex align-items-center mb-3">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                size={24}
-                color={(hoveredStar || rating) >= star ? "#ffc107" : "#e4e5e9"}
-                fill={(hoveredStar || rating) >= star ? "#ffc107" : "none"}
-                onMouseEnter={() => setHoveredStar(star)}
-                onMouseLeave={() => setHoveredStar(null)}
-                onClick={() => handleStarClick(star)}
-                style={{ cursor: "pointer", marginRight: "5px" }}
-              />
-            ))}
+      <Modal open={isOpen} onClose={toggleDetails}>
+        <div className="p-3">
+          <h5 className="mb-3 text-white">Leave a Review for {item.product_name}</h5>
+
+          {submitState.success && (
+            <Alert variant="success" className="mb-3">
+              Thank you for your review!
+            </Alert>
+          )}
+
+          {submitState.error && (
+            <Alert variant="danger" className="mb-3">
+              {submitState.error}
+            </Alert>
+          )}
+
+          <div className="mb-3">
+            <label className="d-block mb-2">Rating</label>
+            <StarRating
+              rating={hoveredStar || rating}
+              onRatingChange={{ setHoveredStar, handleStarClick }}
+              size={24}
+            />
           </div>
+
           <Form onSubmit={handleSubmitReview}>
             <Form.Group className="mb-3">
+              <Form.Label>Your Review</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
-                placeholder="Write your comment..."
+                placeholder="Share your experience with this product..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                maxLength={500}
               />
+              <div className="text-end text-muted small mt-1">
+                {comment.length}/500 characters
+              </div>
             </Form.Group>
+
             <div className="d-flex gap-3">
-              <Button variant="primary" type="submit">
-                Submit Review
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={submitState.isLoading}
+              >
+                {submitState.isLoading ? "Submitting..." : "Submit Review"}
               </Button>
-              <Button variant="secondary" onClick={toggleDetails}>
-                Close
+              <Button
+                variant="outline-secondary"
+                onClick={toggleDetails}
+                disabled={submitState.isLoading}
+              >
+                Cancel
               </Button>
             </div>
           </Form>
         </div>
       </Modal>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.tr
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <td colSpan={4}>
-              <div className="p-3 border rounded bg-light">
-                {/* Product Details */}
-                <div className="mb-2">
-                  <strong>Product Name:</strong> {item.product_name}
-                </div>
-                <div className="mb-2">
-                  <strong>SKU:</strong> {item.product_sku}
-                </div>
-                <div className="mb-2">
-                  <strong>Quantity:</strong> {item.qty}
-                </div>
-                <div className="mb-2">
-                  <strong>Price (per unit):</strong> $
-                  {item.product_price.toFixed(2)}
-                </div>
-                <div className="mb-3">
-                  <strong>Weight:</strong> {item.product_weight} kg
-                </div>
-
-                {/* Review Section */}
-              </div>
-            </td>
-          </motion.tr>
-        )}
-      </AnimatePresence>
     </>
   );
 };
