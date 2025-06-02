@@ -13,6 +13,8 @@ export default function Cart({
   showMinus = true,
   checkoutLink = "/CheckOut",
 }) {
+  const { t } = useTranslation(); // ✅ انقل هذا فوق
+
   const { cartId, cartItems, updateCart, isLoading } = useContext(CartContext);
 
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
@@ -81,13 +83,12 @@ export default function Cart({
   if (cartItems.length === 0)
     return (
       <div className="empty-cart text-center py-5">
-        <p>Your cart is empty</p>
+        <p>{t(`Your_empty`)}</p>
         <Link to="/ShopGrid" className="btn btn-primary">
-          Continue shopping
+          {t(`Continue_shopping`)}
         </Link>
       </div>
     );
-  const { t } = useTranslation();
   return (
     <div className="container py-4">
       <Toaster />

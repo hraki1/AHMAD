@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { tags } from "../data";
-
+import { useTranslation } from "react-i18next";
 export default function ProductTags({ className }) {
   const [activeTag, setActiveTag] = useState("Women");
 
@@ -8,13 +8,13 @@ export default function ProductTags({ className }) {
     setActiveTag(tag);
   }, []);
   const [showContent, setShowContent] = useState(true);
-
+  const { t } = useTranslation();
   return (
     <div
       className={`sidebar-widget filterBox filter-widget product-tag ${className}`}
     >
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div class="title-slidebar">Product Tags</div>
+        <div class="title-slidebar">{t(`ShopGridCate.Product_Tags`)}</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}
@@ -43,7 +43,7 @@ export default function ProductTags({ className }) {
                 </li>
               ))}
             </ul>
-            <span className="btn btn-sm brd-link btnview">View all</span>
+            <span className="btn btn-sm brd-link btnview">{t(`View_all`)}</span>
           </div>
         </div>
       )}

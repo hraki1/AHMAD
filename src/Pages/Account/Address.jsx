@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { FaEdit } from "react-icons/fa";
 import { baseUrl } from "../API/ApiConfig";
 import toast, { Toaster } from "react-hot-toast";
 import Modal from "../../Components/UI/Modal";
-
+import { useTranslation } from "react-i18next";
 export default function Address({
   address,
   setAddresses,
@@ -11,6 +11,7 @@ export default function Address({
   onStartEditing,
   onStopEditing,
 }) {
+  const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -128,7 +129,7 @@ export default function Address({
             );
           }
 
-          toast.success("Address updated successfully");
+          toast.success(t(`Account.Address_updated_successfully`));
           setError("");
           onStopEditing();
         } else {
@@ -153,7 +154,7 @@ export default function Address({
       <Modal open={modalOpen}>
         <div className="p-4 text-center">
           <h2 className="h4 fw-bold text-white">
-            Delete Address from Your AddressBook?
+            {t(`Account.Delete_AddressBook`)}
           </h2>
 
           <div className="d-flex justify-content-center gap-3 mt-4">
@@ -163,7 +164,7 @@ export default function Address({
               }}
               className="btn btn-secondary px-4 btn-one-hover-shipp"
             >
-              {isLoading ? "Deleting..." : "Yes, Remove"}
+              {(isLoading ? t(`Account.Deleting`) : t(`Yes`), t(`Remove`))}
             </button>
 
             <button
@@ -171,7 +172,7 @@ export default function Address({
               className="btn btn-primary px-4 btn-tow-hover-shipp"
               disabled={isLoading}
             >
-              Cancel
+              {t(`Cancel`)}
             </button>
           </div>
         </div>
@@ -182,7 +183,7 @@ export default function Address({
           <div className="row ">
             <div className="col-md-12 mb-4 d-flex justify-content-between align-items-center">
               <p className="mb-0">
-                <strong>Name:</strong>
+                <strong>{t(`full_name`)}:</strong>
                 {isEditing ? (
                   <input
                     className="form-control"
@@ -199,14 +200,14 @@ export default function Address({
                 className="btn btn-outline-danger btn-sm"
                 disabled={isEditing}
               >
-                <i className="fas fa-trash-alt me-2"></i> Delete
+                <i className="fas fa-trash-alt me-2"></i> {t(`Account.Delete`)}
               </button>
             </div>
 
             <div className="row">
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Phone:</strong>
+                  <strong>{t(`servicesAbout.Phone_Number`)}:</strong>
                   {isEditing ? (
                     <input
                       className="form-control"
@@ -221,7 +222,7 @@ export default function Address({
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Address One:</strong>
+                  <strong>{t(`Account.Address_One`)}:</strong>
                   {isEditing ? (
                     <input
                       className="form-control"
@@ -236,7 +237,7 @@ export default function Address({
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Address Tow:</strong>
+                  <strong>{t(`Account.Address_Tow`)}:</strong>
                   {isEditing ? (
                     <input
                       className="form-control"
@@ -251,7 +252,7 @@ export default function Address({
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>postcode:</strong>
+                  <strong>{t(`checkOut.Postcode`)}:</strong>
                   {isEditing ? (
                     <input
                       className="form-control"
@@ -266,17 +267,18 @@ export default function Address({
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Country:</strong> {address.countries.name}
+                  <strong>{t(`checkOut.Country`)}:</strong>{" "}
+                  {address.countries.name}
                 </p>
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>City:</strong> {address.city.name}
+                  <strong>{t(`checkOut.City`)}:</strong> {address.city.name}
                 </p>
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Default Address:</strong>
+                  <strong>{t(`Account.Default_Address`)}:</strong>
                   {isEditing ? (
                     <select
                       className="form-select"
@@ -284,19 +286,19 @@ export default function Address({
                       value={formData.is_default}
                       onChange={handleChange}
                     >
-                      <option value={true}>Yes</option>
-                      <option value={false}>No</option>
+                      <option value={true}>{t(`Yes`)}:</option>
+                      <option value={false}>{t(`Account.No`)}:</option>
                     </select>
                   ) : address.is_default ? (
-                    "Yes"
+                    t(`Yes`)
                   ) : (
-                    "No"
+                    t(`Account.No`)
                   )}
                 </p>
               </div>
               <div className="col-md-4 mb-4">
                 <p>
-                  <strong>Notes:</strong> {address.notes}
+                  <strong>{t(`Account.Notes`)}</strong> {address.notes}
                 </p>
               </div>
             </div>

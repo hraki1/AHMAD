@@ -8,7 +8,7 @@ import SizeFilter from "./Filters/SizeFilter";
 import ProductTypeFilter from "./Filters/ProductTypeFilter";
 import BrandFilter from "./Filters/BrandFilter";
 import AvailabilityFilter from "./Filters/AvailabilityFilter";
-
+import { useTranslation } from "react-i18next";
 // ✅ مكون ViewModes لتغيير طريقة عرض المنتجات
 const ViewModes = ({ activeView, onChange }) => (
   <div className="grid-options view-mode d-flex">
@@ -96,6 +96,7 @@ export default function Toolbar({
   const [showFilter, setShowFilter] = useState(false);
   const [productsPerPage, setProductsPerPage] = useState(15);
   const [sortBy, setSortBy] = useState("Featured");
+  const { t } = useTranslation();
 
   const handleViewChange = (col) => {
     setActiveView(col);
@@ -128,11 +129,11 @@ export default function Toolbar({
               className="btn btn-filter icon anm anm-sliders-hr d-inline-flex d-lg-none me-2"
               onClick={toggleFilter}
             >
-              Filter <i className="fa-solid fa-bars ms-1" />
+              {t(`Filter`)} <i className="fa-solid fa-bars ms-1" />
             </button>
             <div className="d-flex align-items-center">
               <label className="mb-0 me-2 d-none d-lg-inline-block">
-                View as:
+                {t(`View`)}
               </label>
               <ViewModes activeView={activeView} onChange={handleViewChange} />
             </div>
@@ -141,7 +142,7 @@ export default function Toolbar({
           {/* Center - Total Products Count */}
           <div className="col-12 col-sm-4 col-md-4 col-lg-4 text-center order-0 order-md-1 mb-3 mb-sm-0">
             <span className="toolbar-product-count">
-              Showing: {displayedProductCount} products
+              {t(`Showing`)}: {displayedProductCount} {t(`products`)}
             </span>
           </div>
 
@@ -149,14 +150,14 @@ export default function Toolbar({
           <div className="col-8 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-end order-2">
             <SelectBox
               id="show"
-              label="Show:"
+              label={t(`Showing`)}
               options={showOptions}
               value={productsPerPage}
               onChange={handleProductsPerPageChange}
             />
             <SelectBox
               id="sort"
-              label="Sort by:"
+              label={t("Sort_by")}
               options={sortOptions}
               value={sortBy}
               onChange={handleSortChange}

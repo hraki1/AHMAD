@@ -1,5 +1,8 @@
 import Order from "./Order";
+import { useTranslation } from "react-i18next";
 const Orders = ({ orders }) => {
+  const { t } = useTranslation();
+
   if (orders.length === 0) {
     return <div>there is not orders</div>;
   }
@@ -15,10 +18,10 @@ const Orders = ({ orders }) => {
         <table className="table align-middle text-center order-table">
           <thead>
             <tr className="table-head text-nowrap">
-              <th>Order ID</th>
-              <th>User Email</th>
-              <th>Status</th>
-              <th>Total Price</th>
+              <th>{t(`Account.Order_ID`)}</th>
+              <th>{t(`checkOut.full_name`)}</th>
+              <th>{t(`Account.Status`)}</th>
+              <th>{t(`Total`)}</th>
             </tr>
           </thead>
           <tbody>

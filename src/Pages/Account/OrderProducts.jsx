@@ -1,17 +1,19 @@
 import OrderProduct from "./OrderProduct";
-
+import { useTranslation } from "react-i18next";
 const OrderProducts = ({ orders }) => {
-  if (orders.length === 0) {
-    return <div>There are no orders</div>;
-  }
+  const { t } = useTranslation();
 
-  
+  if (orders.length === 0) {
+    return <div>{t(`Account.no_orders`)}</div>;
+  }
+  // 1️⃣ Flatten all items from all orders
   const allItems = orders.flatMap((order) => order.items);
 
+  // 2️⃣ Merge items with the same id
   const mergedItems = allItems.reduce((acc, item) => {
     const existingItem = acc.find((i) => i.product_id === item.product_id);
     if (existingItem) {
-      existingItem.qty += item.qty;
+      existingItem.qty += item.qty; // Merge quantities
     } else {
       acc.push({ ...item });
     }
@@ -31,9 +33,9 @@ const OrderProducts = ({ orders }) => {
           <thead>
             <tr className="table-head text-nowrap">
               <th></th>
-              <th>User Email</th>
-              <th>Quantity</th>
-              <th>Total Price</th>
+              <th>{t(`checkOut.full_name`)}</th>
+              <th>{t(`Quantity`)}</th>
+              <th>{t(`Total`)}</th>
             </tr>
           </thead>
           <tbody>

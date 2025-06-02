@@ -3,10 +3,10 @@ import PageHeader from "../../Components/layout/Header/PageHeader";
 import DashboardSidebar from "./DashboardSidebar";
 import { AuthContext } from "../../Context/AuthContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
-
+import { useTranslation } from "react-i18next";
 export default function Index() {
   const { isAuthenticated, isLoading: isAuthLoading } = useContext(AuthContext);
-
+  const { t } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,14 +58,14 @@ export default function Index() {
   if (error) {
     return (
       <div style={{ height: "100vh" }}>
-        <p>Error Occurd while fetch orders</p>
+        <p>{t(`Account.Error_Occurd`)}</p>
       </div>
     );
   }
 
   return (
     <div>
-      <PageHeader title="MY ACCOUNT" middleBreadcrumb="PAGES" />
+      <PageHeader title={t(`MyAccount`)} middleBreadcrumb={t(`Pages`)} />
       <DashboardSidebar orders={orders} />
     </div>
   );

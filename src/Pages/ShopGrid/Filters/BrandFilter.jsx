@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useFetchBrands from "../../Hooks/useFetchBrands";
-
+import { useTranslation } from "react-i18next";
 export default function BrandFilter({ className, onFilterChange }) {
   const { brands, loading, error } = useFetchBrands();
   const [selectedBrands, setSelectedBrands] = useState({});
@@ -30,11 +30,11 @@ export default function BrandFilter({ className, onFilterChange }) {
 
     if (onFilterChange) onFilterChange(selected);
   };
-
+  const { t } = useTranslation();
   return (
     <div className={`sidebar-widget filter-widget brand-filter ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div className="title-slidebar">Brands</div>
+        <div className="title-slidebar">{t(`Brands`)}</div>
         {/* ... */}
       </div>
       {/* ... */}

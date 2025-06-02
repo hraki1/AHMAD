@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useFetchCategories from "../../Hooks/useFetchCategories";
-
+import { useTranslation } from "react-i18next";
+import Spinner from "../../../Components/UI/SpinnerLoading";
 export default function SidebarCategories({
   onCategoryFilterChange,
   className,
@@ -10,7 +11,7 @@ export default function SidebarCategories({
   const parentId = categoryHierarchy.at(-1)?.id || null;
   const { categories, loading, error } = useFetchCategories(parentId);
   const [showContent, setShowContent] = useState(true);
-
+  const { t } = useTranslation();
   useEffect(() => {
     if (resetTrigger) {
       setCategoryHierarchy([]);
@@ -47,7 +48,7 @@ export default function SidebarCategories({
       className={`sidebar-widget clearfix categories filterBox filter-widget ${className}`}
     >
       <div className="widget-title d-flex justify-content-between align-items-center">
-        <div className="title-slidebar">Categories</div>
+        <div className="title-slidebar">{t(`Categories`)}</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}
@@ -63,14 +64,14 @@ export default function SidebarCategories({
                 className="btn btn-outline-primary btn-sm mb-3"
                 onClick={backToAll}
               >
-                BACK TO ALL CATEGORIES
+                {t(`ShopGridCate.Back_All`)}
               </button>
               {categoryHierarchy.length > 1 && (
                 <button
                   className="btn btn-outline-primary btn-sm "
                   onClick={backOneLevel}
                 >
-                  Back One Level
+                  {t(`ShopGridCate.Back_One`)}
                 </button>
               )}
             </div>
@@ -78,7 +79,11 @@ export default function SidebarCategories({
 
           <div className="widget-content filterDD">
             <ul className="sidebar-categories scrollspy clearfix">
-              {loading && <li>Loading...</li>}
+              {loading && (
+                <li>
+                  <Spinner />
+                </li>
+              )}
               {error && <li>Error loading categories</li>}
               {!loading &&
                 !error &&

@@ -17,13 +17,13 @@ export default function PageHeader({ title, middleBreadcrumb, hideHome }) {
                   <Link to="/" title={t("BackToHome")}>
                     {t("Home")}
                   </Link>
-                  <i className="fa-solid fa-angle-right me-2 ms-2"></i>
+                  <i className="fa-solid fa-angle-right mx-2 "></i>
                 </>
               )}
               {middleBreadcrumb && (
                 <>
                   <span className="title">{t(middleBreadcrumb)}</span>
-                  <i className="fa-solid fa-angle-right me-2 ms-2"></i>
+                  <i className="fa-solid fa-angle-right mx-2 "></i>
                 </>
               )}
               <span className="main-title fw-bold">{t(title)}</span>

@@ -47,14 +47,14 @@ const AccountLinks = () => {
                 <span className="icon">
                   <i className={`fa-solid ${link.icon} fa-lg`} />
                 </span>
-                <span className="label">{link.label}</span>
+                <span className="label ms-2">{link.label}</span>
               </button>
             ) : (
               <a href={link.href} className="d-flex align-items-center">
                 <span className="icon">
                   <i className={`fa-solid ${link.icon} fa-lg`} />
                 </span>
-                <span className="label">{link.label}</span>
+                <span className="label ms-2">{link.label}</span>
               </a>
             )}
           </li>

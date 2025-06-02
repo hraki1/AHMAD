@@ -4,7 +4,7 @@ import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../Hooks/useFetchCategories";
 import { Link } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
-
+import { useTranslation } from "react-i18next";
 const Category = ({
   selectedCategoryAndChildrenIds,
   selectedBrandIds = [],
@@ -22,7 +22,7 @@ const Category = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { addToWishlist } = useWishlist();
-
+  const { t } = useTranslation();
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
     addToWishlist({
@@ -34,7 +34,7 @@ const Category = ({
       imgSrc: product.imageUrl,
       variant: product.colors[0]?.title || "Default variant",
     });
-    alert(`${product.name} added to wishlist!`);
+    alert(`${product.name} ${t(`product.Add_Wishlist`)}`);
   };
 
   const {
@@ -100,7 +100,7 @@ const Category = ({
               name,
               oldPrice: `$${(old_price || price + 20).toFixed(2)}`,
               newPrice: `$${price.toFixed(2)}`,
-              price: price, // 👈 Store raw price for sorting
+              price: price,
               imageUrl: primaryImg || "",
               categoryId,
               brandId,
@@ -293,7 +293,7 @@ const Category = ({
                   />
                 </Link>
                 <div className="product-labels">
-                  <span className="lbl on-sale">Sale</span>
+                  <span className="lbl on-sale">{t(`ShopGridCate.Sale`)}</span>
                 </div>
                 <div className="button-set style1">
                   {/* <button
@@ -310,7 +310,7 @@ const Category = ({
                     className="btn-icon quickview"
                   >
                     <i className="fa-solid fa-eye"></i>
-                    <span className="text">Quick View</span>
+                    <span className="text">{t(`ShopGridCate.Quick_View`)}</span>
                   </Link>
                   <Link
                     href="#"
@@ -318,7 +318,7 @@ const Category = ({
                     onClick={(e) => handleAddToWishlist(e, product)}
                   >
                     <i className="fa-solid fa-heart"></i>
-                    <span className="text">Add To Wishlist</span>
+                    <span className="text">{t(`Add_Wishlist`)}</span>
                   </Link>
                   {/* <Link href="compare-style2.html" className="btn-icon compare">
                     <i className="fa-solid fa-code-compare"></i>

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
+import Spinner from "../../Components/UI/SpinnerLoading";
+import { useTranslation } from "react-i18next";
 
 const OrdersTracking = ({ orders }) => {
+  const { t } = useTranslation();
+
   const [orderId, setOrderId] = useState("");
   const [billingEmail, setBillingEmail] = useState("");
   const [currentOrder, setCurrentOrder] = useState(null);
@@ -8,7 +12,6 @@ const OrdersTracking = ({ orders }) => {
 
   useEffect(() => {
     if (orders && orders.length > 0) {
-      // Find the most recent order by created_at
       const lastOrder = orders.reduce((latest, order) => {
         const latestDate = new Date(latest.created_at);
         const currentDate = new Date(order.created_at);
@@ -25,13 +28,11 @@ const OrdersTracking = ({ orders }) => {
     e.preventDefault();
     setError("");
 
-    // Validate at least one field is filled
     if (!orderId && !billingEmail) {
-      setError("Please enter either Order ID or Billing Email");
+      setError(t("OrdersTracking.errorEnterFields"));
       return;
     }
 
-    // Find matching order
     const foundOrder = orders.find(
       (order) =>
         (orderId && order.order_number === orderId) ||
@@ -42,20 +43,23 @@ const OrdersTracking = ({ orders }) => {
     if (foundOrder) {
       setCurrentOrder(foundOrder);
     } else {
-      setError("No order found with the provided details");
+      setError(t("OrdersTracking.errorNotFound"));
     }
   };
 
   if (!currentOrder) {
-    return <div>Loading order information...</div>;
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
   }
 
-  // Tracking steps logic
   const trackingSteps = [
-    "order placed",
-    "preparing to ship",
-    "shipped",
-    "delivered",
+    t("OrdersTracking.trackingSteps.orderPlaced"),
+    t("OrdersTracking.trackingSteps.preparingToShip"),
+    t("OrdersTracking.trackingSteps.shipped"),
+    t("OrdersTracking.trackingSteps.delivered"),
   ];
 
   const statusToStepIndex = {
@@ -65,7 +69,6 @@ const OrdersTracking = ({ orders }) => {
   };
   const currentStepIndex = statusToStepIndex[currentOrder.status] ?? 0;
 
-  // Tracking table from activities
   const trackingTable = currentOrder.activities
     .slice()
     .reverse()
@@ -80,20 +83,17 @@ const OrdersTracking = ({ orders }) => {
   return (
     <div className="orders-card mt-0 h-100">
       <div className="top-sec d-flex-justify-center justify-content-between mb-4">
-        <div className="title-account mb-0">Orders tracking</div>
+        <div className="title-account mb-0">{t("OrdersTracking.title")}</div>
       </div>
 
       <form className="orderstracking-from" onSubmit={handleSubmit}>
-        <p className="mb-3">
-          To track your order please enter your OrderID or Billing Email in the
-          boxes below and press "Track" button. At least one field is required.
-        </p>
+        <p className="mb-3">{t("OrdersTracking.instructions")}</p>
         {error && <div className="alert alert-danger">{error}</div>}
         <div className="row align-items-center">
           <div className="form-group col-md-5 col-lg-5">
             <input
               name="orderId"
-              placeholder="Order ID"
+              placeholder={t("OrdersTracking.orderId") || "Order ID"}
               value={orderId}
               onChange={(e) => setOrderId(e.target.value)}
               id="orderId"
@@ -103,7 +103,7 @@ const OrdersTracking = ({ orders }) => {
           <div className="form-group col-md-5 col-lg-5">
             <input
               name="billingEmail"
-              placeholder="Billing email"
+              placeholder={t("OrdersTracking.billingEmail") || "Billing email"}
               value={billingEmail}
               onChange={(e) => setBillingEmail(e.target.value)}
               id="billingEmail"
@@ -112,7 +112,7 @@ const OrdersTracking = ({ orders }) => {
           </div>
           <div className="form-group col-md-2 col-lg-2">
             <button type="submit" className="btn rounded w-100">
-              <span>Track</span>
+              <span>{t("OrdersTracking.trackButton")}</span>
             </button>
           </div>
         </div>
@@ -121,7 +121,9 @@ const OrdersTracking = ({ orders }) => {
       <div className="row mt-2">
         <div className="col-sm-12">
           <div className="title-account">
-            Status for order no: {currentOrder.order_number}
+            {t("OrdersTracking.statusForOrder", {
+              orderNumber: currentOrder.order_number,
+            })}
           </div>
 
           <div className="row mt-3">
@@ -130,7 +132,7 @@ const OrdersTracking = ({ orders }) => {
                 <ul>
                   <li>
                     <div className="left">
-                      <span>Order name</span>
+                      <span>{t("OrdersTracking.orderName")}</span>
                     </div>
                     <div className="right">
                       <span>
@@ -140,7 +142,7 @@ const OrdersTracking = ({ orders }) => {
                   </li>
                   <li>
                     <div className="left">
-                      <span>Customer number</span>
+                      <span>{t("OrdersTracking.customerNumber")}</span>
                     </div>
                     <div className="right">
                       <span>{currentOrder.order_number}</span>
@@ -148,7 +150,7 @@ const OrdersTracking = ({ orders }) => {
                   </li>
                   <li>
                     <div className="left">
-                      <span>Order date</span>
+                      <span>{t("OrdersTracking.orderDate")}</span>
                     </div>
                     <div className="right">
                       <span>
@@ -158,7 +160,7 @@ const OrdersTracking = ({ orders }) => {
                   </li>
                   <li>
                     <div className="left">
-                      <span>Ship Date</span>
+                      <span>{t("OrdersTracking.shipDate")}</span>
                     </div>
                     <div className="right">
                       <span>
@@ -172,7 +174,7 @@ const OrdersTracking = ({ orders }) => {
                   </li>
                   <li>
                     <div className="left">
-                      <span>Shipping address</span>
+                      <span>{t("OrdersTracking.shippingAddress")}</span>
                     </div>
                     <div className="right">
                       <span>{currentOrder.shipping_method_name || "-"}</span>
@@ -180,7 +182,7 @@ const OrdersTracking = ({ orders }) => {
                   </li>
                   <li>
                     <div className="left">
-                      <span>Carrier</span>
+                      <span>{t("OrdersTracking.carrier")}</span>
                     </div>
                     <div className="right">
                       <span>{currentOrder.shipping_method_name || "-"}</span>
@@ -188,7 +190,7 @@ const OrdersTracking = ({ orders }) => {
                   </li>
                   <li>
                     <div className="left">
-                      <span>Carrier tracking number</span>
+                      <span>{t("OrdersTracking.carrierTrackingNumber")}</span>
                     </div>
                     <div className="right">
                       <span>
@@ -232,10 +234,10 @@ const OrdersTracking = ({ orders }) => {
             <table className="table align-middle text-center order-table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Description</th>
-                  <th>Location</th>
+                  <th>{t("OrdersTracking.table.date")}</th>
+                  <th>{t("OrdersTracking.table.time")}</th>
+                  <th>{t("OrdersTracking.table.description")}</th>
+                  <th>{t("OrdersTracking.table.location")}</th>
                 </tr>
               </thead>
               <tbody>

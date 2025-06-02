@@ -4,7 +4,8 @@ import useFetchCategories from "../Hooks/useFetchCategories";
 import { Link, useSearchParams } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 import ProductItem from "./ProductItem";
-
+import { useTranslation } from "react-i18next";
+import Spinner from "../../Components/UI/SpinnerLoading";
 const ProductGrid = ({
   selectedCategoryAndChildrenIds: propCategoryAndChildrenIds = null,
   selectedBrandIds = [],
@@ -22,7 +23,7 @@ const ProductGrid = ({
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("category");
   const subcategoryId = searchParams.get("subcategory");
-
+  const { t } = useTranslation();
   // نقرأ categoryId مباشرة من الرابط (URL)
   const categoryIdFromUrl = searchParams.get("categoryId");
 
@@ -150,7 +151,7 @@ const ProductGrid = ({
       imgSrc: product.imageUrl,
       variant: product.colors[0]?.title || "Default variant",
     });
-    alert(`${product.name} added to wishlist!`);
+    alert(`${product.name} ${t(`product.Add_Wishlist`)}`);
   };
 
   // تغيير صورة المنتج عند اختيار لون
@@ -261,9 +262,14 @@ const ProductGrid = ({
   console.log(products);
   // دالة لعرض النجوم حسب تقييم المنتج
 
-  if (subcategoriesLoading || loading) return <p>Loading products...</p>;
-  if (error) return <p>Error loading products: {error}</p>;
-  if (!sortedProducts.length) return <p>No products found for this filter.</p>;
+  if (subcategoriesLoading || loading)
+    return (
+      <p>
+        <Spinner />
+      </p>
+    );
+  if (error) return <p>{error}</p>;
+  if (!sortedProducts.length) return <p>{t(`ShopGridCate.No_filter`)}.</p>;
 
   return (
     <div className="grid-products grid-view-items">
