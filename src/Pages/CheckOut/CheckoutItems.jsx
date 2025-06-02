@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { CartContext } from "../../Context/CartContext";
 import CheckoutItem from "./CheckoutItem";
-
+import { useTranslation } from "react-i18next";
 export default function CheckoutItems({ btnName, checkoutLink = "/CheckOut" }) {
+  const { t } = useTranslation();
   const { cartItems, isLoading } = useContext(CartContext);
 
   if (cartItems.length === 0)
@@ -12,7 +13,7 @@ export default function CheckoutItems({ btnName, checkoutLink = "/CheckOut" }) {
       <div className="empty-cart text-center py-5">
         <p>Your cart is empty</p>
         <Link to="/ShopGrid" className="btn btn-primary">
-          Continue shopping
+          {t(`Continue_shopping`)}
         </Link>
       </div>
     );
@@ -23,10 +24,10 @@ export default function CheckoutItems({ btnName, checkoutLink = "/CheckOut" }) {
         <thead>
           <tr>
             <th></th>
-            <th colSpan="2">Product</th>
-            <th className="text-center">Price</th>
-            <th className="text-center">Quantity</th>
-            <th className="text-center">Total</th>
+            <th colSpan="2"> {t(`Continue_shopping`)}</th>
+            <th className="text-center"> {t(`Price`)}</th>
+            <th className="text-center"> {t(`Quantity`)}</th>
+            <th className="text-center"> {t(`Total`)}</th>
           </tr>
         </thead>
         <tbody>
@@ -45,7 +46,7 @@ export default function CheckoutItems({ btnName, checkoutLink = "/CheckOut" }) {
 
       <div className="d-flex justify-content-between align-items-center mt-4">
         <Link to="/ShopGrid" className="btn btn-outline-secondary">
-          Continue shopping
+          {t(`Continue_shopping`)}
         </Link>
       </div>
     </div>

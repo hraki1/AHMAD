@@ -1,52 +1,33 @@
 import { useContext, useEffect, useState } from "react";
 import useCountriesData from "../Hooks/useCountriesData";
 import { baseUrl } from "../API/ApiConfig";
-import { CartContext, useCart } from "../../Context/CartContext";
+import { CartContext } from "../../Context/CartContext";
 import { AuthContext } from "../../Context/AuthContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import toast, { Toaster } from "react-hot-toast";
 import AddressFieldCheckout from "./AddressFiledCheckout";
 import Modal from "../../Components/UI/Modal";
 import { useNavigate } from "react-router-dom";
-
-function isVaildOrder(orderData) {
-  const errors = [];
-  if (!orderData.cartId || orderData.cartId === "") {
-    errors.push("there is No Cart");
-  }
-  if (!orderData.addressId || orderData.addressId === "") {
-    errors.push("You Have to Add Your Address");
-  }
-  if (!orderData.DelevaryMethodId || orderData.DelevaryMethodId === "") {
-    errors.push("You Have to Choose Delevary Method");
-  }
-
-  if (errors.length > 0) {
-    return { isVaild: false, errors };
-  } else {
-    return { isVaild: true };
-  }
-}
+import { useTranslation } from "react-i18next";
 
 export default function Checkout({ country, setCountry }) {
-  const { user, isLoading: authIsLoading, token } = useContext(AuthContext);
+  const { t } = useTranslation();
+
+  const {
+    user,
+    isLoading: authIsLoading,
+    token,
+    userId,
+  } = useContext(AuthContext);
+  const { cartId } = useContext(CartContext);
 
   const navigate = useNavigate();
-
-  const userInformation = { ...user };
-
-  console.log(userInformation?.full_name);
-
   const { countries, loading, error } = useCountriesData();
 
-  const { cartId } = useContext(CartContext);
-  const { userId } = useContext(AuthContext);
-  //   const [selectedCartId, setSelectedCartId] = useState();
   const [selectedAddressId, setSelectedSavedAddressId] = useState(null);
   const [selectedDelevaryId, setSelectedDelevaryId] = useState(null);
-  const [isPaymentLoading, setIsPaymentLoading] = useState(null);
-
-  const [isModalOpen, setIsModalOpen] = useState();
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [errors, setErrors] = useState([]);
 
   const orderData = {
@@ -56,58 +37,68 @@ export default function Checkout({ country, setCountry }) {
     userId: userId ?? "",
   };
 
-  console.log(orderData);
+  function isVaildOrder(orderData) {
+    const errors = [];
+    if (!orderData.cartId) {
+      errors.push(t(`checkOut.No_Cart`));
+    }
+    if (!orderData.addressId) {
+      errors.push(t(`checkOut.Add_Address`));
+    }
+    if (!orderData.DelevaryMethodId) {
+      errors.push(t(`checkOut.Delevary_Method`));
+    }
+
+    return errors.length > 0
+      ? { isVaild: false, errors }
+      : { isVaild: true, errors: [] };
+  }
 
   async function startPaymentHandler() {
-    console.log(orderData);
-    const isVaild = isVaildOrder(orderData);
-    if (isVaild.isVaild) {
-      console.log("start payment");
-      try {
-        const responseSaveAddress = await fetch(
-          `https://api.sareh-nomow.website/api/carts/${orderData.cartId}/shipping-address/${orderData.addressId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    const validation = isVaildOrder(orderData);
 
-        const responseSaveDelevarymethod = await fetch(
-          `https://api.sareh-nomow.website/api/carts/${orderData.cartId}/shipping-method/${orderData.DelevaryMethodId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!responseSaveAddress.ok || !responseSaveDelevarymethod.ok) {
-          console.log(responseSaveAddress);
-          console.log(responseSaveDelevarymethod);
-        }
-      } catch (err) {
-        setIsModalOpen((prev) => {
-          setErrors(
-            prev.push(
-              err.message || "Can't Complete wwith your order please try again."
-            )
-          );
-          return true;
-        });
-      }
-
-      navigate("/payment");
-
+    if (!validation.isVaild) {
+      setErrors(validation.errors);
+      setIsModalOpen(true);
       return;
     }
 
-    setErrors(isVaild.errors);
-    setIsModalOpen(true);
+    setIsPaymentLoading(true);
+
+    try {
+      const responseSaveAddress = await fetch(
+        `${baseUrl}/api/carts/${orderData.cartId}/shipping-address/${orderData.addressId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const responseSaveDelevarymethod = await fetch(
+        `${baseUrl}/api/carts/${orderData.cartId}/shipping-method/${orderData.DelevaryMethodId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!responseSaveAddress.ok || !responseSaveDelevarymethod.ok) {
+        throw new Error(t("checkOut.Error_saving_order_data"));
+      }
+
+      navigate("/payment");
+    } catch (err) {
+      setErrors([err.message || t("checkOut.Unknown_error")]);
+      setIsModalOpen(true);
+    } finally {
+      setIsPaymentLoading(false);
+    }
   }
 
   if (loading || authIsLoading)
@@ -116,6 +107,7 @@ export default function Checkout({ country, setCountry }) {
         <Spinner />
       </div>
     );
+
   if (error) return <p>{error}</p>;
 
   return (
@@ -123,8 +115,8 @@ export default function Checkout({ country, setCountry }) {
       <Toaster />
       <Modal open={isModalOpen}>
         <div className="p-4 text-center">
-          <h2 className="h3 fs-3  fw-bold text-white mb-3">
-            There is Empty Fileds!
+          <h2 className="h3 fs-3 fw-bold text-white mb-3">
+            {t(`checkOut.Empty_Fileds`)}
           </h2>
           {errors && errors.length > 0 ? (
             <ul className="list-unstyled text-start text-danger">
@@ -135,14 +127,14 @@ export default function Checkout({ country, setCountry }) {
               ))}
             </ul>
           ) : (
-            <p className="text-white">No errors found.</p>
+            <p className="text-white">{t(`checkOut.No_errors`)}</p>
           )}
           <div className="d-flex justify-content-center gap-3 mt-4">
             <button
               onClick={() => setIsModalOpen(false)}
               className="btn btn-primary px-4"
             >
-              Close
+              {t("Close")}
             </button>
           </div>
         </div>

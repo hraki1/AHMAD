@@ -5,7 +5,7 @@ import CartSummary from "../Cart/CartSummary";
 import { useCart } from "../../Context/CartContext";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 export default function Payment() {
   const [formData, setFormData] = useState({
     deliveryMethod: "standard",
@@ -17,7 +17,7 @@ export default function Payment() {
     expDate: "",
     paypalEmail: "",
   });
-
+  const { t } = useTranslation();
   const [discount, setDiscount] = useState(0);
   const { cartId, updateCart, cartItems } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -140,13 +140,13 @@ export default function Payment() {
           </div>
         </div>
       </Modal>
-      <PageHeader title="Payment" />
+      <PageHeader title={t(`Payment.Payment`)} />
       <div className="container">
         <form className="checkout-form" onSubmit={(e) => e.preventDefault()}>
           <div className="row">
             <div className="col-md-8">
               <div className="block mb-4">
-                <h3 className="title mb-3">Payment Methods</h3>
+                <h3 className="title mb-3">{t(`Payment.Payment_Methods`)}</h3>
 
                 {/* Credit Card */}
                 <div className="customRadio">
@@ -158,7 +158,7 @@ export default function Payment() {
                     checked={formData.paymentMethod === "card"}
                     onChange={handleChange}
                   />
-                  <label htmlFor="card">Pay with credit card</label>
+                  <label htmlFor="card">{t(`Payment.Pay_card`)}</label>
                 </div>
 
                 {/* Paypal */}
@@ -171,12 +171,12 @@ export default function Payment() {
                     checked={formData.paymentMethod === "paypal"}
                     onChange={handleChange}
                   />
-                  <label htmlFor="paypal">Pay with PayPal</label>
+                  <label htmlFor="paypal">{t(`Payment.Pay_PayPal`)}</label>
                 </div>
 
                 {formData.paymentMethod === "paypal" && (
                   <div className="form-group mt-2">
-                    <label>PayPal Email</label>
+                    <label>{t(`Payment.PayPal_Email`)}</label>
                     <input
                       type="email"
                       name="paypalEmail"
@@ -197,7 +197,7 @@ export default function Payment() {
                     checked={formData.paymentMethod === "cod"}
                     onChange={handleChange}
                   />
-                  <label htmlFor="cod">Cash On Delivery</label>
+                  <label htmlFor="cod">{t(`Payment.Cash_Delivery`)}</label>
                 </div>
               </div>
             </div>

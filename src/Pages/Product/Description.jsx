@@ -1,21 +1,27 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import useFetchOneProduct from "../Hooks/useFetchOneProduct";
-
+import Spinner from "../../Components/UI/SpinnerLoading";
+import { useTranslation } from "react-i18next";
 const Description = () => {
+  const { t } = useTranslation();
   const { url_key } = useParams();
   const { product, loading, error } = useFetchOneProduct(url_key);
   const [activeImage, setActiveImage] = useState(null); // ممكن نخليه لو حبيت تغير الصورة لاحقاً
 
   if (loading) {
-    return <div className="loading-spinner">Loading...</div>;
+    return (
+      <div className="loading-spinner">
+        <Spinner />
+      </div>
+    );
   }
 
   if (error) {
     return (
       <div className="error-alert">
         Error: {error}
-        <button onClick={() => window.location.reload()}>Retry</button>
+        <button onClick={() => window.location.reload()}>{t(`Retry`)}</button>
       </div>
     );
   }
@@ -23,14 +29,14 @@ const Description = () => {
   if (!product) {
     return (
       <div className="empty-state">
-        Product not found. <Link to="/products">Back to products</Link>
+        {t(`product.Product_not_found`)}{" "}
+        <Link to="/products">{t(`product.Back_to_products`)}</Link>
       </div>
     );
   }
 
   const productImages = product.images || [];
 
-  // نعرض فقط الصورة الرئيسية (أول صورة أو الصورة النشطة)
   const imageToDisplay =
     activeImage ||
     (productImages.length > 0
@@ -44,7 +50,7 @@ const Description = () => {
         className="tabs-ac-style d-md-none active main-title-2"
         id="description"
       >
-        Description
+        {t(`Description`)}
       </div>
       <div id="description" className="tab-content">
         <div className="product-description">
@@ -53,20 +59,17 @@ const Description = () => {
               <div className="desc-content">
                 {product.description.description}.
               </div>
-              <div className="mb-3 main-title-2 main">Features</div>
+              <div className="mb-3 main-title-2 main">{t(`Features`)}</div>
               <ol>
                 <li className="desc-content mb-2">
-                  High quality fabric, very comfortable to touch and wear.
+                  {t(`product.High_quality`)}
                 </li>
                 <li className="desc-content mb-2">
-                  This cardigan sweater is cute for no reason, perfect for
-                  travel and casual.
+                  {t(`product.This_cardigan`)}
                 </li>
-                <li className="desc-content mb-2">
-                  It can tie in front-is forgiving to your belly or tie behind.
-                </li>
+                <li className="desc-content mb-2">{t(`product.It_can`)} </li>
                 <li className="desc-content mb-4">
-                  Light weight and perfect for layering.
+                  {t(`product.Light_weight`)}
                 </li>
               </ol>
             </div>

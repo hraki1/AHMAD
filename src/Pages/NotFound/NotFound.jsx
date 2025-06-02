@@ -23,11 +23,9 @@ const NotFound = () => {
         >
           <Frown size={80} className="text-primary mb-4 text-white" />
           <h1 className="display-1 text-white fw-bold mb-2">Page Not Found</h1>
-          <p className="fs-4 mb-4 text-info">
-            Oops! The page you're looking for doesn't exist.
-          </p>
+          <p className="fs-4 mb-4 text-info">{t(`Oops`)}</p>
           <Link to="/" className="btn btn-primary btn-lg shadow">
-            Go to Store
+            {t(`Go_Store`)}
           </Link>
         </motion.div>
       </motion.div>

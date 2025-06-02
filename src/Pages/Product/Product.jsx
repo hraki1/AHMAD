@@ -4,10 +4,10 @@ import AdditionalInformation from "./AdditionalInformation";
 import SizeChart from "./SizeChart";
 import ShippingReturn from "./ShippingReturn";
 import ReviewSection from "./ReviewSection";
-
+import { useTranslation } from "react-i18next";
 export default function Product() {
   const [activeTab, setActiveTab] = useState("description");
-
+  const { t } = useTranslation();
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -20,7 +20,7 @@ export default function Product() {
             className={`tablink ${activeTab === "description" ? "active" : ""}`}
             onClick={() => handleTabClick("description")}
           >
-            <span className="tablink">Description</span>
+            <span className="tablink">{t(`Description`)}</span>
           </li>
           <li
             className={`tablink ${
@@ -28,13 +28,15 @@ export default function Product() {
             }`}
             onClick={() => handleTabClick("additionalInformation")}
           >
-            <span className="tablink">Additional Information</span>
+            <span className="tablink">
+              {t(`product.Additional_Information`)}
+            </span>
           </li>
           <li
             className={`tablink ${activeTab === "sizeChart" ? "active" : ""}`}
             onClick={() => handleTabClick("sizeChart")}
           >
-            <span className="tablink">Size Chart</span>
+            <span className="tablink">{t(`product.Size_Chart`)}</span>
           </li>
           <li
             className={`tablink ${
@@ -42,13 +44,13 @@ export default function Product() {
             }`}
             onClick={() => handleTabClick("shippingReturn")}
           >
-            <span className="tablink">Shipping &amp; Return</span>
+            <span className="tablink">{t(`product.Shipping`)}</span>
           </li>
           <li
             className={`tablink ${activeTab === "reviews" ? "active" : ""}`}
             onClick={() => handleTabClick("reviews")}
           >
-            <span className="tablink">Reviews</span>
+            <span className="tablink">{t(`Reviews`)}</span>
           </li>
         </ul>
 

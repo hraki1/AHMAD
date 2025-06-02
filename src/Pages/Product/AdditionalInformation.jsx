@@ -1,17 +1,19 @@
 import React from "react";
 import useFetchOneProduct from "../Hooks/useFetchOneProduct";
 import { useParams } from "react-router-dom";
-
+import Spinner from "../../Components/UI/SpinnerLoading";
+import { useTranslation } from "react-i18next";
 const AdditionalInformation = () => {
+  const { t } = useTranslation();
   const { url_key } = useParams();
   const { product, loading, error } = useFetchOneProduct(url_key);
 
   if (loading) {
-    return <p>Loading additional information...</p>;
+    return <Spinner />;
   }
 
   if (error) {
-    return <p>Error loading additional information: {error}</p>;
+    return <p>{error}</p>;
   }
 
   if (!product || !product.attributes || product.attributes.length === 0) {
@@ -21,11 +23,11 @@ const AdditionalInformation = () => {
           className="tabs-ac-style d-md-none main-title-2"
           id="additionalInformation"
         >
-          Additional Information
+          {t(`product.Additional_Information`)}
         </div>
         <div id="additionalInformation" className="tab-content">
           <div className="product-description">
-            <p>No additional information available for this product.</p>
+            <p> {t(`product.No_product`)}</p>
           </div>
         </div>
       </div>
@@ -38,7 +40,7 @@ const AdditionalInformation = () => {
         className="tabs-ac-style d-md-none main-title-2"
         id="additionalInformation"
       >
-        Additional Information
+        {t(`product.Additional_Information`)}
       </div>
       <div id="additionalInformation" className="tab-content">
         <div className="product-description">
@@ -53,29 +55,26 @@ const AdditionalInformation = () => {
                         <td>{attr.optionText}</td>
                       </tr>
                     ))}
-                    {/* يمكنك إضافة المزيد من المعلومات من كائن product هنا إذا لزم الأمر */}
                     {product.brand && (
                       <tr>
-                        <th>Brand</th>
+                        <th>{t(`Brands`)}</th>
                         <td>{product.brand}</td>
                       </tr>
                     )}
                     {product.stock !== undefined && (
                       <tr>
-                        <th>Availability</th>
+                        <th>{t(`Availability`)}</th>
                         <td>
                           {product.stock > 0 ? "In Stock" : "Out of Stock"}
                         </td>
                       </tr>
                     )}
-                    {/* مثال لعرض اسم التصنيف */}
                     {product.category && product.category.name && (
                       <tr>
-                        <th>Category</th>
+                        <th>{t(`Category`)}</th>
                         <td>{product.category.name}</td>
                       </tr>
                     )}
-                    {/* يمكنك إضافة أي معلومات أخرى من كائن product ترغب بعرضها */}
                   </tbody>
                 </table>
               </div>

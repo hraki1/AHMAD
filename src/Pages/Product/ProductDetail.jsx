@@ -13,6 +13,7 @@ import { useWishlist } from "../../Context/WishlistContext";
 import { useCart } from "../../Context/CartContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import Modal from "../../Components/UI/Modal";
+import { useTranslation } from "react-i18next";
 const SOCIAL_ICONS = [
   { icon: "twitter", title: "Twitter" },
   { icon: "pinterest-p", title: "Pinterest" },
@@ -20,8 +21,8 @@ const SOCIAL_ICONS = [
   { icon: "instagram", title: "Instagram" },
   { icon: "youtube", title: "Youtube" },
 ];
-
 const ProductDetail = () => {
+  const { t } = useTranslation();
   const { url_key } = useParams();
   const { product, loading, error } = useFetchOneProduct(url_key);
   const [activeImage, setActiveImage] = useState("");
@@ -199,8 +200,8 @@ const ProductDetail = () => {
   if (!product)
     return (
       <div className="empty-state">
-        Product not found
-        <Link to="/products">Back to products</Link>
+        {t(`product.Product_not_found`)}
+        <Link to="/products">{t(`product.Back_to_products`)}</Link>
       </div>
     );
 
@@ -329,7 +330,7 @@ const ProductDetail = () => {
       <Toaster />
       <Modal open={openModal}>
         <div className="p-4 text-center">
-          <h2 className="fw-bold text-white h1">You Should Login</h2>
+          <h2 className="fw-bold text-white h1">{t(`product.Should_Login`)}</h2>
 
           <div className="d-flex justify-content-center gap-3 mt-4">
             <button
@@ -362,10 +363,12 @@ const ProductDetail = () => {
                   />
                 </div>
                 <div className="product-labels">
-                  {product.isNew && <span className="lbl pr-label1">New</span>}
+                  {product.isNew && (
+                    <span className="lbl pr-label1">{t(`product.New`)}</span>
+                  )}
                   {product.discountPercentage > 0 && (
                     <span className="lbl on-sale">
-                      {product.discountPercentage}% Off
+                      {product.discountPercentage}% {t(`product.Off`)}
                     </span>
                   )}
                 </div>
@@ -399,29 +402,27 @@ const ProductDetail = () => {
               <div className="product-review d-flex-center mb-3">
                 {renderStars()}
                 <Link to="#reviews" className="reviewLink d-flex-center">
-                  {product.reviewCount} Reviews
+                  {product.reviewCount} {t(`Reviews`)}
                 </Link>
               </div>
 
               <div className="product-info">
-                <div className="product-stock-title d-flex">
-                  Availability:{" "}
-                  <span className="pro-stockLbl ps-0 pt-1">
-                    {product.inventory}
-                  </span>
+                <div className="product-stock-title d-flex align-items-center ">
+                  {t(`Availability`)}:{" "}
+                  <span className="pro-stockLbl ps-1">{product.inventory}</span>
                 </div>
                 <div className="product-stock-title d-none">
-                  Vendor: <Link to="#">{product.brand}</Link>
+                  {t(`product.Vendor`)}: <Link to="#">{product.brand}</Link>
                 </div>
-                <div className="product-stock-title">
-                  Category: <span>{product.category.name}</span>
+                <div className="product-stock-title align-items-center">
+                  {t(`Category`)}: <span>{product.category.name}</span>
                 </div>
-                <div className="product-stock-title">
-                  SKU: <span>{product.sku}</span>
+                <div className="product-stock-title align-items-center">
+                  {t(`product.SKU`)}: <span>{product.sku}</span>
                 </div>
               </div>
 
-              <div className="product-price d-flex-center my-3">
+              <div className="product-price d-flex-center my-3 align-items-center">
                 {product.oldPrice > product.price && (
                   <span className="price old-price">
                     ${product.oldPrice.toFixed()}
@@ -436,7 +437,7 @@ const ProductDetail = () => {
               </div>
               <hr />
 
-              <div className="harry-up-text">Hurry up! Sales Ends In</div>
+              <div className="harry-up-text">{t(`product.Hurry_up`)}</div>
               <Countdown date={FINAL_DATE} renderer={renderTime} />
             </div>
 
@@ -482,12 +483,12 @@ const ProductDetail = () => {
                     {addToCartStatus.loading ? (
                       <>
                         <i className="fa-solid fa-spinner fa-spin me-2"></i>
-                        Adding ...
+                        {t(`product.Adding`)}
                       </>
                     ) : product?.inventory !== "In Stock" ? (
-                      "Out Of Stock"
+                      t(`product.Out_Stock`)
                     ) : (
-                      "Add To Cart"
+                      t(`product.Add_Cart`)
                     )}
                   </button>
                 </div>
@@ -508,16 +509,16 @@ const ProductDetail = () => {
                   >
                     <i className="fa-regular fa-heart me-2" />
                     {product?.inventory === "In Stock"
-                      ? "Add to Wishlist"
-                      : "Out of Stock"}
+                      ? t(`product.Add_Wishlist`)
+                      : t(`product.Out_Stock`)}
                   </Link>
                 )}
                 {/* <Link to="/compare" className="text-link compare">
                   <i className="fa-solid fa-rotate me-2" /> Add to Compare
                 </Link> */}
                 <Link to="/FAQ" className="text-link shippingInfo">
-                  <i className="fa-regular fa-paper-plane me-2" /> Delivery &
-                  Returns
+                  <i className="fa-regular fa-paper-plane me-2" />{" "}
+                  {t(`product.Delivery`)}
                 </Link>
                 {/* <Link
                   to="#productInquiry-modal"
@@ -530,16 +531,16 @@ const ProductDetail = () => {
 
             <div className="userViewMsg featureText">
               <i className="fa-regular fa-eye me-1" />
-              <b>{product.views || 0}</b> People are Looking for this Product
+              <b>{product.views || 0}</b> {t(`product.People_Looking`)}
             </div>
             <div className="shippingMsg featureText">
               <i className="fa-regular fa-clock me-1" />
-              Estimated Delivery Between <b>Wed, May 1</b> and <b>Tue, May 7</b>
-              .
+              {t(`product.Estimated_Between`)} <b>{t(`product.Wed`)}</b>{" "}
+              {t(`and`)} <b>{t(`product.Tue`)}</b>.
             </div>
 
             <div className="payment-shop d-flex align-self-center">
-              <span className="sharing-lbl">Share :</span>
+              <span className="sharing-lbl">{t(`Share`)} :</span>
               <ul className="list-inline social-icons d-inline-flex ms-1">
                 {SOCIAL_ICONS.map(({ icon, title }) => (
                   <li key={icon} className="list-inline-item">

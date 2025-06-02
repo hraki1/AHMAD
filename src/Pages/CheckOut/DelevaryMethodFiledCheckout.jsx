@@ -4,13 +4,13 @@ import { baseUrl } from "../API/ApiConfig";
 import { AuthContext } from "../../Context/AuthContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import toast, { Toaster } from "react-hot-toast";
-
+import { useTranslation } from "react-i18next";
 export default function DelevaryFiledCheckout({
   country,
   onSelectDelevaryMethod,
 }) {
   const { user, isLoading: authIsLoading } = useContext(AuthContext);
-
+  const { t } = useTranslation();
   const userInformation = { ...user };
 
   const { countries, loading, error } = useCountriesData();
@@ -80,7 +80,7 @@ export default function DelevaryFiledCheckout({
           <div className="row">
             <div className="form-group col-12 col-sm-6">
               <label htmlFor="address_State" className="form-label">
-                Shipping Method <span className="required">*</span>
+                {t(`Shipping_Method`)} <span className="required">*</span>
               </label>
               <select
                 name="deliveryMethod"
@@ -95,10 +95,12 @@ export default function DelevaryFiledCheckout({
                     selectDelevaryMethodHandler(selectedMethod);
                   }
                 }}
-                className="form-control"
+                className="form-control select-rtl"
                 required
               >
-                <option value="">Select Shipping Method</option>
+                <option value="">
+                  {t(`Select`)} {t(`Shipping_Method`)}
+                </option>
                 {country?.ShippingZone?.[0]?.zone_methods
                   ?.filter((method) => method.is_enabled)
                   .map((method) => (

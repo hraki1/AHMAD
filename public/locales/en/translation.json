@@ -54,6 +54,8 @@
   "Special_Offers": "Special Offers",
   "Browse_the_huge_variety_of_our_best_seller": "Browse the huge variety of our best seller",
   "Brands": "Brands",
+  "Availability": "Availability",
+  "Category": "Category",
   "Our_brands": "Our brands",
   "Newsletter_Title": "Sign Up Our Newsletter & Get 10% OFF",
   "Newsletter_Subtitle": "Sign up to stay in the loop. Receive updates, access to exclusive deals, and more.",
@@ -359,7 +361,6 @@
   "Yes": "Yes",
   "remove_discount": "Failed to remove discount",
   "Error_discount": "Error removing discount",
-
   "Subtotal": "Subtotal",
   "Coupon_Discount": "Coupon Discount",
   "Tax": "Tax",
@@ -386,6 +387,104 @@
     "Address_Details": "Address Details",
     "Add_New_Address": "Add New Address",
     "Go_to_Payemnt": "Go to Payemnt",
-    "Select_address": "Select a saved address"
+    "Select_address": "Select a saved address",
+    "No_Cart": "there is No Cart",
+    "Add_Address": "You Have to Add Your Address",
+    "Delevary_Method": "You Have to Choose Delevary Method",
+    "Empty_Fileds": "There is Empty Fileds",
+    "No_errors": "No errors found",
+    "Error_saving_order_data": "Error_saving_order_data",
+    "Unknown_error": "Unknown_error"
+  },
+  "Close": "Close",
+  "Shipping_Method": "Shipping Method",
+  "Payment": {
+    "Cash_Delivery": "Cash On Delivery",
+    "PayPal_Email": "PayPal Email",
+    "Pay_PayPal": "Pay with PayPal",
+    "Pay_card": "Pay with credit card",
+    "Payment_Methods": "Payment Methods",
+    "Payment": "Payment"
+  },
+  "Oops": "Oops! There is Error occured",
+  "Go_Store": "Go to Store",
+  "Page_Found": "Page Not Found",
+  "Retry": "Retry",
+  "Description": "Description",
+  "Features": "Features",
+  "Reviews": "Reviews",
+
+  "product": {
+    "Additional_Information": "Additional Information",
+    "No_product": "No additional information available for this product",
+    "Product_not_found": "Product not found",
+    "Back_to_products": "Back to products",
+    "High_quality": "High quality fabric, very comfortable to touch and wear",
+    "This_cardigan": "This cardigan sweater is cute for no reason, perfect for travel and casual",
+    "It_can": "It can tie in front-is forgiving to your belly or tie behind",
+    "Light_weight": "Light weight and perfect for layering",
+    "Size_Chart": "Size Chart",
+    "Shipping": "Shipping & Return",
+
+    "Should_Login": "You Should Login",
+    "New": "New",
+    "Off": "Off",
+    "Vendor": "Vendor",
+    "SKU": "SKU",
+    "Adding": "Adding ...",
+    "Out_Stock": "Out Of Stock",
+    "Add_Cart": "Add To Cart",
+    "Add_Wishlist": "Add to Wishlist",
+    "Delivery": "Delivery & Returns",
+    "People_Looking": "People are Looking for this Product",
+    "Estimated_Between": "Estimated Delivery Between",
+    "Wed": "Wed, May 1",
+    "Tue": "Tue, May 7",
+    "Hurry_up": "Hurry up! Sales Ends In"
+  },
+  "and": "and",
+  "Share": "Share",
+  "shippingReturn": {
+    "title": "Shipping & Return",
+    "list": {
+      "dispatch": "Dispatch: Within 24 Hours",
+      "warranty": "1 Year Brand Warranty",
+      "freeShipping": "Free shipping across all products on a minimum purchase of $50.",
+      "deliveryTime": "International delivery time - 7-10 business days",
+      "cod": "Cash on delivery might be available",
+      "returns": "Easy 30 days returns and exchanges"
+    },
+    "freeReturnsTitle": "Free and Easy Returns",
+    "freeReturnsDesc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
+    "specialFinancingTitle": "Special Financing",
+    "specialFinancingDesc": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage."
+  },
+  "sizeChart": {
+    "title": "Size Chart",
+    "readyToWearTitle": "Ready to Wear Clothing",
+    "readyToWearDesc": "This is a standardised guide to give you an idea of what size you will need, however some brands may vary from these conversions.",
+    "tableHeaders": [
+      "Size",
+      "XXS - XS",
+      "XS - S",
+      "S - M",
+      "M - L",
+      "L - XL",
+      "XL - XXL"
+    ],
+    "rows": {
+      "UK": ["6", "8", "10", "12", "14", "16"],
+      "US": ["2", "4", "6", "8", "10", "12"],
+      "Italy (IT)": ["38", "40", "42", "44", "46", "48"],
+      "France (FR/EU)": ["34", "36", "38", "40", "42", "44"],
+      "Denmark": ["32", "34", "36", "38", "40", "42"],
+      "Russia": ["40", "42", "44", "46", "48", "50"],
+      "Germany": ["32", "34", "36", "38", "40", "42"],
+      "Japan": ["5", "7", "9", "11", "13", "15"],
+      "Australia": ["6", "8", "10", "12", "14", "16"],
+      "Korea": ["33", "44", "55", "66", "77", "88"],
+      "China": ["160/84", "165/86", "170/88", "175/90", "180/92", "185/94"],
+      "Jeans": ["24-25", "26-27", "27-28", "29-30", "31-32", "32-33"]
+    }
   }
 }
