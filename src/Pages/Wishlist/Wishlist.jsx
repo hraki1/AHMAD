@@ -5,7 +5,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AddToCart } from "../API/AddToCart";
 import { toast } from "react-toastify";
 import { useCart } from "../../Context/CartContext";
-
+import { useTranslation } from "react-i18next";
 const Wishlist = () => {
   const { wishlistItems, removeFromWishlist, addToWishlist } = useWishlist();
   const { updateCart } = useCart();
@@ -18,7 +18,7 @@ const Wishlist = () => {
     message: "",
     error: null,
   });
-
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -110,9 +110,9 @@ const Wishlist = () => {
         className="alert alert-success py-2 alert-dismissible fade show cart-alert"
         role="alert"
       >
-        There are{" "}
+        {t(`There`)}{" "}
         <span className="text-primary fw-600">{wishlistItems.length}</span>{" "}
-        products in this wishlist
+        {t(`products_wishlist`)}
         <button
           type="button"
           className="btn-close"
@@ -127,11 +127,15 @@ const Wishlist = () => {
             <thead className="thead-bg">
               <tr>
                 <th className="product-name text-start" colSpan="2">
-                  Product
+                  {t(`Product`)}
                 </th>
-                <th className="product-price text-center">Price</th>
-                <th className="stock-status text-center">Stock Status</th>
-                <th className="product-subtotal text-center">Add to Cart</th>
+                <th className="product-price text-center">{t(`Price`)}</th>
+                <th className="stock-status text-center">
+                  {t(`Stock_Status`)}
+                </th>
+                <th className="product-subtotal text-center">
+                  {t(`product.Add_Cart`)}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -207,12 +211,12 @@ const Wishlist = () => {
                       addToCartStatus.productId === product.id ? (
                         <>
                           <i className="fa-solid fa-spinner fa-spin me-2"></i>
-                          Adding ...
+                          {t(`Adding`)}
                         </>
                       ) : product.stock?.toLowerCase() !== "in stock" ? (
-                        "Out Of Stock"
+                        t(`product.Out_Stock`)
                       ) : (
-                        "Add To Cart"
+                        t(`product.Add_Cart`)
                       )}
                     </button>
                     {addToCartStatus.productId === product.id &&

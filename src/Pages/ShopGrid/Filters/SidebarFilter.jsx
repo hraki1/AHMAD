@@ -8,7 +8,7 @@ import BrandFilter from "./BrandFilter";
 import AvailabilityFilter from "./AvailabilityFilter";
 import ProductTags from "./ProductTags";
 import ProductCard from "../../Home/ProductCard";
-
+import { useTranslation } from "react-i18next";
 export default function SidebarFilter({ onClose }) {
   const [filters, setFilters] = useState(["Women", "Blue", "XL"]);
 
@@ -19,7 +19,7 @@ export default function SidebarFilter({ onClose }) {
   const clearAllFilters = () => {
     setFilters([]);
   };
-
+  const { t } = useTranslation();
   return (
     <>
       {/* Sidebar */}
@@ -39,7 +39,7 @@ export default function SidebarFilter({ onClose }) {
           {/* Filter By */}
           <div className="sidebar-widget filterBox filter-widget">
             <div className="widget-title">
-              <h2>Filter By</h2>
+              <h2>{t(`ShopGridCate.Filter_By`)}</h2>
             </div>
             <div className="widget-content filterby filterDD">
               <ul className="items tags-list d-flex-wrap">

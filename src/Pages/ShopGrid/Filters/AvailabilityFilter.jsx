@@ -1,7 +1,7 @@
 // src/components/shop/Filters/AvailabilityFilter.js
 import React, { useState, useEffect } from "react";
 import { availabilityOptions } from "../data";
-
+import { useTranslation } from "react-i18next";
 export default function AvailabilityFilter({
   className,
   onAvailabilityFilterChange,
@@ -25,11 +25,11 @@ export default function AvailabilityFilter({
       };
     });
   };
-
+  const { t } = useTranslation();
   return (
     <div className={`sidebar-widget filter-widget availability ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div className="title-slidebar">Availability</div>
+        <div className="title-slidebar">{t(`Availability`)}</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}

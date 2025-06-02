@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const SecuritySettings = () => {
+  const { t } = useTranslation();
+
   const [notifications, setNotifications] = useState({
     desktopNotifications: true,
     enableNotifications: false,
@@ -29,20 +32,18 @@ const SecuritySettings = () => {
   };
 
   const handleDeactivateAccount = () => {
-    // Handle account deactivation logic
     console.log("Account deactivated");
   };
 
   const handleDeleteAccount = () => {
-    // Handle account deletion logic
     console.log("Account deleted");
   };
 
   return (
-    <div className=" h-100" id="security">
+    <div className="h-100" id="security">
       <div className="settings-card mt-0 h-100">
         <div className="dashboard-title d-flex-justify-center justify-content-between mb-4">
-          <div className="title-account">Settings</div>
+          <div className="title-account">{t("settings")}</div>
         </div>
 
         <div className="settings-book-section dashboard-detail">
@@ -50,7 +51,7 @@ const SecuritySettings = () => {
             {/* Notifications Section */}
             <div className="col-12 col-sm-12 col-md-6">
               <div className="account-setting">
-                <h4 className="mb-3">Notifications</h4>
+                <h4 className="mb-3">{t("notifications")}</h4>
                 <div className="account-detail form-group">
                   <div className="customCheckbox clearfix mb-2">
                     <input
@@ -61,7 +62,7 @@ const SecuritySettings = () => {
                       onChange={handleNotificationChange}
                     />
                     <label htmlFor="desktopNotifications" className="mb-0">
-                      Allow Desktop Notifications
+                      {t("allowDesktopNotifications")}
                     </label>
                   </div>
                   <div className="customCheckbox clearfix mb-2">
@@ -73,7 +74,7 @@ const SecuritySettings = () => {
                       onChange={handleNotificationChange}
                     />
                     <label htmlFor="enableNotifications" className="mb-0">
-                      Enable Notifications
+                      {t("enableNotifications")}
                     </label>
                   </div>
                   <div className="customCheckbox clearfix mb-2">
@@ -85,7 +86,7 @@ const SecuritySettings = () => {
                       onChange={handleNotificationChange}
                     />
                     <label htmlFor="activityNotifications" className="mb-0">
-                      Get notification for my own activity
+                      {t("activityNotifications")}
                     </label>
                   </div>
                   <div className="customCheckbox clearfix mb-2">
@@ -97,7 +98,7 @@ const SecuritySettings = () => {
                       onChange={handleNotificationChange}
                     />
                     <label htmlFor="partnerOffers" className="mb-0">
-                      Receive offers from our partners
+                      {t("partnerOffers")}
                     </label>
                   </div>
                   <div className="customCheckbox clearfix mb-2">
@@ -109,7 +110,7 @@ const SecuritySettings = () => {
                       onChange={handleNotificationChange}
                     />
                     <label htmlFor="newsletter" className="mb-0">
-                      Sign up for our newsletter
+                      {t("newsletter")}
                     </label>
                   </div>
                 </div>
@@ -119,7 +120,9 @@ const SecuritySettings = () => {
             {/* Deactivate Account Section */}
             <div className="col-12 col-sm-12 col-md-6">
               <div className="account-setting">
-                <div className="title-account mb-3">Deactivate account</div>
+                <div className="title-account mb-3">
+                  {t("deactivateAccount")}
+                </div>
                 <div className="account-detail form-group">
                   <div className="customRadio clearfix mb-2">
                     <input
@@ -131,7 +134,7 @@ const SecuritySettings = () => {
                       onChange={handleDeactivateChange}
                     />
                     <label htmlFor="d1" className="mb-0">
-                      I have a privacy concern
+                      {t("privacyConcern")}
                     </label>
                   </div>
                   <div className="customRadio clearfix mb-2">
@@ -144,7 +147,7 @@ const SecuritySettings = () => {
                       onChange={handleDeactivateChange}
                     />
                     <label htmlFor="d2" className="mb-0">
-                      This is temporary
+                      {t("temporary")}
                     </label>
                   </div>
                   <div className="customRadio clearfix mb-2">
@@ -157,7 +160,7 @@ const SecuritySettings = () => {
                       onChange={handleDeactivateChange}
                     />
                     <label htmlFor="d3" className="mb-0">
-                      Other
+                      {t("other")}
                     </label>
                   </div>
                   <button
@@ -165,7 +168,7 @@ const SecuritySettings = () => {
                     className="btn btn-sm my-2"
                     onClick={handleDeactivateAccount}
                   >
-                    Deactivate Account
+                    {t("deactivateAccountBtn")}
                   </button>
                 </div>
               </div>
@@ -174,7 +177,7 @@ const SecuritySettings = () => {
 
           {/* Delete Account Section */}
           <div className="account-setting">
-            <div className="title-account mb-3">Delete account</div>
+            <div className="title-account mb-3">{t("deleteAccount")}</div>
             <div className="account-detail form-group">
               <div className="customRadio clearfix mb-2">
                 <input
@@ -186,7 +189,7 @@ const SecuritySettings = () => {
                   onChange={handleDeleteChange}
                 />
                 <label htmlFor="da1" className="mb-0">
-                  No longer usable
+                  {t("noLongerUsable")}
                 </label>
               </div>
               <div className="customRadio clearfix mb-2">
@@ -199,7 +202,7 @@ const SecuritySettings = () => {
                   onChange={handleDeleteChange}
                 />
                 <label htmlFor="da2" className="mb-0">
-                  Want to switch to another account
+                  {t("switchAccount")}
                 </label>
               </div>
               <div className="customRadio clearfix mb-2">
@@ -212,7 +215,7 @@ const SecuritySettings = () => {
                   onChange={handleDeleteChange}
                 />
                 <label htmlFor="da3" className="mb-0">
-                  Other
+                  {t("other")}
                 </label>
               </div>
               <button
@@ -220,7 +223,7 @@ const SecuritySettings = () => {
                 className="btn btn-sm my-2"
                 onClick={handleDeleteAccount}
               >
-                Delete Account
+                {t("deleteAccountBtn")}
               </button>
             </div>
           </div>

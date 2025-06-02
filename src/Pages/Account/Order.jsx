@@ -12,9 +12,11 @@ import {
   Truck,
   DollarSign,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Order = ({ order }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { t } = useTranslation(); // Add this line
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -113,7 +115,7 @@ const Order = ({ order }) => {
                         </div>
                         <div className="flex-grow-1">
                           <h5 className="fw-semibold mb-3 d-flex align-items-center">
-                            Order Summary
+                            {t(`Account.Order_Summary`)}
                           </h5>
                           <ul className="list-unstyled border-top pt-3">
                             {order.items.map((item) => (
@@ -126,7 +128,8 @@ const Order = ({ order }) => {
                                     {item.product_name}
                                   </p>
                                   <small className="text-muted">
-                                    Qty: {item.qty} × {order.currency}
+                                    {t(`Account.Qty`)}: {item.qty} ×{" "}
+                                    {order.currency}
                                     {item.product_price}
                                   </small>
                                 </div>
@@ -154,11 +157,14 @@ const Order = ({ order }) => {
                         </div>
                         <div className="flex-grow-1">
                           <h5 className="fw-semibold mb-3">
-                            Order Information
+                            {t(`Account.Order_Information`)}
                           </h5>
                           <div className="d-flex flex-column gap-2">
                             <div className="d-flex justify-content-between">
-                              <span className="text-muted">Order Date:</span>
+                              <span className="text-muted">
+                                {" "}
+                                {t(`Account.Order_Date`)}:
+                              </span>
                               <span className="fw-medium">
                                 {new Date(order.created_at).toLocaleDateString(
                                   "en-US",
@@ -173,14 +179,16 @@ const Order = ({ order }) => {
                               </span>
                             </div>
                             <div className="d-flex justify-content-between">
-                              <span className="text-muted">Shipping:</span>
+                              <span className="text-muted">
+                                {t(`Shipping`)}:
+                              </span>
                               <span className="fw-medium">
                                 {order.currency}{" "}
                                 {order.shipping_total || "0.00"}
                               </span>
                             </div>
                             <div className="d-flex justify-content-between">
-                              <span className="text-muted">Tax:</span>
+                              <span className="text-muted">{t(`Tax`)}:</span>
                               <span className="fw-medium">
                                 {order.currency} {order.tax_total || "0.00"}
                               </span>
@@ -210,16 +218,24 @@ const Order = ({ order }) => {
                           </div>
                         </div>
                         <div className="flex-grow-1">
-                          <h5 className="fw-semibold mb-3">Payment Details</h5>
+                          <h5 className="fw-semibold mb-3">
+                            {t(`Account.Payment_Details`)}
+                          </h5>
                           <div className="d-flex flex-column gap-2">
                             <div className="d-flex justify-content-between">
-                              <span className="text-muted">Method:</span>
+                              <span className="text-muted">
+                                {" "}
+                                {t(`Account.Method`)}:
+                              </span>
                               <span className="fw-medium">
                                 {order.payment_method}
                               </span>
                             </div>
                             <div className="d-flex justify-content-between align-items-center">
-                              <span className="text-muted">Status:</span>
+                              <span className="text-muted">
+                                {" "}
+                                {t(`Account.Status`)}:
+                              </span>
                               <span
                                 className={`badge ${statusBgColor} ${statusTextColor} ${statusBorderColor} border rounded-pill d-inline-flex align-items-center`}
                               >
@@ -228,7 +244,10 @@ const Order = ({ order }) => {
                             </div>
                             {order.tracking_number && (
                               <div className="d-flex justify-content-between align-items-center">
-                                <span className="text-muted">Tracking:</span>
+                                <span className="text-muted">
+                                  {" "}
+                                  {t(`Account.Tracking`)}:
+                                </span>
                                 <span className="fw-medium">
                                   {order.tracking_number}
                                 </span>
@@ -251,7 +270,9 @@ const Order = ({ order }) => {
                           </div>
                         </div>
                         <div className="flex-grow-1">
-                          <h5 className="fw-semibold mb-3">Order Actions</h5>
+                          <h5 className="fw-semibold mb-3">
+                            {t(`Account.Order_Actions`)}
+                          </h5>
                           <div className="d-flex flex-wrap gap-2">
                             {order.viewLink && (
                               <a
@@ -260,23 +281,23 @@ const Order = ({ order }) => {
                                 rel="noopener noreferrer"
                                 className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
                               >
-                                View Details
+                                {t(`Account.View_Details`)}
                                 <ExternalLink size={16} />
                               </a>
                             )}
                             <button className="btn btn-primary btn-sm d-flex align-items-center gap-1">
                               <Download size={16} />
-                              Invoice
+                              {t(`Account.Invoice`)}
                             </button>
                             <button className="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
                               <Truck size={16} />
-                              Track
+                              {t(`Account.Track`)}
                             </button>
                             {order.payment_status.toLowerCase() ===
                               "pending" && (
                               <button className="btn btn-success btn-sm d-flex align-items-center gap-1">
                                 <DollarSign size={16} />
-                                Pay Now
+                                {t(`Account.Pay_Now`)}
                               </button>
                             )}
                           </div>

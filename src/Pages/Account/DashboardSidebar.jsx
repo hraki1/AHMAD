@@ -5,18 +5,19 @@ import AddressBook from "./AddressBook";
 import Orders from "./Orders";
 import OrdersTracking from "./OrdersTracking";
 import Wishlist from "./Wishlist";
-import SavedCards from "./SavedCards";
 import SecuritySettings from "./SecuritySettings";
 import { AuthContext } from "../../Context/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCart } from "../../Context/CartContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import OrderProducts from "./OrderProducts";
+import { useTranslation } from "react-i18next";
 
 const DashboardSidebar = ({ orders }) => {
   const [activeTab, setActiveTab] = useState("info");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const viewTap = searchParams.get("viewTap");
@@ -33,14 +34,13 @@ const DashboardSidebar = ({ orders }) => {
   };
 
   const tabs = [
-    { id: "info", label: "Account Info" },
-    { id: "AddressBook", label: "Address Book" },
-    { id: "orders", label: "My Orders" },
-    { id: "myProducts", label: "My Products" },
-    { id: "orderstracking", label: "Orders Tracking" },
-    { id: "wishlist", label: "My Wishlist" },
-    { id: "payment", label: "Saved Cards" },
-    { id: "security", label: "Settings" },
+    { id: "info", label: t("Account.Account_Info") },
+    { id: "AddressBook", label: t("Account.Address_Book") },
+    { id: "orders", label: t("Account.My_Orders") },
+    { id: "myProducts", label: t("Account.My_Products") },
+    { id: "orderstracking", label: t("Account.Orders_Tracking") },
+    { id: "wishlist", label: t("Account.My_Wishlist") },
+    { id: "security", label: t("Account.Settings") },
   ];
 
   const { logout } = useContext(AuthContext);
@@ -106,7 +106,7 @@ const DashboardSidebar = ({ orders }) => {
                 ))}
                 <li className="nav-item">
                   <button onClick={handleLogout} className="nav-link">
-                    Log Out
+                    {t(`SignOut`)}
                   </button>
                 </li>
               </ul>

@@ -6,7 +6,7 @@ import Spinner from "../../Components/UI/SpinnerLoading";
 import Modal from "../../Components/UI/Modal";
 import { baseUrl } from "../API/ApiConfig";
 import StarRating from "./StartRating"; // New reusable component
-
+import { useTranslation } from "react-i18next";
 const OrderProduct = ({ item }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [rating, setRating] = useState(0);
@@ -23,7 +23,7 @@ const OrderProduct = ({ item }) => {
     error: null,
     success: false,
   });
-
+  const { t } = useTranslation();
   console.log(reviewState.reviewData);
 
   const { product, loading, error } = useFetchOneProductById(item.product_id);
@@ -167,7 +167,7 @@ const OrderProduct = ({ item }) => {
                 rating={reviewState.reviewData?.rating || 0}
                 interactive={false}
               />
-              <span className="ms-2">Reviewed</span>
+              <span className="ms-2">{t(`Account.Reviewed`)}</span>
             </div>
           ) : (
             <Button
@@ -184,7 +184,7 @@ const OrderProduct = ({ item }) => {
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star key={star} size={16} color="#ccc" fill="none" />
               ))}
-              <span style={{ marginLeft: "5px" }}>Review</span>
+              <span style={{ marginLeft: "5px" }}>{t(`Reviews`)}</span>
             </Button>
           )}
         </td>
@@ -192,11 +192,13 @@ const OrderProduct = ({ item }) => {
 
       <Modal open={isOpen} onClose={toggleDetails}>
         <div className="p-3">
-          <h5 className="mb-3 text-white">Leave a Review for {item.product_name}</h5>
+          <h5 className="mb-3 text-white">
+            {t(`Account.Leave_Review`)} {item.product_name}
+          </h5>
 
           {submitState.success && (
             <Alert variant="success" className="mb-3">
-              Thank you for your review!
+              {t(`Account.Thank_review`)}
             </Alert>
           )}
 
@@ -207,7 +209,7 @@ const OrderProduct = ({ item }) => {
           )}
 
           <div className="mb-3">
-            <label className="d-block mb-2">Rating</label>
+            <label className="d-block mb-2">{t(`Account.Rating`)}</label>
             <StarRating
               rating={hoveredStar || rating}
               onRatingChange={{ setHoveredStar, handleStarClick }}
@@ -217,7 +219,7 @@ const OrderProduct = ({ item }) => {
 
           <Form onSubmit={handleSubmitReview}>
             <Form.Group className="mb-3">
-              <Form.Label>Your Review</Form.Label>
+              <Form.Label>{t(`Account.Your_Review`)}</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -227,7 +229,7 @@ const OrderProduct = ({ item }) => {
                 maxLength={500}
               />
               <div className="text-end text-muted small mt-1">
-                {comment.length}/500 characters
+                {comment.length}/500 {t(`Account.characters`)}
               </div>
             </Form.Group>
 
@@ -237,14 +239,16 @@ const OrderProduct = ({ item }) => {
                 type="submit"
                 disabled={submitState.isLoading}
               >
-                {submitState.isLoading ? "Submitting..." : "Submit Review"}
+                {submitState.isLoading
+                  ? t(`Account.Submitting`)
+                  : t(`Account.Submit_Review`)}
               </Button>
               <Button
                 variant="outline-secondary"
                 onClick={toggleDetails}
                 disabled={submitState.isLoading}
               >
-                Cancel
+                {t(`Cancel`)}
               </Button>
             </div>
           </Form>

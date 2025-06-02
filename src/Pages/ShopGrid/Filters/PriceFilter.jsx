@@ -1,6 +1,6 @@
 // src/components/shop/Filters/PriceFilter.js
 import React, { useState } from "react";
-
+import { useTranslation } from "react-i18next";
 export default function PriceFilter({ className, onPriceChange }) {
   const defaultPriceRange = [0, 100];
   const [priceRange, setPriceRange] = useState(defaultPriceRange);
@@ -29,11 +29,11 @@ export default function PriceFilter({ className, onPriceChange }) {
   };
 
   const [showContent, setShowContent] = useState(true);
-
+  const { t } = useTranslation();
   return (
     <div className={`sidebar-widget filterBox filter-widget ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div className="title-slidebar">Price</div>
+        <div className="title-slidebar">{t(`Price`)}</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}
@@ -87,15 +87,15 @@ export default function PriceFilter({ className, onPriceChange }) {
                 />
               </div>
               <div className="col-6 text-right d-flex justify-content-end">
-                <button 
+                <button
                   className="btn btn-sm btn-outline-secondary me-2"
                   type="button"
                   onClick={handleResetClick}
                 >
-                  Reset
+                  {t(`Reset`)}
                 </button>
                 <button className="btn btn-sm" type="submit">
-                  Filter
+                  {t(`Filter`)}
                 </button>
               </div>
             </div>

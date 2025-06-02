@@ -5,7 +5,7 @@ import PopularCategories from "../../Components/PopularCategories";
 import Toolbar from "./Toolbar";
 import LeftSlidebar from "./leftSlidebar";
 import useFetchCategories from "../Hooks/useFetchCategories";
-
+import { useTranslation } from "react-i18next";
 export default function ShopPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function ShopPage() {
     outofstock: false,
   });
   const [priceRangeFilter, setPriceRangeFilter] = useState([0, 1000]);
-
+  const { t } = useTranslation();
   const { categories: subcategories, loading: subcatLoading } =
     useFetchCategories(selectedCategoryIds?.[0] || null);
 
@@ -102,18 +102,20 @@ export default function ShopPage() {
 
   return (
     <div>
-      <PageHeader title="Shop Grid" middleBreadcrumb="PAGES" />
+      <PageHeader title={t(`ShopGrid`)} middleBreadcrumb={t(`Pages`)} />
 
       {(categoryId || subcategoryId) && (
         <div className="container my-3 text-end">
           <button className="btn btn-outline-secondary" onClick={backToAll}>
-            Back to All
+            {t(`ShopGridCate.Back_All`)}
           </button>
         </div>
       )}
 
       <PopularCategories
-        heading={categoryId ? "Subcategories" : "All Menu"}
+        heading={
+          categoryId ? t(`ShopGridCate.All_Menu`) : t(`ShopGridCate.All_Menu`)
+        }
         italic=""
         selectedCategoryId={selectedCategoryIds?.[0] || null}
         onCategoryClick={handleCategoryClick}

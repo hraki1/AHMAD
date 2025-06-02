@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 export default function ProductItem({
   product,
   onAddToWishList,
@@ -13,7 +13,7 @@ export default function ProductItem({
         style={{ color: i < reviews ? "gold" : "gray" }}
       />
     ));
-
+  const { t } = useTranslation();
   console.log(product);
   //   console.log(product.id);
 
@@ -34,7 +34,7 @@ export default function ProductItem({
             />
           </Link>
           <div className="product-labels">
-            <span className="lbl on-sale">Sale</span>
+            <span className="lbl on-sale">{t(`ShopGridCate.Sale`)}</span>
           </div>
           <div className="button-set style1">
             <Link
@@ -42,7 +42,7 @@ export default function ProductItem({
               className="btn-icon quickview"
             >
               <i className="fa-solid fa-eye"></i>
-              <span className="text">Quick View</span>
+              <span className="text">{t(`ShopGridCate.Quick_View`)}</span>
             </Link>
             <Link
               href="#"
@@ -50,7 +50,7 @@ export default function ProductItem({
               onClick={(e) => onAddToWishList(e, product)}
             >
               <i className="fa-solid fa-heart"></i>
-              <span className="text">Add To Wishlist</span>
+              <span className="text">{t(`product.Add_Wishlist`)}</span>
             </Link>
             {/* <Link href="compare-style2.html" className="btn-icon compare">
                     <i className="fa-solid fa-code-compare"></i>

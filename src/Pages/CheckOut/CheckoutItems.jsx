@@ -11,7 +11,7 @@ export default function CheckoutItems({ btnName, checkoutLink = "/CheckOut" }) {
   if (cartItems.length === 0)
     return (
       <div className="empty-cart text-center py-5">
-        <p>Your cart is empty</p>
+        <p>{t(`Your_empty`)}</p>
         <Link to="/ShopGrid" className="btn btn-primary">
           {t(`Continue_shopping`)}
         </Link>

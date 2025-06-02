@@ -6,8 +6,9 @@ import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import QuickViewModal from "../ProductModal/QuickViewModal";
-
+import { useTranslation } from "react-i18next";
 const Wishlist = () => {
+  const { t } = useTranslation();
   const { wishlistItems, removeFromWishlist } = useWishlist();
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -86,11 +87,11 @@ const Wishlist = () => {
     <div className="h-100" id="wishlist">
       <div className="orders-card mt-0 h-100">
         <div className="top-sec d-flex justify-content-between mb-4">
-          <div className="title-account mb-0">My Wishlist</div>
+          <div className="title-account mb-0">{t(`My_Wishlist`)}</div>
           <div className="alert alert-success py-2 mb-0">
-            There are{" "}
+            {t(`There`)}{" "}
             <span className="text-primary fw-600">{wishlistItems.length}</span>{" "}
-            products in this wishlist
+            {t(`products_wishlist`)}
           </div>
         </div>
 
@@ -98,12 +99,12 @@ const Wishlist = () => {
           <table className="table align-middle text-center order-table">
             <thead>
               <tr className="table-head text-nowrap">
-                <th scope="col">Image</th>
-                <th scope="col">Product ID</th>
-                <th scope="col">Product Details</th>
-                <th scope="col">Price</th>
-                <th scope="col">Stock Status</th>
-                <th scope="col">Action</th>
+                <th scope="col">{t(`Image`)}</th>
+                <th scope="col">{t(`Product_ID`)}</th>
+                <th scope="col">{t(`orderCard.productDetails`)}</th>
+                <th scope="col">{t(`Price`)}</th>
+                <th scope="col">{t(`Stock_Status`)}</th>
+                <th scope="col">{t(`Action`)}</th>
               </tr>
             </thead>
             <tbody>
@@ -167,9 +168,9 @@ const Wishlist = () => {
                             Adding
                           </>
                         ) : product.stock?.toLowerCase() !== "in stock" ? (
-                          "Out Of Stock"
+                          t(`product.Out_Stock`)
                         ) : (
-                          "Add To Cart"
+                          t(`product.Add_Cart`)
                         )}
                       </button>
                       <button

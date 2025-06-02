@@ -5,10 +5,11 @@ import imgThree from "../../assets/images/icons/order.png";
 import { AuthContext } from "../../Context/AuthContext";
 import { Link } from "react-router-dom";
 import { baseUrl } from "../API/ApiConfig";
+import { useTranslation } from "react-i18next";
 const AccountInfo = () => {
   const dataAuth = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
-
+  const { t } = useTranslation();
   const [formData, setFormDate] = useState({
     full_name: dataAuth.user?.full_name || "",
     phone_number: dataAuth.user?.phone_number || "",
@@ -71,7 +72,7 @@ const AccountInfo = () => {
           <div className="account-info h-100">
             <div className="welcome-msg mb-4">
               <div className="name-person">
-                Hello,{" "}
+                {t(`Account.Hello`)},{" "}
                 <span className="text-primary">
                   {!dataAuth.isLoading && dataAuth.user?.full_name}
                 </span>
@@ -84,7 +85,7 @@ const AccountInfo = () => {
                 <div className="counter-box" key={idx}>
                   <div className="bg-block d-flex-center flex-nowrap">
                     <img
-                      className="blur-up lazyload"
+                      className="blur-up lazyload me-3"
                       src={img}
                       alt="icon"
                       width="64"
@@ -96,10 +97,10 @@ const AccountInfo = () => {
                       </h3>
                       <p>
                         {idx === 0
-                          ? "Total Orders"
+                          ? t(`Account.Total_Orders`)
                           : idx === 1
-                          ? "Pending Orders"
-                          : "Awaiting Payments"}
+                          ? t(`Account.Pending_Orders`)
+                          : t(`Account.Awaiting_Payments`)}
                       </p>
                     </div>
                   </div>
@@ -110,7 +111,9 @@ const AccountInfo = () => {
             {/* Account Info */}
             <div className="account-box">
               <div className="d-flex">
-                <div className="mb-3 main-title-2">Account Information</div>
+                <div className="mb-3 main-title-2">
+                  {t(`Account.Account_Information`)}
+                </div>
                 <button
                   onClick={handleEditInfo}
                   className="btn btn-link ms-auto h3"
@@ -124,7 +127,9 @@ const AccountInfo = () => {
                 <div className="box-info mb-4">
                   <div className="box-title d-flex-center">
                     <div className="sub-title-account">
-                      <div className="Sub-Name-acc mb-2">Phone Number</div>
+                      <div className="Sub-Name-acc mb-2">
+                        {t(`servicesAbout.Phone_Number`)}
+                      </div>
                       {!dataAuth.isLoading &&
                         (isEditing ? (
                           <input
@@ -142,7 +147,7 @@ const AccountInfo = () => {
                   </div>
 
                   <div className="box-title mt-3">
-                    <div className="Sub-Name-acc mb-2">Full Name</div>
+                    <div className="Sub-Name-acc mb-2">{t(`full_name`)}</div>
                     <div className="sub-title-account ms-1 mb-3">
                       {!dataAuth.isLoading &&
                         (isEditing ? (
@@ -157,7 +162,7 @@ const AccountInfo = () => {
                         ))}
                     </div>
 
-                    <div className="Sub-Name-acc mb-2">Email</div>
+                    <div className="Sub-Name-acc mb-2">{t(`form.email`)}</div>
                     <p
                       className="mb-3 sub-title-account ms-1"
                       style={{ textTransform: "none" }}
@@ -167,7 +172,7 @@ const AccountInfo = () => {
 
                     <p>
                       <Link to="#" className="btn-link ms-1">
-                        Change Password
+                        {t(`Account.Change_Password`)}
                       </Link>
                     </p>
                   </div>
@@ -176,7 +181,9 @@ const AccountInfo = () => {
                 {/* Birthday */}
                 <div className="box-info mb-4">
                   <div className="box-title d-flex-center">
-                    <div className="sub-title-account">Birthday</div>
+                    <div className="sub-title-account">
+                      {t(`Account.Birthday`)}
+                    </div>
                   </div>
                   <div className="box-content mt-3">
                     <p>

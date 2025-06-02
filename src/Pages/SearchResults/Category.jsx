@@ -4,7 +4,7 @@ import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../Hooks/useFetchCategories";
 import { Link } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
-
+import { useTranslation } from "react-i18next";
 const Category = ({
   selectedCategoryAndChildrenIds,
   selectedBrandIds = [],
@@ -22,7 +22,7 @@ const Category = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { addToWishlist } = useWishlist();
-
+  const { t } = useTranslation();
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
     addToWishlist({
@@ -217,34 +217,34 @@ const Category = ({
       case "Featured":
         // Featured usually maintains default order or uses a "featured" flag
         break;
-      case "Best Selling":
+      case "Best_Selling":
         // Assuming we track sales in the future, for now using reviews as proxy
         result.sort((a, b) => b.reviews - a.reviews);
         break;
-      case "Alphabetically, A-Z":
+      case "A_to_Z":
         result.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case "Alphabetically, Z-A":
+      case "Z_to_A":
         result.sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case "Price, low to high":
+      case "Price_Low_High":
         result.sort((a, b) => {
           const priceA = parseFloat(a.newPrice.replace("$", ""));
           const priceB = parseFloat(b.newPrice.replace("$", ""));
           return priceA - priceB;
         });
         break;
-      case "Price, high to low":
+      case "Price_High_Low":
         result.sort((a, b) => {
           const priceA = parseFloat(a.newPrice.replace("$", ""));
           const priceB = parseFloat(b.newPrice.replace("$", ""));
           return priceB - priceA;
         });
         break;
-      case "Date, old to new":
+      case "Date_Old_New":
         result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
         break;
-      case "Date, new to old":
+      case "Date_New_Old":
         result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         break;
       default:

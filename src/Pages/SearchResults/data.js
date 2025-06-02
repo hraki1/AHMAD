@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-
 // Tool Bar
 export const viewModes = [
   { class: "mode-list d-block", col: 1 },
@@ -10,16 +9,15 @@ export const viewModes = [
 ];
 
 export const showOptions = [10, 15, 20, 25, 30];
-
-export const sortOptions = [
-  { value: "featured", label: "Featured" },
-  { value: "best-selling", label: "Best selling" },
-  { value: "title-ascending", label: "A-Z" },
-  { value: "title-descending", label: "Z-A" },
-  { value: "price-ascending", label: "Low to High" },
-  { value: "price-descending", label: "High to Low" },
-  { value: "created-ascending", label: "Old to New" },
-  { value: "created-descending", label: "New to Old" },
+export const sortOptions = (t) => [
+  { value: "Featured", label: t("SortingOptions.Featured") },
+  { value: "Best_Selling", label: t("SortingOptions.Best_Selling") },
+  { value: "A_to_Z", label: t("SortingOptions.A_to_Z") },
+  { value: "Z_to_A", label: t("SortingOptions.Z_to_A") },
+  { value: "Price_Low_High", label: t("SortingOptions.Price_Low_High") },
+  { value: "Price_High_Low", label: t("SortingOptions.Price_High_Low") },
+  { value: "Date_Old_New", label: t("SortingOptions.Date_Old_New") },
+  { value: "Date_New_Old", label: t("SortingOptions.Date_New_Old") },
 ];
 ///
 
