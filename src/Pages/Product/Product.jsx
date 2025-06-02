@@ -72,7 +72,7 @@ export default function Product() {
           {activeTab === "description" && (
             <div className="tab-pane d-block">
               {" "}
-              <Description />
+              <Description/>
             </div>
           )}
           {activeTab === "additionalInformation" && (

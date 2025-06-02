@@ -8,6 +8,10 @@ const useFetchOneProductById = (urlKey) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!urlKey) {
+      return
+    }
+
     const fetchProduct = async () => {
       try {
         const finalId = urlKey;

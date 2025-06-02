@@ -11,6 +11,8 @@ export default function Index() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+
+  console.log("index")
   useEffect(() => {
     async function fetchOrders() {
       setIsLoading(true);

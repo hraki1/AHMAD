@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import img from "../../assets/images/collection/demo1-ct-img1.jpg";
 import useFetchOneProduct from "../Hooks/useFetchOneProduct";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import { useTranslation } from "react-i18next";
@@ -36,6 +37,7 @@ const Description = () => {
     );
   }
 
+  console.log(product.data[0]);
   console.log(product.data[0].description.description);
 
   const productImages = product.images || [];
@@ -62,7 +64,7 @@ const Description = () => {
           <div className="row">
             <div className="col-12 col-sm-12 col-md-8 col-lg-8">
               <div className="desc-content">
-                {product.data.description?.description ||
+                {product.data[0].description.description ||
                   "No description available"}
               </div>
               <div className="mb-3 main-title-2 main">{t(`Features`)}</div>
@@ -82,8 +84,8 @@ const Description = () => {
 
             <div className="col-12 col-sm-12 col-md-4 col-lg-4">
               <img
-                src={imageToDisplay}
-                alt={product.description?.name || "Product image"}
+                src={img}
+                alt={product.data[0].description.name || "Product image"}
                 width="600"
                 height="600"
                 className="img-fluid"

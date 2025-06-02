@@ -9,6 +9,7 @@ const useFetchOneProduct = (urlKey) => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      const lang = localStorage.getItem("i18nextLng");
       try {
         const finalId = urlKey;
 
@@ -16,7 +17,7 @@ const useFetchOneProduct = (urlKey) => {
 
         setLoading(true);
 
-        const response = await fetch(`${BASE_URL}/${finalId}`);
+        const response = await fetch(`${BASE_URL}/${finalId}/?lang=${lang}`);
 
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);

@@ -23,7 +23,8 @@ const SOCIAL_ICONS = [
   { icon: "youtube", title: "Youtube" },
 ];
 
-const ProductDetail = ({ product }) => { // NEW SCHEMA CHANGE: Product comes from props
+const ProductDetail = ({ product }) => {
+  // NEW SCHEMA CHANGE: Product comes from props
   const { t } = useTranslation();
   const [activeImage, setActiveImage] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -36,6 +37,7 @@ const ProductDetail = ({ product }) => { // NEW SCHEMA CHANGE: Product comes fro
     error: null,
   });
 
+  console.log(product);
   const navigate = useNavigate();
   const location = useLocation();
   const { updateCart } = useCart();
@@ -122,10 +124,7 @@ const ProductDetail = ({ product }) => { // NEW SCHEMA CHANGE: Product comes fro
   // NEW SCHEMA CHANGE: Updated image handling
   const productImages = useMemo(() => product?.images || [], [product]);
   const imageToDisplay = useMemo(
-    () =>
-      activeImage ||
-      productImages[0]?.origin_image ||
-      "",
+    () => activeImage || productImages[0]?.origin_image || "",
     [activeImage, productImages]
   );
 
@@ -180,7 +179,9 @@ const ProductDetail = ({ product }) => { // NEW SCHEMA CHANGE: Product comes fro
       {[...Array(5)].map((_, i) => (
         <i
           key={i}
-          className={`fa${i < Math.floor(product.rating || 0) ? "s" : "r"} fa-star`}
+          className={`fa${
+            i < Math.floor(product.rating || 0) ? "s" : "r"
+          } fa-star`}
           style={{ color: "gold" }}
         />
       ))}
@@ -216,7 +217,9 @@ const ProductDetail = ({ product }) => { // NEW SCHEMA CHANGE: Product comes fro
                   <img
                     className="img-fluid blur-up lazyload"
                     src={image.origin_image}
-                    alt={`${product.description?.name || 'Product'} thumbnail ${index + 1}`}
+                    alt={`${product.description?.name || "Product"} thumbnail ${
+                      index + 1
+                    }`}
                     style={{
                       width: "100%",
                       height: "auto",
@@ -302,7 +305,9 @@ const ProductDetail = ({ product }) => { // NEW SCHEMA CHANGE: Product comes fro
           {/* Product Info */}
           <div className="col-lg-6 col-md-6 col-sm-12 col-12 product-layout-info">
             <div className="product-single-meta">
-              <h1 className="main-title-heading">{product.description?.name || "Product"}</h1>
+              <h1 className="main-title-heading">
+                {product.description?.name || "Product"}
+              </h1>
 
               <div className="product-review d-flex-center mb-3">
                 {renderStars()}
@@ -319,10 +324,14 @@ const ProductDetail = ({ product }) => { // NEW SCHEMA CHANGE: Product comes fro
                   </span>
                 </div>
                 <div className="product-stock-title d-none">
-                  {t(`product.Vendor`)}: <Link to="#">{product.brand?.name || "No Brand"}</Link>
+                  {t(`product.Vendor`)}:{" "}
+                  <Link to="#">{product.brand?.name || "No Brand"}</Link>
                 </div>
                 <div className="product-stock-title align-items-center">
-                  {t(`Category`)}: <span>{product.category?.description?.name || "No Category"}</span>
+                  {t(`Category`)}:{" "}
+                  <span>
+                    {product.category?.description?.name || "No Category"}
+                  </span>
                 </div>
                 <div className="product-stock-title align-items-center">
                   {t(`product.SKU`)}: <span>{product.sku || "N/A"}</span>
@@ -335,12 +344,15 @@ const ProductDetail = ({ product }) => { // NEW SCHEMA CHANGE: Product comes fro
                     ${product.old_price.toFixed(2)}
                   </span>
                 )}
-                <span className="price">${product.price?.toFixed(2) || "0.00"}</span>
+                <span className="price">
+                  ${product.price?.toFixed(2) || "0.00"}
+                </span>
               </div>
 
               <hr />
               <div className="desc-content">
-                {product.description?.short_description || "No description available"}
+                {product.description?.short_description ||
+                  "No description available"}
               </div>
               <hr />
 

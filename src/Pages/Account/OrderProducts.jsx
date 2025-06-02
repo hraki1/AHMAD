@@ -1,24 +1,27 @@
+import { useMemo } from "react";
 import OrderProduct from "./OrderProduct";
 import { useTranslation } from "react-i18next";
+import Order from "./Order";
 const OrderProducts = ({ orders }) => {
   const { t } = useTranslation();
 
   if (orders.length === 0) {
     return <div>{t(`Account.no_orders`)}</div>;
   }
-  // 1️⃣ Flatten all items from all orders
-  const allItems = orders.flatMap((order) => order.items);
+  console.log("products");
 
-  // 2️⃣ Merge items with the same id
-  const mergedItems = allItems.reduce((acc, item) => {
-    const existingItem = acc.find((i) => i.product_id === item.product_id);
-    if (existingItem) {
-      existingItem.qty += item.qty; // Merge quantities
-    } else {
-      acc.push({ ...item });
-    }
-    return acc;
-  }, []);
+  const mergedItems = useMemo(() => {
+    const allItems = orders.flatMap((order) => order.items);
+    return allItems.reduce((acc, item) => {
+      const existingItem = acc.find((i) => i.product_id === item.product_id);
+      if (existingItem) {
+        existingItem.qty += item.qty;
+      } else {
+        acc.push({ ...item });
+      }
+      return acc;
+    }, []);
+  }, [orders]);
 
   console.log("mergedItems", mergedItems);
 
@@ -40,7 +43,7 @@ const OrderProducts = ({ orders }) => {
           </thead>
           <tbody>
             {mergedItems.map((item, index) => (
-              <OrderProduct key={index} item={item} />
+              <OrderProduct key={item.product_id} item={item} />
             ))}
           </tbody>
         </table>

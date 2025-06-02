@@ -23,54 +23,80 @@ const OrderProduct = ({ item }) => {
     error: null,
     success: false,
   });
-  const { t } = useTranslation();
-  console.log(reviewState.reviewData);
 
-  const { product, loading, error } = useFetchOneProductById(item.product_id);
+  const [product, setProduct] = useState();
+  const [loading, setIsLoading] = useState();
+  const [error, setError] = useState();
+
+  const { t } = useTranslation();
+  // console.log(reviewState.reviewData);
 
   const toggleDetails = () => setIsOpen(!isOpen);
 
   const handleStarClick = (index) => setRating(index);
 
-  const fetchReviewedProduct = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    setReviewState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-    try {
-      const response = await fetch(
-        `${baseUrl}/api/reviews/product/${item.product_id}/customer`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch review data");
-      }
-
-      const resData = await response.json();
-      setReviewState({
-        isReviewed: resData.length > 0,
-        reviewData: resData[0] || null,
-        isLoading: false,
-        error: null,
-      });
-    } catch (error) {
-      setReviewState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: error.message,
-      }));
-      console.error("Error fetching reviewed product:", error);
-    }
-  }, [item.product_id]);
-
   useEffect(() => {
-    fetchReviewedProduct();
-  }, [fetchReviewedProduct]);
+    setIsLoading(true);
+    const fetchReviewedProduct = async () => {
+      const token = localStorage.getItem("token");
+      setReviewState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      try {
+        const response = await fetch(
+          `${baseUrl}/api/reviews/product/${item.product_id}/customer`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const productResponse = await fetch(
+          `${baseUrl}/api/products/${item.product_id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const resData = await response.json();
+        const productData = await productResponse.json();
+        console.log(productData);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch review data");
+        }
+        if (!productResponse.ok) {
+          throw new Error("Failed to fetch review data");
+        }
+
+        console.log(productData.data[0]);
+        setProduct(productData.data[0]);
+        setReviewState({
+          isReviewed: resData.length > 0,
+          reviewData: resData[0] || null,
+          isLoading: false,
+          error: null,
+        });
+      } catch (error) {
+        setReviewState((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: error.message,
+        }));
+        console.error("Error fetching reviewed product:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (item.product_id) {
+      fetchReviewedProduct();
+    }
+  }, []);
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -134,9 +160,6 @@ const OrderProduct = ({ item }) => {
     }
   };
 
-  if (loading) {
-    return <Spinner />;
-  }
 
   if (error) {
     return <Alert variant="danger">Could not fetch product: {error}</Alert>;
@@ -146,14 +169,20 @@ const OrderProduct = ({ item }) => {
     <>
       <tr className="align-middle">
         <td>
-          <img
-            src={product.images[0]?.origin_image || "/placeholder-product.png"}
-            alt={item.product_name}
-            width="100"
-            onError={(e) => {
-              e.target.src = "/placeholder-product.png";
-            }}
-          />
+          {product ? (
+            <img
+              src={
+                product.images[0]?.origin_image || "/placeholder-product.png"
+              }
+              alt={item.product_name}
+              width="100"
+              onError={(e) => {
+                e.target.src = "/placeholder-product.png";
+              }}
+            />
+          ) : (
+            <Spinner />
+          )}
         </td>
         <td>{item.product_name}</td>
         <td>{item.qty}</td>
