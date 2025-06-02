@@ -27,9 +27,6 @@ const Modal = ({ children, open }) => {
 
   if (!modalRoot) return null;
 
-  console.log(open);
-  console.log("");
-
   return createPortal(
     <motion.dialog
       id="modal"
