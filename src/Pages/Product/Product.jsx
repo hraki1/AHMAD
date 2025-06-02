@@ -15,44 +15,58 @@ export default function Product() {
   return (
     <div className="container">
       <div className="tabs-listing section pb-0">
-        <ul className="product-tabs style2 list-unstyled d-flex-wrap d-flex-justify-center d-none d-md-flex">
-          <li
-            className={`tablink ${activeTab === "description" ? "active" : ""}`}
-            onClick={() => handleTabClick("description")}
-          >
-            <span className="tablink">{t(`Description`)}</span>
-          </li>
-          <li
-            className={`tablink ${
-              activeTab === "additionalInformation" ? "active" : ""
-            }`}
-            onClick={() => handleTabClick("additionalInformation")}
-          >
-            <span className="tablink">
-              {t(`product.Additional_Information`)}
-            </span>
-          </li>
-          <li
-            className={`tablink ${activeTab === "sizeChart" ? "active" : ""}`}
-            onClick={() => handleTabClick("sizeChart")}
-          >
-            <span className="tablink">{t(`product.Size_Chart`)}</span>
-          </li>
-          <li
-            className={`tablink ${
-              activeTab === "shippingReturn" ? "active" : ""
-            }`}
-            onClick={() => handleTabClick("shippingReturn")}
-          >
-            <span className="tablink">{t(`product.Shipping`)}</span>
-          </li>
-          <li
-            className={`tablink ${activeTab === "reviews" ? "active" : ""}`}
-            onClick={() => handleTabClick("reviews")}
-          >
-            <span className="tablink">{t(`Reviews`)}</span>
-          </li>
-        </ul>
+<ul className="product-tabs style2 list-unstyled d-flex flex-wrap justify-content-center gap-2 mb-4">
+  <li
+    className={`tablink nav-item ${activeTab === "description" ? "active" : ""} mb-3`}
+    onClick={() => handleTabClick("description")}
+    style={{ cursor: "pointer" }}
+  >
+    <span className="nav-link text-center px-3 py-2">
+      {t(`Description`)}
+    </span>
+  </li>
+
+  <li
+    className={`tablink nav-item ${activeTab === "additionalInformation" ? "active" : ""} mb-3`}
+    onClick={() => handleTabClick("additionalInformation")}
+    style={{ cursor: "pointer" }}
+  >
+    <span className="nav-link text-center px-3 py-2">
+      {t(`product.Additional_Information`)}
+    </span>
+  </li>
+
+  <li
+    className={`tablink nav-item ${activeTab === "sizeChart" ? "active" : ""} mb-3`}
+    onClick={() => handleTabClick("sizeChart")}
+    style={{ cursor: "pointer" }}
+  >
+    <span className="nav-link text-center px-3 py-2">
+      {t(`product.Size_Chart`)}
+    </span>
+  </li>
+
+  <li
+    className={`tablink nav-item ${activeTab === "shippingReturn" ? "active" : ""} mb-3`}
+    onClick={() => handleTabClick("shippingReturn")}
+    style={{ cursor: "pointer" }}
+  >
+    <span className="nav-link text-center px-3 py-2">
+      {t(`product.Shipping`)}
+    </span>
+  </li>
+
+  <li
+    className={`tablink nav-item ${activeTab === "reviews" ? "active" : ""} mb-3`}
+    onClick={() => handleTabClick("reviews")}
+    style={{ cursor: "pointer" }}
+  >
+    <span className="nav-link text-center px-3 py-2">
+      {t(`Reviews`)}
+    </span>
+  </li>
+</ul>
+
 
         <div className="tab-content">
           {activeTab === "description" && (
@@ -74,11 +88,6 @@ export default function Product() {
           {activeTab === "shippingReturn" && (
             <div className="tab-pane d-block">
               <ShippingReturn />
-            </div>
-          )}
-          {activeTab === "reviews" && (
-            <div className="tab-pane d-block">
-              <ReviewSection />
             </div>
           )}
         </div>

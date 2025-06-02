@@ -14,6 +14,7 @@ import { useCart } from "../../Context/CartContext";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import Modal from "../../Components/UI/Modal";
 import { useTranslation } from "react-i18next";
+
 const SOCIAL_ICONS = [
   { icon: "twitter", title: "Twitter" },
   { icon: "pinterest-p", title: "Pinterest" },
@@ -21,10 +22,9 @@ const SOCIAL_ICONS = [
   { icon: "instagram", title: "Instagram" },
   { icon: "youtube", title: "Youtube" },
 ];
-const ProductDetail = () => {
+
+const ProductDetail = ({ product }) => { // NEW SCHEMA CHANGE: Product comes from props
   const { t } = useTranslation();
-  const { url_key } = useParams();
-  const { product, loading, error } = useFetchOneProduct(url_key);
   const [activeImage, setActiveImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
@@ -35,39 +35,30 @@ const ProductDetail = () => {
     message: "",
     error: null,
   });
-  console.log("Product in component:", product);
+
   const navigate = useNavigate();
   const location = useLocation();
-  const { updateCart } = useCart(); // أضف هذا السطر
-
+  const { updateCart } = useCart();
   const { addToWishlist } = useWishlist();
-  const isInStock =
-    product?.inStock ??
-    (typeof product?.inventory === "number" ? product.inventory > 0 : true);
+
+  // NEW SCHEMA CHANGE: Updated inventory check
+  const isInStock = product?.inventory?.qty > 0;
 
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
-    const isInStock = product?.inventory === "In Stock";
-
     addToWishlist({
-      id: product.id,
-      name: product.name,
+      id: product.product_id, // NEW SCHEMA CHANGE
+      name: product.description?.name, // NEW SCHEMA CHANGE
       price: product.price,
       stock: isInStock ? "In Stock" : "Out Of Stock",
       disabled: !isInStock,
-      imgSrc:
-        product.images?.[0]?.origin_image ||
-        product.images?.[0]?.url ||
-        product.images?.[0] ||
-        "",
+      imgSrc: product.images?.[0]?.origin_image || "",
       variant: product.colors?.[0] || "Default variant",
     });
-
-    alert(`${product.name} added to wishlist!`);
+    alert(`${product.description?.name} added to wishlist!`); // NEW SCHEMA CHANGE
   };
 
   const [openModal, setOpenModal] = useState(false);
-
   const toggleModal = () => setOpenModal((prev) => !prev);
 
   const viewLoginPage = () => {
@@ -80,26 +71,20 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = async () => {
-    if (loading) {
-      toast.info("Please wait while product data is loading");
-      return;
-    }
-
     if (!product) {
       setAddToCartStatus({
         loading: false,
-        message: "Product ID is missing",
+        message: "Product data is missing",
         error: true,
       });
       return;
     }
 
-    const productId = product.id || product.product_id;
+    const productId = product.product_id; // NEW SCHEMA CHANGE
     if (!productId) {
-      console.error("Product structure:", product);
       setAddToCartStatus({
         loading: false,
-        message: "Product ID is missing in product data",
+        message: "Product ID is missing",
         error: true,
       });
       return;
@@ -115,32 +100,31 @@ const ProductDetail = () => {
 
     let result;
     try {
-      result = await AddToCart(productId, quantity, product.name);
-    } catch (arr) {
+      result = await AddToCart(productId, quantity, product.description?.name); // NEW SCHEMA CHANGE
+    } catch (err) {
       toast.error("Add item failed!");
     }
 
     setAddToCartStatus({
       loading: false,
-      message: result.message,
-      error: !result.success,
+      message: result?.message,
+      error: !result?.success,
     });
 
-    if (result.success) {
+    if (result?.success) {
       toast.success(result.message);
-      await updateCart(); // أضف هذا السطر لتحديث حالة العربة
+      await updateCart();
     } else {
-      toast.error(result.message || "Failed to add item.");
+      toast.error(result?.message || "Failed to add item.");
     }
   };
 
+  // NEW SCHEMA CHANGE: Updated image handling
   const productImages = useMemo(() => product?.images || [], [product]);
   const imageToDisplay = useMemo(
     () =>
       activeImage ||
       productImages[0]?.origin_image ||
-      productImages[0]?.url ||
-      productImages[0] ||
       "",
     [activeImage, productImages]
   );
@@ -176,7 +160,7 @@ const ProductDetail = () => {
   );
 
   const handleThumbnailClick = useCallback((image) => {
-    setActiveImage(image?.origin_image || image?.url || image);
+    setActiveImage(image?.origin_image || "");
   }, []);
 
   const handleQuantityChange = useCallback((newQuantity) => {
@@ -189,137 +173,59 @@ const ProductDetail = () => {
     }
   }, [productImages, activeImage, handleThumbnailClick]);
 
-  if (loading) return <Spinner />;
-  if (error)
-    return (
-      <div className="error-alert">
-        Error: {error}
-        <button onClick={() => window.location.reload()}>Retry</button>
-      </div>
-    );
-  if (!product)
-    return (
-      <div className="empty-state">
-        {t(`product.Product_not_found`)}
-        <Link to="/products">{t(`product.Back_to_products`)}</Link>
-      </div>
-    );
+  if (!product) return <Spinner />;
 
   const renderStars = () => (
     <div className="reviewStar d-flex-center">
       {[...Array(5)].map((_, i) => (
         <i
           key={i}
-          className={`fa${i < Math.floor(product.rating) ? "s" : "r"} fa-star`}
+          className={`fa${i < Math.floor(product.rating || 0) ? "s" : "r"} fa-star`}
           style={{ color: "gold" }}
         />
       ))}
     </div>
   );
 
-  const renderColorSwatches = () =>
-    product.colors?.length > 0 && (
-      <div className="product-item swatches-image w-100 mb-4 swatch-0 option1">
-        <label className="label d-flex align-items-center">
-          Color:{" "}
-          <span className="slVariant ms-1 fw-bold">
-            {selectedColor || product.colors[0]}
-          </span>
-        </label>
-        <ul className="variants-clr swatches d-flex-center pt-1 clearfix">
-          {product.colors.map((color, idx) => (
-            <li
-              key={idx}
-              className={`swatch x-large available${
-                (selectedColor || product.colors[0]) === color ? " active" : ""
-              }`}
-              onClick={() => setSelectedColor(color)}
-            >
-              <div
-                className="color-swatch"
-                style={{ backgroundColor: color }}
-                title={color}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-
-  const renderSizeSwatches = () =>
-    product.sizes?.length > 0 && (
-      <div className="product-item swatches-size w-100 mb-4 swatch-1 option2">
-        <label className="label d-flex align-items-center">
-          Size:{" "}
-          <span className="slVariant ms-1 fw-bold">
-            {selectedSize || product.sizes[0]}
-          </span>
-          <Link to="#sizechart-modal" className="text-link sizelink text-muted">
-            Size Guide
-          </Link>
-        </label>
-        <ul className="variants-size size-swatches d-flex-center pt-1 clearfix">
-          {product.sizes.map((size) => (
-            <li
-              key={size}
-              className={`swatch x-large${
-                (selectedSize || product.sizes[0]) === size
-                  ? " available active"
-                  : " available"
-              }`}
-              onClick={() => setSelectedSize(size)}
-            >
-              <span className="swatchLbl" title={size}>
-                {size}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-
   const renderThumbnails = () =>
     productImages.length > 1 && (
       <div className="product-thumb product-horizontal-thumb mt-3">
         <div id="gallery" className="product-thumb-horizontal">
           <Slider {...getSliderSettings(productImages.length)}>
-            {productImages.map((image, index) => {
-              const imageUrl = image?.origin_image || image?.url || image;
-              return (
-                <div key={index} className="px-1">
-                  <button
-                    onClick={() => handleThumbnailClick(image)}
-                    className={`thumbnail-btn ${
-                      activeImage === imageUrl ? "active" : ""
-                    }`}
+            {productImages.map((image, index) => (
+              <div key={index} className="px-1">
+                <button
+                  onClick={() => handleThumbnailClick(image)}
+                  className={`thumbnail-btn ${
+                    activeImage === image.origin_image ? "active" : ""
+                  }`}
+                  style={{
+                    background: "none",
+                    border:
+                      activeImage === image.origin_image
+                        ? "2px solid #007bff"
+                        : "1px solid #ddd",
+                    padding: 0,
+                    cursor: "pointer",
+                    width: "100%",
+                    borderRadius: "4px",
+                    overflow: "hidden",
+                    transition: "border-color 0.3s ease",
+                  }}
+                >
+                  <img
+                    className="img-fluid blur-up lazyload"
+                    src={image.origin_image}
+                    alt={`${product.description?.name || 'Product'} thumbnail ${index + 1}`}
                     style={{
-                      background: "none",
-                      border:
-                        activeImage === imageUrl
-                          ? "2px solid #007bff"
-                          : "1px solid #ddd",
-                      padding: 0,
-                      cursor: "pointer",
                       width: "100%",
-                      borderRadius: "4px",
-                      overflow: "hidden",
-                      transition: "border-color 0.3s ease",
+                      height: "auto",
+                      display: "block",
                     }}
-                  >
-                    <img
-                      className="img-fluid blur-up lazyload"
-                      src={imageUrl}
-                      alt={`${product.name} thumbnail ${index + 1}`}
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        display: "block",
-                      }}
-                    />
-                  </button>
-                </div>
-              );
-            })}
+                  />
+                </button>
+              </div>
+            ))}
           </Slider>
         </div>
       </div>
@@ -331,7 +237,6 @@ const ProductDetail = () => {
       <Modal open={openModal}>
         <div className="p-4 text-center">
           <h2 className="fw-bold text-white h1">{t(`product.Should_Login`)}</h2>
-
           <div className="d-flex justify-content-center gap-3 mt-4">
             <button
               onClick={viewLoginPage}
@@ -339,7 +244,6 @@ const ProductDetail = () => {
             >
               Login
             </button>
-
             <button
               onClick={toggleModal}
               className="btn btn-primary px-4 btn-tow-hover-shipp"
@@ -359,10 +263,11 @@ const ProductDetail = () => {
                   <img
                     className="zoompro img-fluid"
                     src={imageToDisplay}
-                    alt={product.name}
+                    alt={product.description?.name || "Product"}
                   />
                 </div>
                 <div className="product-labels">
+                  {/* NEW SCHEMA CHANGE: You might need to add these flags to your schema */}
                   {product.isNew && (
                     <span className="lbl pr-label1">{t(`product.New`)}</span>
                   )}
@@ -397,43 +302,45 @@ const ProductDetail = () => {
           {/* Product Info */}
           <div className="col-lg-6 col-md-6 col-sm-12 col-12 product-layout-info">
             <div className="product-single-meta">
-              <h1 className="main-title-heading">{product.name}</h1>
+              <h1 className="main-title-heading">{product.description?.name || "Product"}</h1>
 
               <div className="product-review d-flex-center mb-3">
                 {renderStars()}
                 <Link to="#reviews" className="reviewLink d-flex-center">
-                  {product.reviewCount} {t(`Reviews`)}
+                  {product.reviews?.length || 0} {t(`Reviews`)}
                 </Link>
               </div>
 
               <div className="product-info">
                 <div className="product-stock-title d-flex align-items-center ">
                   {t(`Availability`)}:{" "}
-                  <span className="pro-stockLbl ps-1">{product.inventory}</span>
+                  <span className="pro-stockLbl ps-1">
+                    {isInStock ? "In Stock" : "Out of Stock"}
+                  </span>
                 </div>
                 <div className="product-stock-title d-none">
-                  {t(`product.Vendor`)}: <Link to="#">{product.brand}</Link>
+                  {t(`product.Vendor`)}: <Link to="#">{product.brand?.name || "No Brand"}</Link>
                 </div>
                 <div className="product-stock-title align-items-center">
-                  {t(`Category`)}: <span>{product.category.name}</span>
+                  {t(`Category`)}: <span>{product.category?.description?.name || "No Category"}</span>
                 </div>
                 <div className="product-stock-title align-items-center">
-                  {t(`product.SKU`)}: <span>{product.sku}</span>
+                  {t(`product.SKU`)}: <span>{product.sku || "N/A"}</span>
                 </div>
               </div>
 
               <div className="product-price d-flex-center my-3 align-items-center">
-                {product.oldPrice > product.price && (
+                {product.old_price && (
                   <span className="price old-price">
-                    ${product.oldPrice.toFixed()}
+                    ${product.old_price.toFixed(2)}
                   </span>
                 )}
-                <span className="price">${product.price.toFixed(2)}</span>
+                <span className="price">${product.price?.toFixed(2) || "0.00"}</span>
               </div>
 
               <hr />
               <div className="desc-content">
-                {product.description.short_description}
+                {product.description?.short_description || "No description available"}
               </div>
               <hr />
 
@@ -442,8 +349,6 @@ const ProductDetail = () => {
             </div>
 
             <form className="product-form product-form-border hidedropdown">
-              {/* {renderColorSwatches()}
-              {renderSizeSwatches()} */}
               <div className="product-action w-100 d-flex-wrap my-3 my-md-4">
                 <div className="product-form-quantity d-flex-center">
                   <div className="qtyField">
@@ -473,19 +378,17 @@ const ProductDetail = () => {
                   <button
                     type="button"
                     className={`btn btn-secondary proceed-to-checkout text-nowrap ${
-                      product?.inventory !== "In Stock"
-                        ? "soldOutBtn disabled"
-                        : ""
+                      !isInStock ? "soldOutBtn disabled" : ""
                     }`}
                     onClick={handleAddToCart}
-                    disabled={product?.inventory !== "In Stock"}
+                    disabled={!isInStock}
                   >
                     {addToCartStatus.loading ? (
                       <>
                         <i className="fa-solid fa-spinner fa-spin me-2"></i>
                         {t(`product.Adding`)}
                       </>
-                    ) : product?.inventory !== "In Stock" ? (
+                    ) : !isInStock ? (
                       t(`product.Out_Stock`)
                     ) : (
                       t(`product.Add_Cart`)
@@ -495,37 +398,24 @@ const ProductDetail = () => {
               </div>
 
               <p className="infolinks d-flex-center">
-                {!product ? (
-                  <Spinner />
-                ) : (
-                  <Link
-                    to="#"
-                    onClick={(e) => handleAddToWishlist(e, product)}
-                    className="text-link wishlist"
-                    style={{
-                      pointerEvents: "auto",
-                      opacity: 1,
-                    }}
-                  >
-                    <i className="fa-regular fa-heart me-2" />
-                    {product?.inventory === "In Stock"
-                      ? t(`product.Add_Wishlist`)
-                      : t(`product.Out_Stock`)}
-                  </Link>
-                )}
-                {/* <Link to="/compare" className="text-link compare">
-                  <i className="fa-solid fa-rotate me-2" /> Add to Compare
-                </Link> */}
+                <Link
+                  to="#"
+                  onClick={(e) => handleAddToWishlist(e, product)}
+                  className="text-link wishlist"
+                  style={{
+                    pointerEvents: "auto",
+                    opacity: 1,
+                  }}
+                >
+                  <i className="fa-regular fa-heart me-2" />
+                  {isInStock
+                    ? t(`product.Add_Wishlist`)
+                    : t(`product.Out_Stock`)}
+                </Link>
                 <Link to="/FAQ" className="text-link shippingInfo">
                   <i className="fa-regular fa-paper-plane me-2" />{" "}
                   {t(`product.Delivery`)}
                 </Link>
-                {/* <Link
-                  to="#productInquiry-modal"
-                  className="text-link emaillink me-0"
-                >
-                  <i className="fa-regular fa-circle-question me-2" /> Enquiry
-                </Link> */}
               </p>
             </form>
 

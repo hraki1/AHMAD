@@ -3,11 +3,12 @@ import { Link, useParams } from "react-router-dom";
 import useFetchOneProduct from "../Hooks/useFetchOneProduct";
 import Spinner from "../../Components/UI/SpinnerLoading";
 import { useTranslation } from "react-i18next";
+
 const Description = () => {
   const { t } = useTranslation();
   const { url_key } = useParams();
   const { product, loading, error } = useFetchOneProduct(url_key);
-  const [activeImage, setActiveImage] = useState(null); // ممكن نخليه لو حبيت تغير الصورة لاحقاً
+  const [activeImage, setActiveImage] = useState(null);
 
   if (loading) {
     return (
@@ -35,13 +36,17 @@ const Description = () => {
     );
   }
 
+  console.log(product.data[0].description.description);
+
   const productImages = product.images || [];
+
+  // Find the main image or fall back to the first image
+  const mainImage =
+    productImages.find((img) => img.is_main) || productImages[0];
 
   const imageToDisplay =
     activeImage ||
-    (productImages.length > 0
-      ? productImages[0]?.origin_image || productImages[0]
-      : "path_to_default_image.jpg");
+    (mainImage ? mainImage.origin_image : "path_to_default_image.jpg");
 
   return (
     <div className="pt-5">
@@ -57,7 +62,8 @@ const Description = () => {
           <div className="row">
             <div className="col-12 col-sm-12 col-md-8 col-lg-8">
               <div className="desc-content">
-                {product.description.description}.
+                {product.data.description?.description ||
+                  "No description available"}
               </div>
               <div className="mb-3 main-title-2 main">{t(`Features`)}</div>
               <ol>
@@ -77,9 +83,10 @@ const Description = () => {
             <div className="col-12 col-sm-12 col-md-4 col-lg-4">
               <img
                 src={imageToDisplay}
-                alt="product detail"
+                alt={product.description?.name || "Product image"}
                 width="600"
                 height="600"
+                className="img-fluid"
               />
             </div>
           </div>

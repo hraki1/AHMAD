@@ -24,53 +24,52 @@ const OrderProduct = ({ item }) => {
     success: false,
   });
 
-  console.log(reviewState.reviewData);
-
   const { product, loading, error } = useFetchOneProductById(item.product_id);
 
   const toggleDetails = () => setIsOpen(!isOpen);
 
   const handleStarClick = (index) => setRating(index);
 
-  const fetchReviewedProduct = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    setReviewState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-    try {
-      const response = await fetch(
-        `${baseUrl}/api/reviews/product/${item.product_id}/customer`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch review data");
-      }
-
-      const resData = await response.json();
-      setReviewState({
-        isReviewed: resData.length > 0,
-        reviewData: resData[0] || null,
-        isLoading: false,
-        error: null,
-      });
-    } catch (error) {
-      setReviewState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: error.message,
-      }));
-      console.error("Error fetching reviewed product:", error);
-    }
-  }, [item.product_id]);
-
   useEffect(() => {
+    console.log("Fetching review for product_id:", item.product_id);
+    const fetchReviewedProduct = async () => {
+      const token = localStorage.getItem("token");
+      setReviewState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      try {
+        const response = await fetch(
+          `${baseUrl}/api/reviews/product/${item.product_id}/customer`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch review data");
+        }
+
+        const resData = await response.json();
+        setReviewState({
+          isReviewed: resData.length > 0,
+          reviewData: resData[0] || null,
+          isLoading: false,
+          error: null,
+        });
+      } catch (error) {
+        setReviewState((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: error.message,
+        }));
+        console.error("Error fetching reviewed product:", error);
+      }
+    };
+
     fetchReviewedProduct();
-  }, [fetchReviewedProduct]);
+  }, [item.product_id]);
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -175,16 +174,9 @@ const OrderProduct = ({ item }) => {
               className="d-flex align-items-center gap-1"
               onClick={toggleDetails}
               disabled={reviewState.isLoading}
-              style={{
-                borderRadius: "20px",
-                padding: "6px 12px",
-                fontWeight: "500",
-              }}
             >
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} size={16} color="#ccc" fill="none" />
-              ))}
-              <span style={{ marginLeft: "5px" }}>Review</span>
+              <StarRating rating={0} interactive={false} />
+              <span className="ms-2">Review</span>
             </Button>
           )}
         </td>
@@ -192,7 +184,7 @@ const OrderProduct = ({ item }) => {
 
       <Modal open={isOpen} onClose={toggleDetails}>
         <div className="p-3">
-          <h5 className="mb-3 text-white">Leave a Review for {item.product_name}</h5>
+          <h5 className="mb-3">Leave a Review for {item.product_name}</h5>
 
           {submitState.success && (
             <Alert variant="success" className="mb-3">

@@ -5,14 +5,13 @@ const OrderProducts = ({ orders }) => {
     return <div>There are no orders</div>;
   }
 
-  // 1️⃣ Flatten all items from all orders
+  
   const allItems = orders.flatMap((order) => order.items);
 
-  // 2️⃣ Merge items with the same id
   const mergedItems = allItems.reduce((acc, item) => {
     const existingItem = acc.find((i) => i.product_id === item.product_id);
     if (existingItem) {
-      existingItem.qty += item.qty; // Merge quantities
+      existingItem.qty += item.qty;
     } else {
       acc.push({ ...item });
     }
