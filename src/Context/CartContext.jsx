@@ -255,6 +255,7 @@ export function CartProvider({ children }) {
         subtotalWithDiscount,
         applyCoupon,
         removeCoupon,
+        setSubtotalWithDiscount,
       }}
     >
       {children}

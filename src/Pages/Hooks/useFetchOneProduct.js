@@ -9,15 +9,17 @@ const useFetchOneProduct = (urlKey) => {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const lang = localStorage.getItem("i18nextLng");
+      const languageKey = localStorage.getItem("i18nextLng");
       try {
         const finalId = urlKey;
 
         if (!finalId) throw new Error("No product ID provided");
 
         setLoading(true);
-
-        const response = await fetch(`${BASE_URL}/${finalId}/?lang=${lang}`);
+        console.log(`${BASE_URL}/${finalId}?lang=${languageKey}`);
+        const response = await fetch(
+          `${BASE_URL}/${finalId}?lang=${languageKey}`
+        );
 
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -25,6 +27,7 @@ const useFetchOneProduct = (urlKey) => {
         const data = await response.json();
         console.log("Fetched Product Data:", data);
         console.log("Used ID:", finalId);
+        console.log(data);
 
         if (!data) throw new Error("No product data received");
 

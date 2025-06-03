@@ -8,6 +8,7 @@ import SizeFilter from "./Filters/SizeFilter";
 import ProductTypeFilter from "./Filters/ProductTypeFilter";
 import BrandFilter from "./Filters/BrandFilter";
 import AvailabilityFilter from "./Filters/AvailabilityFilter";
+import { t } from "i18next";
 
 // ✅ مكون ViewModes لتغيير طريقة عرض المنتجات
 const ViewModes = ({ activeView, onChange }) => (
@@ -138,10 +139,9 @@ export default function Toolbar({
             </div>
           </div>
 
-          {/* Center - Total Products Count */}
           <div className="col-12 col-sm-4 col-md-4 col-lg-4 text-center order-0 order-md-1 mb-3 mb-sm-0">
             <span className="toolbar-product-count">
-              Showing: {displayedProductCount} products
+              Showing products
             </span>
           </div>
 
@@ -157,7 +157,7 @@ export default function Toolbar({
             <SelectBox
               id="sort"
               label="Sort by:"
-              options={sortOptions}
+              options={sortOptions(t)}
               value={sortBy}
               onChange={handleSortChange}
             />

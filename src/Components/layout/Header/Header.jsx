@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import MiniCart from "../../../Pages/Cart/MiniCart";
 import logoSarah from "../../../assets/images/2.png";
 import AccountMenu from "./AccountMenu";
@@ -67,6 +67,14 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
 
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.pathname.startsWith("/search")) {
+      setSearchText("");
+    }
+  }, [location.pathname]);
+
   const { categories, loading, error } = useFetchCategoryandSub();
   const { wishlistItems } = useWishlist();
   const { t } = useTranslation();
@@ -110,13 +118,16 @@ const Header = () => {
     setCartItems(updatedItems);
   };
 
-  const handleSearchKeyPress = (e) => {
-    if (e.key === "Enter") {
-      console.log("Search: ", searchText);
+  useEffect(() => {
+    if (searchText.trim() === "") return; // تجاهل لو فاضي
+
+    const timer = setTimeout(() => {
+      console.log("Search:", searchText);
       navigate(`/search?query=${encodeURIComponent(searchText)}`);
-      setSearchText("");
-    }
-  };
+    }, 500); // نصف ثانية
+
+    return () => clearTimeout(timer); // يلغي المؤقت إذا المستخدم كتب من جديد
+  }, [searchText]);
 
   return (
     <header className="header d-flex align-items-center header-1 header-fixed">
@@ -125,11 +136,7 @@ const Header = () => {
           {/* Logo */}
           <div className="col-5 col-sm-3 col-md-3 col-lg-2">
             <Link className="logoImg" to="/">
-              <img
-                src={logoSarah}
-                alt="logo Sarah"
-                style={{ maxHeight: "60px" }}
-              />
+              <h1 className="textLogo">صرح</h1>
             </Link>
           </div>
 
@@ -226,12 +233,11 @@ const Header = () => {
             className="d-flex align-items-center justify-content-end col-7 col-sm-9 col-md-9 col-lg-3"
             style={{ gap: "12px" }}
           >
-            {/* Search Input - ياخذ أكبر مساحة ممكنة */}
             <div
               className="search-parent iconset"
               style={{
                 flexGrow: 1,
-                minWidth: "220px", // أقل عرض ممكن
+                minWidth: "220px",
                 maxWidth: "100%",
               }}
             >
@@ -241,7 +247,6 @@ const Header = () => {
                 placeholder={t("Search...")}
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                onKeyDown={handleSearchKeyPress}
                 style={{
                   width: "100%",
                   padding: "14px 20px",
