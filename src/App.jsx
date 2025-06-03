@@ -57,8 +57,8 @@ const router = createBrowserRouter([
       { path: "search", element: <SearchResults /> },
       { path: "/Category", element: <Category /> },
       { path: "/Wishlist", element: <Wishlist /> },
-      { path: "/SignUp", element: <Sign /> },
-      { path: "/LogIn", element: <Login /> },
+      { path: "/signup", element: <Sign /> },
+      { path: "/login", element: <Login /> },
       { path: "/Brands", element: <Brands /> },
       { path: "/Verify", element: <Verify /> },
       {
