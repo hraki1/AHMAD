@@ -5,6 +5,8 @@ import useFetchCategories from "../Hooks/useFetchCategories";
 import { Link } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 import { useTranslation } from "react-i18next";
+import toast, { Toaster } from "react-hot-toast";
+
 const Category = ({
   selectedCategoryAndChildrenIds,
   selectedBrandIds = [],
@@ -23,6 +25,7 @@ const Category = ({
   const [error, setError] = useState(null);
   const { addToWishlist } = useWishlist();
   const { t } = useTranslation();
+
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
     addToWishlist({
@@ -33,8 +36,9 @@ const Category = ({
       disabled: !product.inStock,
       imgSrc: product.imageUrl,
       variant: product.colors[0]?.title || "Default variant",
+      url_key: product.description.url_key || "Undefiend",
     });
-    alert(`${product.name} ${t(`product.Add_Wishlist`)}`);
+    toast.success(`${product.name} ${t(`product.Add_Wishlist`)}99`);
   };
 
   const {
@@ -134,35 +138,6 @@ const Category = ({
       prev.map((p) => (p.id === productId ? { ...p, imageUrl: imgSrc } : p))
     );
   }, []);
-
-  // const addToCart = useCallback(
-  //   (product) => {
-  //     if (cartLoading) return;
-  //     setCartLoading(true);
-
-  //     setTimeout(() => {
-  //       const existing = JSON.parse(localStorage.getItem("cartItems")) || [];
-  //       if (existing.find((item) => item.id === product.id)) {
-  //         alert(`${product.name} added to cart!`);
-  //         return setCartLoading(false);
-  //       }
-
-  //       const updated = [
-  //         ...existing,
-  //         {
-  //           ...product,
-  //           price: parseFloat(product.newPrice.replace("$", "")),
-  //           quantity: 1,
-  //           image: product.imageUrl, // أضف هذا السطر
-  //         },
-  //       ];
-  //       localStorage.setItem("cartItems", JSON.stringify(updated));
-  //       alert(`${product.name} added to cart!`);
-  //       setCartLoading(false);
-  //     }, 200);
-  //   },
-  //   [cartLoading]
-  // );
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
@@ -274,29 +249,33 @@ const Category = ({
   if (!sortedProducts.length) return <p>No products found for this filter.</p>;
 
   return (
-    <div className="grid-products grid-view-items">
-      <div className={` row col-row product-options ${gridClass}`}>
-        {displayedProducts.map((product) => (
-          <div className="item col-item" key={product.id}>
-            <div className="product-box">
-              <div className="product-image">
-                <Link
-                  to={`/product/${product.url_key || product.id}`}
-                  className="product-img rounded-3"
-                >
-                  <img
-                    className="blur-up lazyload"
-                    src={product.imageUrl}
-                    alt={product.name}
-                    width="625"
-                    height="808"
-                  />
-                </Link>
-                <div className="product-labels">
-                  <span className="lbl on-sale">{t(`ShopGridCate.Sale`)}</span>
-                </div>
-                <div className="button-set style1">
-                  {/* <button
+    <>
+      <Toaster />
+      <div className="grid-products grid-view-items">
+        <div className={` row col-row product-options ${gridClass}`}>
+          {displayedProducts.map((product) => (
+            <div className="item col-item" key={product.id}>
+              <div className="product-box">
+                <div className="product-image">
+                  <Link
+                    to={`/product/${product.url_key || product.id}`}
+                    className="product-img rounded-3"
+                  >
+                    <img
+                      className="blur-up lazyload"
+                      src={product.imageUrl}
+                      alt={product.name}
+                      width="625"
+                      height="808"
+                    />
+                  </Link>
+                  <div className="product-labels">
+                    <span className="lbl on-sale">
+                      {t(`ShopGridCate.Sale`)}
+                    </span>
+                  </div>
+                  <div className="button-set style1">
+                    {/* <button
                     className="btn-icon addtocart"
                     // onClick={() => addToCart(product)}
                     // disabled={cartLoading}
@@ -305,65 +284,70 @@ const Category = ({
                     <i className="fa-solid fa-cart-plus"></i>
                     <span className="text">Add to Cart</span>
                   </button> */}
-                  <Link
-                    to={`/product/${product.url_key || product.id}`}
-                    className="btn-icon quickview"
-                  >
-                    <i className="fa-solid fa-eye"></i>
-                    <span className="text">{t(`ShopGridCate.Quick_View`)}</span>
-                  </Link>
-                  <Link
-                    href="#"
-                    className="btn-icon wishlist"
-                    onClick={(e) => handleAddToWishlist(e, product)}
-                  >
-                    <i className="fa-solid fa-heart"></i>
-                    <span className="text">{t(`Add_Wishlist`)}</span>
-                  </Link>
-                  {/* <Link href="compare-style2.html" className="btn-icon compare">
+                    <Link
+                      to={`/product/${product.url_key || product.id}`}
+                      className="btn-icon quickview"
+                    >
+                      <i className="fa-solid fa-eye"></i>
+                      <span className="text">
+                        {t(`ShopGridCate.Quick_View`)}
+                      </span>
+                    </Link>
+                    <Link
+                      href="#"
+                      className="btn-icon wishlist"
+                      onClick={(e) => handleAddToWishlist(e, product)}
+                    >
+                      <i className="fa-solid fa-heart"></i>
+                      <span className="text">{t(`Add_Wishlist`)}</span>
+                    </Link>
+                    {/* <Link href="compare-style2.html" className="btn-icon compare">
                     <i className="fa-solid fa-code-compare"></i>
                     <span className="text">Add to Compare</span>
                   </Link> */}
+                  </div>
                 </div>
-              </div>
 
-              <div className="product-details">
-                <div className="product-name">
-                  <Link to={`/product/${product.url_key}`}>{product.name}</Link>
+                <div className="product-details">
+                  <div className="product-name">
+                    <Link to={`/product/${product.url_key}`}>
+                      {product.name}
+                    </Link>
+                  </div>
+                  <div className="product-price">
+                    <span className="price old-price">{product.oldPrice}</span>
+                    <span className="price">{product.newPrice}</span>
+                  </div>
+                  <div className="product-review">
+                    {renderStars(product.reviews)}
+                  </div>
+                  <ul className="variants-clr swatches">
+                    {product.colors.map((color, i) => (
+                      <li
+                        key={i}
+                        className="swatch medium radius"
+                        onClick={() =>
+                          handleColorChange(product.id, color.imgSrc)
+                        }
+                      >
+                        <span className="swatchLbl" title={color.title}>
+                          <img
+                            src={color.imgSrc}
+                            alt={color.title}
+                            width="625"
+                            height="808"
+                          />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="product-price">
-                  <span className="price old-price">{product.oldPrice}</span>
-                  <span className="price">{product.newPrice}</span>
-                </div>
-                <div className="product-review">
-                  {renderStars(product.reviews)}
-                </div>
-                <ul className="variants-clr swatches">
-                  {product.colors.map((color, i) => (
-                    <li
-                      key={i}
-                      className="swatch medium radius"
-                      onClick={() =>
-                        handleColorChange(product.id, color.imgSrc)
-                      }
-                    >
-                      <span className="swatchLbl" title={color.title}>
-                        <img
-                          src={color.imgSrc}
-                          alt={color.title}
-                          width="625"
-                          height="808"
-                        />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

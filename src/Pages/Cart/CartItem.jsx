@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import Modal from "../../Components/UI/Modal";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 export default function CartItem({
   itemId,
   image,
@@ -74,12 +75,15 @@ export default function CartItem({
           </button>
         </td>
         <td>
-          <img
-            src={image}
-            alt={name}
-            style={{ width: 80, height: "auto" }}
-            className="img-thumbnail"
-          />
+          <Link>
+            {" "}
+            <img
+              src={image}
+              alt={name}
+              style={{ width: 80, height: "auto" }}
+              className="img-thumbnail"
+            />
+          </Link>
         </td>
         <td>{name}</td>
         <td className="text-center">${price.toFixed(2)}</td>

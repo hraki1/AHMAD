@@ -30,7 +30,7 @@ export default function Index() {
   return (
     <div>
       <ScrollToTop />
-      <PageHeader title={product?.name || t("Product")} />
+      <PageHeader title={t("Product") || t("Product")} />
       {product ? (
         <ProductDetail product={product.data[0]} />
       ) : (

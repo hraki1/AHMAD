@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllProducts } from "../../utils/fetchAllProducts";
 import useFetchCategories from "../Hooks/useFetchCategories";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useWishlist } from "../../Context/WishlistContext";
 import ProductItem from "./ProductItem";
 import { useTranslation } from "react-i18next";
 import Spinner from "../../Components/UI/SpinnerLoading";
+import { Toaster, toast } from "react-hot-toast";
 const ProductGrid = ({
   selectedCategoryAndChildrenIds: propCategoryAndChildrenIds = null,
   selectedBrandIds = [],
@@ -24,11 +25,6 @@ const ProductGrid = ({
   const categoryId = searchParams.get("category");
   const subcategoryId = searchParams.get("subcategory");
   const { t } = useTranslation();
-  // نقرأ categoryId مباشرة من الرابط (URL)
-  const categoryIdFromUrl = searchParams.get("categoryId");
-
-  // نحسب selectedCategoryAndChildrenIds بناءً على URL أو props
-
   const [selectedCategoryAndChildrenIds, setSelectedCategoryAndChildrenIds] =
     useState(() => {
       if (categoryId) {
@@ -44,7 +40,6 @@ const ProductGrid = ({
     }
   }, [categoryId, propCategoryAndChildrenIds]);
 
-  // جلب الفئات الفرعية (Subcategories) للفلترة
   const {
     categories: subcategories,
     loading: subcategoriesLoading,
@@ -69,7 +64,6 @@ const ProductGrid = ({
     selectedCategoryAndChildrenIds,
   ]);
 
-  // تحميل المنتجات (يمكن تعديل الاعتمادات لإعادة التحميل عند تغيّر الفلاتر)
   useEffect(() => {
     const controller = new AbortController();
 
@@ -77,7 +71,7 @@ const ProductGrid = ({
       setLoading(true);
       setError(null);
       try {
-        const totalPages = 5; // عدد صفحات المنتجات لتحميلها
+        const totalPages = 5;
         const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
         const allProducts = await fetchAllProducts(
@@ -137,9 +131,8 @@ const ProductGrid = ({
     loadProducts();
 
     return () => controller.abort();
-  }, [availabilityFilter]); // ممكن تضيف selectedCategoryAndChildrenIds لو تبي تعيد تحميل المنتجات عند تغير الكاتيجوري
+  }, [availabilityFilter]);
 
-  // دالة لإضافة المنتج للمفضلة (Wishlist)
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
     addToWishlist({
@@ -150,23 +143,22 @@ const ProductGrid = ({
       disabled: !product.inStock,
       imgSrc: product.imageUrl,
       variant: product.colors[0]?.title || "Default variant",
+      url_key: product.url_key || "Undefiend",
     });
-    alert(`${product.name} ${t(`product.Add_Wishlist`)}`);
+    toast.success(`${product.name} ${t(`product.Add_Wishlist`)}98`);
   };
 
-  // تغيير صورة المنتج عند اختيار لون
   const handleColorChange = useCallback((productId, imgSrc) => {
     setProducts((prev) =>
       prev.map((p) => (p.id === productId ? { ...p, imageUrl: imgSrc } : p))
     );
   }, []);
 
-  // فلترة المنتجات بناءً على الفئة، العلامة التجارية، التوفر، السعر
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
     if (selectedCategoryAndChildrenIds?.length > 0) {
-      let categoryFilterIds = []; // إذا تم اختيار subcategory من الرابط، استخدمه فقط للفلاتر
+      let categoryFilterIds = [];
 
       if (subcategoryId) {
         categoryFilterIds = [parseInt(subcategoryId)];
@@ -211,7 +203,6 @@ const ProductGrid = ({
     priceRange,
   ]);
 
-  // ترتيب المنتجات
   const sortedProducts = useMemo(() => {
     let result = [...filteredProducts];
 
@@ -254,35 +245,37 @@ const ProductGrid = ({
     return result;
   }, [filteredProducts, sortBy]);
 
-  // المنتجات التي ستظهر حسب العدد المطلوب
   const displayedProducts = useMemo(() => {
     return sortedProducts.slice(0, productsToShow);
   }, [sortedProducts, productsToShow]);
 
   console.log(products);
-  // دالة لعرض النجوم حسب تقييم المنتج
 
   if (subcategoriesLoading || loading)
     return (
-      <p>
+      <div>
         <Spinner />
-      </p>
+      </div>
     );
   if (error) return <p>{error}</p>;
   if (!sortedProducts.length) return <p>{t(`ShopGridCate.No_filter`)}.</p>;
 
   return (
-    <div className="grid-products grid-view-items">
-      <div className={`row col-row product-options ${gridClass}`}>
-        {displayedProducts.map((product) => (
-          <ProductItem
-            product={product}
-            onAddToWishList={handleAddToWishlist}
-            handleColorChange={handleColorChange}
-          />
-        ))}
+    <>
+      <Toaster />
+      <div className="grid-products grid-view-items">
+        <div className={`row col-row product-options ${gridClass}`}>
+          {displayedProducts.map((product) => (
+            <ProductItem
+              key={product.id}
+              product={product}
+              onAddToWishList={handleAddToWishlist}
+              handleColorChange={handleColorChange}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

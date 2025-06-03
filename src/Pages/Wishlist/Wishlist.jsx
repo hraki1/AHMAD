@@ -6,8 +6,9 @@ import { AddToCart } from "../API/AddToCart";
 import { toast } from "react-toastify";
 import { useCart } from "../../Context/CartContext";
 import { useTranslation } from "react-i18next";
+
 const Wishlist = () => {
-  const { wishlistItems, removeFromWishlist, addToWishlist } = useWishlist();
+  const { wishlistItems, removeFromWishlist } = useWishlist();
   const { updateCart } = useCart();
 
   const [showModal, setShowModal] = useState(false);
@@ -18,30 +19,11 @@ const Wishlist = () => {
     message: "",
     error: null,
   });
+
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const handleAddToWishlist = (e, product) => {
-    e.preventDefault();
-    const isInStock = product?.inventory === "In Stock";
-
-    addToWishlist({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      stock: isInStock ? "In Stock" : "Out Of Stock",
-      disabled: !isInStock,
-      imgSrc:
-        product.images?.[0]?.origin_image ||
-        product.images?.[0]?.url ||
-        product.images?.[0] ||
-        "",
-      variant: product.colors?.[0] || "Default variant",
-    });
-
-    alert(`${product.name} added to wishlist!`);
-  };
+  console.log(wishlistItems);
 
   const handleRemoveItem = (productId, e) => {
     e.preventDefault();
@@ -97,13 +79,6 @@ const Wishlist = () => {
       toast.error(result.message || "Failed to add item.");
     }
   };
-
-  const handleQuickView = (product, e) => {
-    e.preventDefault();
-    setSelectedProduct(product);
-    setShowModal(true);
-  };
-
   return (
     <div className="container">
       <div
@@ -143,7 +118,7 @@ const Wishlist = () => {
                 <tr key={product.id}>
                   <td className="product-thumbnail">
                     <Link
-                      to={`/product/${product.url_key || product.id}`}
+                      to={`/product/${product.url_key}`}
                       className="product-img"
                     >
                       <img
@@ -155,13 +130,6 @@ const Wishlist = () => {
                         height="170"
                       />
                     </Link>
-                    <button
-                      type="button"
-                      className="btn btn-light"
-                      onClick={(e) => handleQuickView(product, e)}
-                    >
-                      <i className="fa-solid fa-magnifying-glass"></i>
-                    </button>
                   </td>
                   <td className="product-details">
                     <p className="product-name mb-0">{product.name}</p>

@@ -20,7 +20,7 @@ export default function ColorFilter({ className }) {
   return (
     <div className={`sidebar-widget filterBox filter-widget ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div class="title-slidebar">Color</div>
+        <div className="title-slidebar">Color</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}

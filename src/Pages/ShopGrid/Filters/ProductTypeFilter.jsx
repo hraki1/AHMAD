@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { productTypes } from "../data";
+import { useTranslation } from "react-i18next";
 
 export default function ProductTypeFilter({ className }) {
+  const { t } = useTranslation();
+
   const [selectedTypes, setSelectedTypes] = useState({
     fashion: false,
     electronic: false,
@@ -20,7 +23,7 @@ export default function ProductTypeFilter({ className }) {
   return (
     <div className={`sidebar-widget filter-widget product-type ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div class="title-slidebar">{t(`Type`)}</div>
+        <div className="title-slidebar">{t(`Type`)}</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}

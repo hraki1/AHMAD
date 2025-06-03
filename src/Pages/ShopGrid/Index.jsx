@@ -6,12 +6,14 @@ import Toolbar from "./Toolbar";
 import LeftSlidebar from "./leftSlidebar";
 import useFetchCategories from "../Hooks/useFetchCategories";
 import { useTranslation } from "react-i18next";
+
 export default function ShopPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const categoryId = queryParams.get("category");
   const subcategoryId = queryParams.get("subcategory");
+
   const [forceReset, setForceReset] = useState(false);
   const [hidePopularCategories, setHidePopularCategories] = useState(false);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(null);
@@ -22,11 +24,12 @@ export default function ShopPage() {
     outofstock: false,
   });
   const [priceRangeFilter, setPriceRangeFilter] = useState([0, 1000]);
-  const { t } = useTranslation();
-  const { categories: subcategories, loading: subcatLoading } =
-    useFetchCategories(selectedCategoryIds?.[0] || null);
 
-  // Define handleSidebarCategoryFilterChange first
+  const { t } = useTranslation();
+  const { categories: subcategories } = useFetchCategories(
+    selectedCategoryIds?.[0] || null
+  );
+
   const handleSidebarCategoryFilterChange = useCallback(
     (categoryIds) => {
       if (categoryIds && categoryIds.length > 0) {
@@ -38,20 +41,19 @@ export default function ShopPage() {
     [navigate]
   );
 
-  // Then define backToAll that uses it
   const backToAll = useCallback(() => {
-    setHidePopularCategories(false);
+    // Reset all filters and states
     setSelectedCategoryIds(null);
     setSelectedParentId(null);
     setSelectedBrandIds([]);
-    setAvailabilityFilter({
-      instock: false,
-      outofstock: false,
-    });
+    setAvailabilityFilter({ instock: false, outofstock: false });
     setPriceRangeFilter([0, 1000]);
-    navigate("/ShopGrid");
-    handleSidebarCategoryFilterChange([]);
-  }, [navigate, handleSidebarCategoryFilterChange]);
+    setHidePopularCategories(false);
+
+    // Trigger full reset by changing the URL and state
+    navigate("/ShopGrid", { replace: true });
+    setForceReset((prev) => !prev); // Optional: reset components like PopularCategories
+  }, [navigate]);
 
   useEffect(() => {
     const updateFiltersFromURL = () => {
@@ -79,8 +81,8 @@ export default function ShopPage() {
 
     updateFiltersFromURL();
   }, [categoryId, subcategoryId, subcategories, location.search]);
+
   useEffect(() => {
-    // When categoryId changes, force a reset
     setForceReset((prev) => !prev);
   }, [categoryId]);
 
@@ -113,23 +115,15 @@ export default function ShopPage() {
       )}
 
       <PopularCategories
-        heading={
-          categoryId ? t(`ShopGridCate.All_Menu`) : t(`ShopGridCate.All_Menu`)
-        }
+        heading={t(`ShopGridCate.All_Menu`)}
         italic=""
         selectedCategoryId={selectedCategoryIds?.[0] || null}
         onCategoryClick={handleCategoryClick}
         setSelectedCategoryId={(id) => setSelectedCategoryIds(id ? [id] : null)}
         setSelectedParentId={setSelectedParentId}
         onBackToAll={backToAll}
-        resetHierarchy={forceReset} // Use the forceReset state here
+        resetHierarchy={forceReset}
         forcedParentId={categoryId ? parseInt(categoryId) : null}
-        // forcedCategoryData={
-        //   categoryId
-        //     ? categoriesData.find((cat) => cat.id === parseInt(categoryId))
-        //     : null
-        // }
-        // key={categoryId || "root"} // Add this key to force remount
       />
 
       <div className="container">

@@ -20,7 +20,7 @@ export default function ProductTypeFilter({ className }) {
   return (
     <div className={`sidebar-widget filter-widget product-type ${className}`}>
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div class="title-slidebar">Type</div>
+        <div className="title-slidebar">Type</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}

@@ -126,11 +126,13 @@ export default function Toolbar({
           <div className="col-4 col-sm-2 col-md-4 col-lg-4 d-flex order-1 order-sm-0">
             <button
               type="button"
-              className="btn btn-filter icon anm anm-sliders-hr d-inline-flex d-lg-none me-2"
+              className="btn  icon anm anm-sliders-hr d-inline-flex d-lg-none me-2"
               onClick={toggleFilter}
             >
-              {t(`Filter`)} <i className="fa-solid fa-bars ms-1" />
+              <span className="d-none">{t(`Filter`)}</span>
+              <i className="fa-solid fa-bars " />
             </button>
+
             <div className="d-flex align-items-center">
               <label className="mb-0 me-2 d-none d-lg-inline-block">
                 {t(`View`)}
@@ -168,7 +170,12 @@ export default function Toolbar({
 
       {/* Filters Section (Mobile) */}
       {showFilter && (
-        <div className="filter-menu visible">
+        <div className="filter-menu visible ">
+          <i
+            class="fa-solid fa-x mb-5"
+            style={{ cursor: "pointer" }}
+            onClick={toggleFilter}
+          ></i>
           {filters.map((FilterComp, idx) => (
             <FilterComp key={idx} className="mb-5" />
           ))}

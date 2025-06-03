@@ -59,21 +59,23 @@ export default function SidebarCategories({
       {showContent && (
         <div className="widget-content">
           {categoryHierarchy.length > 0 && (
-            <div className="mb-3 text-center">
-              <button
-                className="btn btn-outline-primary btn-sm mb-3"
-                onClick={backToAll}
-              >
-                {t(`ShopGridCate.Back_All`)}
-              </button>
-              {categoryHierarchy.length > 1 && (
+            <div className="mb-3">
+              <div className="d-flex flex-column flex-sm-row justify-content-center gap-2">
                 <button
-                  className="btn btn-outline-primary btn-sm "
-                  onClick={backOneLevel}
+                  className="btn btn-outline-primary btn-sm"
+                  onClick={backToAll}
                 >
-                  {t(`ShopGridCate.Back_One`)}
+                  {t(`ShopGridCate.Back_All`)}
                 </button>
-              )}
+                {categoryHierarchy.length > 1 && (
+                  <button
+                    className="btn btn-outline-primary btn-sm"
+                    onClick={backOneLevel}
+                  >
+                    {t(`ShopGridCate.Back_One`)}
+                  </button>
+                )}
+              </div>
             </div>
           )}
 

@@ -49,15 +49,16 @@ const ProductDetail = ({ product }) => {
   const handleAddToWishlist = (e, product) => {
     e.preventDefault();
     addToWishlist({
-      id: product.product_id, // NEW SCHEMA CHANGE
-      name: product.description?.name, // NEW SCHEMA CHANGE
+      id: product.product_id,
+      name: product.description?.name,
       price: product.price,
       stock: isInStock ? "In Stock" : "Out Of Stock",
       disabled: !isInStock,
       imgSrc: product.images?.[0]?.origin_image || "",
       variant: product.colors?.[0] || "Default variant",
+      url_key: product.description.url_key || "Undefiend",
     });
-    alert(`${product.description?.name} added to wishlist!`); // NEW SCHEMA CHANGE
+    toast.success(`${product.description?.name} added to wishlist!`);
   };
 
   const [openModal, setOpenModal] = useState(false);
@@ -356,8 +357,8 @@ const ProductDetail = ({ product }) => {
               </div>
               <hr />
 
-              <div className="harry-up-text">{t(`product.Hurry_up`)}</div>
-              <Countdown date={FINAL_DATE} renderer={renderTime} />
+              {/* <div className="harry-up-text">{t(`product.Hurry_up`)}</div>
+              <Countdown date={FINAL_DATE} renderer={renderTime} /> */}
             </div>
 
             <form className="product-form product-form-border hidedropdown">

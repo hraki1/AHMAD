@@ -14,7 +14,7 @@ export default function ProductTags({ className }) {
       className={`sidebar-widget filterBox filter-widget product-tag ${className}`}
     >
       <div className="widget-title d-flex align-items-center justify-content-between">
-        <div class="title-slidebar">Product Tags</div>
+        <div className="title-slidebar">Product Tags</div>
         <i
           className="fa-solid fa-list"
           style={{ cursor: "pointer" }}
