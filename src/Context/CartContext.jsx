@@ -83,6 +83,7 @@ export function CartProvider({ children }) {
     const items =
       data.items?.map((item) => ({
         id: item.product_id,
+        url_key: item.product.description.url_key,
         cart_item_id: item.cart_item_id,
         name: item.product_name || `Product ${item.product_id}`,
         price: item.product_price || 0,
@@ -119,6 +120,7 @@ export function CartProvider({ children }) {
     try {
       setIsLoading(true);
       const data = await fetchWithAuth(`${baseUrl}/api/carts/customer`);
+      console.log(data);
       updateCartState(data);
     } catch (error) {
       toast.error(error.message);

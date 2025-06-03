@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 const AdditionalInformation = () => {
   const { t } = useTranslation();
   const { url_key } = useParams();
-  const { product, loading, error } = useFetchOneProduct(url_key);
+  const { product: proData, loading, error } = useFetchOneProduct(url_key);
 
   if (loading) {
     return <Spinner />;
@@ -15,6 +15,10 @@ const AdditionalInformation = () => {
   if (error) {
     return <p>{error}</p>;
   }
+
+  const product = proData.data[0];
+
+  console.log(product);
 
   if (!product || !product.attributes || product.attributes.length === 0) {
     return (
@@ -51,21 +55,23 @@ const AdditionalInformation = () => {
                   <tbody>
                     {product.attributes.map((attr, index) => (
                       <tr key={index}>
-                        <th>{attr.attributeName}</th>
-                        <td>{attr.optionText}</td>
+                        <th>{attr.attribute.attribute_name}</th>
+                        <td>{attr.option.option_text}</td>
                       </tr>
                     ))}
                     {product.brand && (
                       <tr>
                         <th>{t(`Brands`)}</th>
-                        <td>{product.brand}</td>
+                        <td>{product.brand.name}</td>
                       </tr>
                     )}
                     {product.stock !== undefined && (
                       <tr>
                         <th>{t(`Availability`)}</th>
                         <td>
-                          {product.stock > 0 ? "In Stock" : "Out of Stock"}
+                          {product.inventory.manage_stock
+                            ? "In Stock"
+                            : "Out of Stock"}
                         </td>
                       </tr>
                     )}

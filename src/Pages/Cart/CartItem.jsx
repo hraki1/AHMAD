@@ -13,8 +13,11 @@ export default function CartItem({
   onUpdatedQuantity,
   onRemove,
   isLoadingDelete,
+  url_key,
 }) {
   const [modalOpen, setModalOpen] = useState(false);
+
+  console.log();
 
   useEffect(() => {
     if (!isLoadingDelete) {
@@ -75,7 +78,7 @@ export default function CartItem({
           </button>
         </td>
         <td>
-          <Link>
+          <Link to={`/product/${url_key}`}>
             {" "}
             <img
               src={image}

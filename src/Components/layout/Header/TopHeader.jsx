@@ -62,7 +62,7 @@ const TopHeader = () => {
                   alt={language}
                   width="24"
                   height="24"
-                  className="me-1"
+                  className="mx-1"
                 />
                 <span>{flags[language].label}</span>
                 <i className="fa-solid fa-caret-down ms-1"></i>
@@ -86,7 +86,7 @@ const TopHeader = () => {
                               height="24"
                               className="me-1"
                             />
-                            <span>{flags[lang].label}</span>
+                            <span className="">{flags[lang].label}</span>
                           </div>
                         </li>
                       )

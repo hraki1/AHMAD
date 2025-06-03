@@ -17,6 +17,8 @@ export default function Cart({
 
   const { cartId, cartItems, updateCart, isLoading } = useContext(CartContext);
 
+  console.log(cartItems);
+
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
   const token = localStorage.getItem("token");
@@ -103,20 +105,23 @@ export default function Cart({
           </tr>
         </thead>
         <tbody>
-          {cartItems.map(({ cart_item_id, image, name, price, quantity }) => (
-            <CartItem
-              key={cart_item_id}
-              itemId={cart_item_id}
-              image={image}
-              name={name}
-              price={price}
-              quantity={quantity}
-              onRemove={removeItem}
-              onUpdatedQuantity={updateQuantity}
-              isLoading={isLoading}
-              isLoadingDelete={isLoadingDelete}
-            />
-          ))}
+          {cartItems.map(
+            ({ cart_item_id, image, name, price, quantity, url_key }) => (
+              <CartItem
+                key={cart_item_id}
+                itemId={cart_item_id}
+                image={image}
+                name={name}
+                price={price}
+                quantity={quantity}
+                onRemove={removeItem}
+                onUpdatedQuantity={updateQuantity}
+                isLoading={isLoading}
+                isLoadingDelete={isLoadingDelete}
+                url_key={url_key}
+              />
+            )
+          )}
         </tbody>
       </table>
 
