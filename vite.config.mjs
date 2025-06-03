@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3256,
-    host: "::",
-    origin: "https://customer.sareh-nomow.xyz",
-    allowedHosts: true
+    // host: "::",
+    // origin: "https://customer.sareh-nomow.xyz",
+    // allowedHosts: true
   },
 });
