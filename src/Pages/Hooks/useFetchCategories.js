@@ -9,12 +9,14 @@ export default function useFetchCategories(parentId = null) {
   const BASE_URL = `${baseUrl}/api/categories`;
 
   useEffect(() => {
+    const languageKey = localStorage.getItem("i18nextLng");
+
     const fetchCategoriesData = async () => {
       try {
         const url =
           parentId === null
-            ? `${BASE_URL}?parentId=null`
-            : `${BASE_URL}?parentId=${parentId}`;
+            ? `${BASE_URL}?parentId=null?lang=${languageKey}`
+            : `${BASE_URL}?parentId=${parentId}?lang=${languageKey}`;
 
         const response = await fetch(url);
         const data = await response.json();

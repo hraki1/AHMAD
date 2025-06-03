@@ -18,7 +18,7 @@ export default function Index() {
 
   const {
     subtotal,
-    setSubtotal,
+    setSubtotalWithDiscount,
     shipping,
     setShipping,
     tax,
@@ -44,7 +44,7 @@ export default function Index() {
         })
         .then((data) => {
           setCartId(data.cart_id);
-          setSubtotal(data.sub_total || 0);
+          setSubtotalWithDiscount(data.sub_total || 0);
           setShipping(data.shipping_fee_incl_tax || 0);
           setTax(data.tax_amount || 0);
           setTotal(data.grand_total || 0);
@@ -63,7 +63,7 @@ export default function Index() {
           console.error("Error fetching cart:", error);
         });
     }
-  }, [setSubtotal, setShipping, setTax, setTotal]);
+  }, [setSubtotalWithDiscount, setShipping, setTax, setTotal]);
 
   useEffect(() => {
     setShowShippingAndTax(false);

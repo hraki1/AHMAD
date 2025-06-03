@@ -11,7 +11,7 @@ export default function HomePage() {
     <>
       <Slideshow />
       <ServiceSection services={services} pageType="first" />
-      <CollectionBanner />
+      {/* <CollectionBanner /> */}
       <PopularCategories PopularCategories mode="navigate" />
       <ProductSlider />
       <TestimonialSection />

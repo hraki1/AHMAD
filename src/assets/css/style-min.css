@@ -5534,6 +5534,36 @@ textarea:-ms-input-placeholder {
 .index-demo6 .ftr-logoText img {
   max-width: 130px;
 }
+
+.textLogo {
+  font-size: 32px;
+  font-weight: 900;
+  color: #222;
+  font-family: "Cairo", sans-serif;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 599px) {
+  .textLogo {
+    font-size: 46px;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .textLogo {
+    font-size: 40px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .textLogo {
+    font-size: 48px;
+  }
+}
+
+@media screen {
+}
 .index-demo6 .slideshow .ss-btnWrap {
   margin-top: 20px;
 }
